@@ -1,0 +1,14 @@
+flask
+flask-restx
+flask-cors
+Flask-SQLAlchemy
+Flask-Migrate
+Flask-Admin
+psycopg2-binary
+PyJWT
+gunicorn
+pytest
+pytest-cov
+flake8
+black
+isort
