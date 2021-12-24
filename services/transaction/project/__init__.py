@@ -23,7 +23,7 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
-    if os.getenv("FLASK_ENV") == "development":
+    if os.getenv("FLASK_ENV") == "development":  # pragma: no cover
         admin.init_app(app)
 
     from project.api import api

@@ -1,5 +1,6 @@
 from functools import wraps
 
+import jwt
 from flask import abort, request
 
 from project.api.utils import decode_jwt_token
@@ -10,17 +11,26 @@ def token_required(f):
     def decorated(*args, **kwargs):
         auth_header = request.headers.get("Authorization")
         if not auth_header:
-            abort(401, "Invalid token")
+            abort(401, "Invalid Token")
         try:
             access_token = auth_header.split(" ")[-1]
             payload = decode_jwt_token(access_token)
-            if not payload:
+            print(payload)
+            if (
+                "sub" not in payload
+                or "role" not in payload
+                or "type" not in payload
+                or payload["type"] != "access"
+            ):
+                print("here 20")
                 abort(401, "Invalid Token")
             setattr(decorated, "owner_id", payload["sub"])
             setattr(decorated, "owner_role", payload["role"])
-        except Exception as e:
-            print(e)
+        except jwt.ExpiredSignatureError:
+            abort(401, "Token Expired")
+        except jwt.InvalidTokenError:
             abort(401, "Invalid Token")
+
         return f(*args, **kwargs)
 
     return decorated

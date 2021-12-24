@@ -67,7 +67,7 @@ class TransactionList(db.Model):
         return f"{self.transaction_type}: {self.transaction_description} {self.transaction_cost}"
 
 
-if os.getenv("FLASK_ENV") == "development":
+if os.getenv("FLASK_ENV") == "development":  # pragma: no cover
     from project import admin
 
     admin.add_view(ModelView(TransactionCategory, db.session))

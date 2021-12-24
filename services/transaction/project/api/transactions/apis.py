@@ -23,7 +23,9 @@ transaction_category = transaction_namespace.model(
     {
         "category_name": fields.String(required=True),
         "category_type": fields.String(
-            enum=ChoiceType._member_names_, attribute="category_type.value"
+            enum=ChoiceType._member_names_,
+            attribute="category_type.value",
+            required=True,
         ),
     },
 )
@@ -57,11 +59,10 @@ class Category(Resource):
             return transaction_namespace.abort(400, "Unable to fetch categories.")
 
     @token_required
-    @transaction_namespace.marshal_with(
-        transaction_category_post, code=201, description="object created"
-    )
-    @transaction_namespace.expect(parser)
-    @transaction_namespace.expect(transaction_category)
+    @transaction_namespace.expect(transaction_category, validate=True)
+    @transaction_namespace.expect(parser, validate=True)
+    @transaction_namespace.marshal_with(transaction_category_post)
+    @transaction_namespace.response(201, "Successfully created category <category_id>.")
     @transaction_namespace.response(400, "Operation Error")
     @transaction_namespace.response(401, "Invalid token")
     def post(self):
@@ -70,14 +71,11 @@ class Category(Resource):
             category_name = post_data.get("category_name")
             category_type = post_data.get("category_type")
             category_owner = Category.post.owner_id
-            if category_type not in ChoiceType.__members__:
-                print("here 65")
-                transaction_namespace.abort(400, "Input Validation Failed.")
             category = add_category(category_name, category_type, category_owner)
             return category, 201
         except Exception as e:
             print(e)
-            return transaction_namespace.abort(400, "Unable to create category.")
+            return transaction_namespace.abort(400, "Unable to create category")
 
 
 transaction_namespace.add_resource(Category, "/category", endpoint="category")

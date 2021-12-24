@@ -12,6 +12,10 @@ def decode_jwt_token(token):
     payload = jwt.decode(
         token, current_app.config.get("SECRET_KEY"), algorithms=["HS256"]
     )
-    if payload["type"] == "access":
-        return payload
-    return None
+    return payload
+
+
+def generate_token_for_test(user_id, role, token_type, exp, secret):
+    payload = {"sub": user_id, "role": role, "type": token_type, "exp": exp}
+    encoded_token = jwt.encode(payload, secret, algorithm="HS256")
+    return encoded_token
