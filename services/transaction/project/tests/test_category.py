@@ -123,7 +123,9 @@ def test_categories_005_get_all_categories_exception(
     assert "Unable to fetch categories." in data["message"]
 
 
-def test_categories_006_test_single_category(test_app, test_database, test_token, add_category):
+def test_categories_006_test_single_category(
+    test_app, test_database, test_token, add_category
+):
     category1 = add_category("test01", "income", 1)
     client = test_app.test_client()
     resp = client.get(
@@ -137,7 +139,9 @@ def test_categories_006_test_single_category(test_app, test_database, test_token
     assert data["category_type"] == category1.category_type.value
 
 
-def test_categories_007_test_single_category_no_such_category(test_app, test_database, test_token):
+def test_categories_007_test_single_category_no_such_category(
+    test_app, test_database, test_token
+):
     client = test_app.test_client()
     resp = client.get(
         "/api/v1/transactions/category/999",
@@ -149,7 +153,9 @@ def test_categories_007_test_single_category_no_such_category(test_app, test_dat
     assert "No Such Category" in data["message"]
 
 
-def test_categories_008_test_single_category_invalid_owner(test_app, test_database, test_token, add_category):
+def test_categories_008_test_single_category_invalid_owner(
+    test_app, test_database, test_token, add_category
+):
     category1 = add_category("test01", "income", 2)
     client = test_app.test_client()
     resp = client.get(
@@ -162,12 +168,16 @@ def test_categories_008_test_single_category_invalid_owner(test_app, test_databa
     assert "No Such Category" in data["message"]
 
 
-def test_categories_009_test_single_category_exception(test_app, test_database, test_token, add_category, monkeypatch):
+def test_categories_009_test_single_category_exception(
+    test_app, test_database, test_token, add_category, monkeypatch
+):
     def mock_get_transaction_category(id, owner_id):
         raise Exception
 
     monkeypatch.setattr(
-        project.api.transactions.apis, "get_transaction_category", mock_get_transaction_category
+        project.api.transactions.apis,
+        "get_transaction_category",
+        mock_get_transaction_category,
     )
     category1 = add_category("test01", "income", 1)
     client = test_app.test_client()
@@ -181,7 +191,9 @@ def test_categories_009_test_single_category_exception(test_app, test_database, 
     assert "Operation Error" in data["message"]
 
 
-def test_categories_010_update_category(test_app, test_database, test_token, add_category):
+def test_categories_010_update_category(
+    test_app, test_database, test_token, add_category
+):
     test_database.session.query(TransactionCategory).delete()
     category1 = add_category("test01", "income", 1)
     client = test_app.test_client()
@@ -189,10 +201,7 @@ def test_categories_010_update_category(test_app, test_database, test_token, add
         f"/api/v1/transactions/category/{category1.id}",
         headers={"Authorization": f"Bearer {test_token}"},
         data=json.dumps(
-            {
-                "category_name": "test_01_updated",
-                "category_type": "expense"
-            }
+            {"category_name": "test_01_updated", "category_type": "expense"}
         ),
         content_type="application/json",
     )
@@ -212,22 +221,25 @@ def test_categories_010_update_category(test_app, test_database, test_token, add
     assert data["category_name"] == "test_01_updated"
     assert data["category_type"] == "expense"
 
+
 @pytest.mark.parametrize(
-    "payload, status_code, message",[
+    "payload, status_code, message",
+    [
         [{}, 400, "Input payload validation failed"],
-        [{
-            "category_name": "updated"
-        }, 400, "Input payload validation failed"],
-        [{
-            "category_name": "updated",
-            "category_type": "lol"
-        }, 400, "Input payload validation failed"]
-    ]
+        [{"category_name": "updated"}, 400, "Input payload validation failed"],
+        [
+            {"category_name": "updated", "category_type": "lol"},
+            400,
+            "Input payload validation failed",
+        ],
+    ],
 )
-def test_categories_011_update_category_invalid_operation(test_app, test_database, test_token, add_category, payload, status_code, message):
+def test_categories_011_update_category_invalid_operation(
+    test_app, test_database, test_token, add_category, payload, status_code, message
+):
     client = test_app.test_client()
     resp = client.get(
-        f"/api/v1/transactions/category",
+        "/api/v1/transactions/category",
         headers={"Authorization": f"Bearer {test_token}"},
         content_type="application/json",
     )
@@ -245,16 +257,20 @@ def test_categories_011_update_category_invalid_operation(test_app, test_databas
     assert data["message"] == message
 
 
-def test_categories_012_update_category_invalid_owner(test_app, test_database, test_token, add_category):
+def test_categories_012_update_category_invalid_owner(
+    test_app, test_database, test_token, add_category
+):
     category = add_category("test_invalid_owner", "income", 2)
     client = test_app.test_client()
     resp = client.put(
         f"/api/v1/transactions/category/{category.id}",
         headers={"Authorization": f"Bearer {test_token}"},
-        data=json.dumps({
-            "category_name": "valid_owner",
-            "category_type": "expense",
-        }),
+        data=json.dumps(
+            {
+                "category_name": "valid_owner",
+                "category_type": "expense",
+            }
+        ),
         content_type="application/json",
     )
     assert resp.status_code == 404
@@ -262,9 +278,12 @@ def test_categories_012_update_category_invalid_owner(test_app, test_database, t
     assert data["message"] == "No Such Category"
 
 
-def test_categories_013_update_category_exception(test_app, test_database, test_token, add_category, monkeypatch):
+def test_categories_013_update_category_exception(
+    test_app, test_database, test_token, add_category, monkeypatch
+):
     def mock_update_category(category, catogory_name, category_type):
         raise Exception
+
     monkeypatch.setattr(
         project.api.transactions.apis, "update_category", mock_update_category
     )
@@ -273,10 +292,12 @@ def test_categories_013_update_category_exception(test_app, test_database, test_
     resp = client.put(
         f"/api/v1/transactions/category/{category.id}",
         headers={"Authorization": f"Bearer {test_token}"},
-        data=json.dumps({
-            "category_name": "test_exception_updated",
-            "category_type": "expense",
-        }),
+        data=json.dumps(
+            {
+                "category_name": "test_exception_updated",
+                "category_type": "expense",
+            }
+        ),
         content_type="application/json",
     )
     assert resp.status_code == 400
@@ -284,7 +305,9 @@ def test_categories_013_update_category_exception(test_app, test_database, test_
     assert data["message"] == "Operation Error"
 
 
-def test_categories_014_delete_category(test_app, test_database, test_token, add_category):
+def test_categories_014_delete_category(
+    test_app, test_database, test_token, add_category
+):
     category = add_category("test_delete", "income", 1)
     client = test_app.test_client()
     resp = client.delete(
@@ -295,7 +318,9 @@ def test_categories_014_delete_category(test_app, test_database, test_token, add
     assert resp.status_code == 204
 
 
-def test_categories_015_delete_category_invalid_owner(test_app, test_database, test_token, add_category):
+def test_categories_015_delete_category_invalid_owner(
+    test_app, test_database, test_token, add_category
+):
     category = add_category("test_delete", "income", 2)
     client = test_app.test_client()
     resp = client.delete(
@@ -308,9 +333,12 @@ def test_categories_015_delete_category_invalid_owner(test_app, test_database, t
     assert data["message"] == "No Such Category"
 
 
-def test_categories_016_delete_category_invalid_owner(test_app, test_database, test_token, add_category, monkeypatch):
+def test_categories_016_delete_category_invalid_owner(
+    test_app, test_database, test_token, add_category, monkeypatch
+):
     def mock_delete_category(category):
         raise Exception
+
     monkeypatch.setattr(
         project.api.transactions.apis, "delete_category", mock_delete_category
     )

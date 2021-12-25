@@ -1,6 +1,6 @@
-from re import I
 from flask import request
 from flask_restx import Namespace, Resource, fields
+from werkzeug.exceptions import NotFound
 
 from project.api.decorator import token_required
 from project.api.transactions.models import ChoiceType
@@ -13,7 +13,6 @@ from project.api.transactions.crud import (  # isort:skip
     update_category,
 )
 
-from werkzeug.exceptions import NotFound
 
 transaction_namespace = Namespace("transaction")
 
@@ -29,7 +28,7 @@ transaction_category = transaction_namespace.model(
             enum=ChoiceType._member_names_,
             attribute="category_type.value",
             required=True,
-            description="Category Type"
+            description="Category Type",
         ),
     },
 )
@@ -97,7 +96,7 @@ class Category(Resource):
                 return category, 200
             else:
                 transaction_namespace.abort(404, "No Such Category")
-                
+
         except NotFound as e:
             print(e)
             transaction_namespace.abort(404, "No Such Category")
@@ -105,7 +104,7 @@ class Category(Resource):
         except Exception as e:
             print(e)
             transaction_namespace.abort(400, "Operation Error")
-    
+
     @token_required
     @transaction_namespace.expect(transaction_category, validate=True)
     @transaction_namespace.expect(parser, validate=True)
@@ -121,21 +120,24 @@ class Category(Resource):
             category_type = put_data.get("category_type")
             category = get_transaction_category(id, Category.put.owner_id)
             if category:
-                updated_category = update_category(category, category_name, category_type)
+                updated_category = update_category(
+                    category, category_name, category_type
+                )
                 return updated_category, 200
             else:
                 transaction_namespace.abort(404, "No Such Category")
-        
+
         except NotFound as e:
             print(e)
             transaction_namespace.abort(404, "No Such Category")
 
         except Exception as e:
+            print(e)
             transaction_namespace.abort(400, "Operation Error")
-    
+
     @token_required
     @transaction_namespace.expect(parser, validate=True)
-    @transaction_namespace.response(204, '')
+    @transaction_namespace.response(204, "")
     @transaction_namespace.response(400, "Operation Error")
     @transaction_namespace.response(401, "Invalid Token")
     @transaction_namespace.response(404, "No Such Category")
@@ -144,7 +146,7 @@ class Category(Resource):
             category = get_transaction_category(id, Category.delete.owner_id)
             if category:
                 delete_category(category)
-                return '',204
+                return "", 204
             else:
                 transaction_namespace.abort(404, "No Such Category.")
         except NotFound as e:
