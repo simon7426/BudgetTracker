@@ -46,6 +46,9 @@ class TransactionList(db.Model):
     transaction_category_id = db.Column(
         db.Integer, db.ForeignKey("transaction_category.id"), nullable=False
     )
+    transaction_account_id = db.Column(
+        db.Integer, db.ForeignKey("transaction_account.id"), nullable=False
+    )
     created_at = db.Column(db.DateTime, default=get_bd_time(), nullable=False)
     updated_at = db.Column(db.DateTime, onupdate=get_bd_time())
 
@@ -67,8 +70,60 @@ class TransactionList(db.Model):
         return f"{self.transaction_type}: {self.transaction_description} {self.transaction_cost}"
 
 
+class Account(db.Model):
+    __tablename__ = "transaction_account"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    account_name = db.Column(db.String(128), nullable=False)
+    account_type = db.Column(db.String(128), nullable=False)
+    account_balance = db.Column(db.Numeric(10, 2), nullable=False)
+    account_owner = db.Column(db.Integer, nullable=False)
+    created_at = db.Column(db.DateTime, default=get_bd_time(), nullable=False)
+    updated_at = db.Column(db.DateTime, onupdate=get_bd_time())
+
+    transactions = db.relationship(
+        "TransactionList", backref="transaction_account", lazy=True
+    )
+
+    def __init__(self, account_name, account_type, account_balance, account_owner):
+        self.account_name = account_name
+        self.account_type = account_type
+        self.account_balance = account_balance
+        self.account_owner = account_owner
+
+    def __repr__(self):
+        return f"Account: {self.account_name}"
+
+
+class AccountTransfer(db.Model):
+    __tablename__ = "transaction_account_transfer"
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    from_account_id = db.Column(
+        db.Integer, db.ForeignKey("transaction_account.id"), nullable=False
+    )
+    from_account = db.relationship("Account", foreign_keys=[from_account_id])
+    to_account_id = db.Column(
+        db.Integer, db.ForeignKey("transaction_account.id"), nullable=False
+    )
+    to_account = db.relationship("Account", foreign_keys=[to_account_id])
+    transfer_cost = db.Column(db.Numeric(10, 2), default=0, nullable=False)
+    created_at = db.Column(db.DateTime, default=get_bd_time(), nullable=False)
+    updated_at = db.Column(db.DateTime, onupdate=get_bd_time())
+
+    def __init__(self, from_account_id, to_account_id, transfer_cost):
+        self.from_account_id = from_account_id
+        self.to_account_id = to_account_id
+        self.transfer_cost = transfer_cost
+
+    def __repr__(self):
+        return f"Transfer: from {self.from_account.account_name} to {self.to_account.account_name}"
+
+
 if os.getenv("FLASK_ENV") == "development":  # pragma: no cover
     from project import admin
 
     admin.add_view(ModelView(TransactionCategory, db.session))
     admin.add_view(ModelView(TransactionList, db.session))
+    admin.add_view(ModelView(Account, db.session))
+    admin.add_view(ModelView(AccountTransfer, db.session))
