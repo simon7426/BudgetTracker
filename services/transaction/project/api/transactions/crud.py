@@ -26,6 +26,7 @@ def add_category(category_name, category_type, category_owner):
 
 
 def update_category(category, category_name, category_type):
+    
     category.category_name = category_name
     category.category_type = category_type
     db.session.commit()

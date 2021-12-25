@@ -22,6 +22,8 @@ def test_categories_001_add_category(test_app, test_database, test_token):
     data = json.loads(resp.data.decode())
     assert resp.status_code == 201
     assert "id" in data
+    assert "test01" == data["category_name"]
+    assert "income" == data["category_type"]
 
 
 @pytest.mark.parametrize(
@@ -121,119 +123,204 @@ def test_categories_005_get_all_categories_exception(
     assert "Unable to fetch categories." in data["message"]
 
 
-# def test_packages_004_single_package(test_app, test_database, add_package):
-#     package = add_package("test01", 1, 100)
-#     client = test_app.test_client()
-#     resp = client.get(f"/package/{package.id}")
-#     data = json.loads(resp.data.decode())
-#     assert resp.status_code == 200
-#     assert "test01" in data["package_name"]
-#     assert data["package_size"] == 1
-#     assert data["package_price"] == 100
+def test_categories_006_test_single_category(test_app, test_database, test_token, add_category):
+    category1 = add_category("test01", "income", 1)
+    client = test_app.test_client()
+    resp = client.get(
+        f"/api/v1/transactions/category/{category1.id}",
+        headers={"Authorization": f"Bearer {test_token}"},
+        content_type="application/json",
+    )
+    data = json.loads(resp.data.decode())
+    assert resp.status_code == 200
+    assert data["category_name"] == category1.category_name
+    assert data["category_type"] == category1.category_type.value
 
 
-# def test_packages_005_single_user_incorrect_id(test_app, test_database):
-#     client = test_app.test_client()
-#     resp = client.get("/package/999")
-#     data = json.loads(resp.data.decode())
-#     assert resp.status_code == 404
-#     assert "Package 999 does not exist" in data["message"]
+def test_categories_007_test_single_category_no_such_category(test_app, test_database, test_token):
+    client = test_app.test_client()
+    resp = client.get(
+        "/api/v1/transactions/category/999",
+        headers={"Authorization": f"Bearer {test_token}"},
+        content_type="application/json",
+    )
+    data = json.loads(resp.data.decode())
+    assert resp.status_code == 404
+    assert "No Such Category" in data["message"]
 
 
-# def test_packages_006_all_packages(test_app, test_database, add_package):
-#     test_database.session.query(Package).delete()
-#     add_package("test01", 1, 100)
-#     add_package("test02", 2, 180)
-#     client = test_app.test_client()
-#     resp = client.get("/package")
-#     resp_data = json.loads(resp.data.decode())
-#     data = resp_data["packages"]
-#     assert resp.status_code == 200
-#     assert len(data) == 2
-#     assert "test01" in data[0]["package_name"]
-#     assert data[0]["package_size"] == 1
-#     assert data[0]["package_price"] == 100
-#     assert "test02" in data[1]["package_name"]
-#     assert data[1]["package_size"] == 2
-#     assert data[1]["package_price"] == 180
+def test_categories_008_test_single_category_invalid_owner(test_app, test_database, test_token, add_category):
+    category1 = add_category("test01", "income", 2)
+    client = test_app.test_client()
+    resp = client.get(
+        f"/api/v1/transactions/category/{category1.id}",
+        headers={"Authorization": f"Bearer {test_token}"},
+        content_type="application/json",
+    )
+    data = json.loads(resp.data.decode())
+    assert resp.status_code == 404
+    assert "No Such Category" in data["message"]
 
 
-# def test_packages_007_remove_user(test_app, test_database, add_package):
-#     test_database.session.query(Package).delete()
-#     package = add_package("test01", 1, 100)
-#     client = test_app.test_client()
-#     resp_one = client.get("/package")
-#     resp_data = json.loads(resp_one.data.decode())
-#     data = resp_data["packages"]
-#     assert resp_one.status_code == 200
-#     assert len(data) == 1
+def test_categories_009_test_single_category_exception(test_app, test_database, test_token, add_category, monkeypatch):
+    def mock_get_transaction_category(id, owner_id):
+        raise Exception
 
-#     resp_two = client.delete(f"/package/{package.id}")
-#     assert resp_two.status_code == 204
-
-#     resp_three = client.get("/package")
-#     resp_data = json.loads(resp_three.data.decode())
-#     data = resp_data["packages"]
-#     assert resp_three.status_code == 200
-#     assert len(data) == 0
-
-
-# def test_packages_008_remove_user_incorrect_id(test_app, test_database):
-#     client = test_app.test_client()
-#     resp = client.delete("/package/999")
-#     data = json.loads(resp.data.decode())
-#     assert resp.status_code == 404
-#     assert "Package 999 does not exist" in data["message"]
+    monkeypatch.setattr(
+        project.api.transactions.apis, "get_transaction_category", mock_get_transaction_category
+    )
+    category1 = add_category("test01", "income", 1)
+    client = test_app.test_client()
+    resp = client.get(
+        f"/api/v1/transactions/category/{category1.id}",
+        headers={"Authorization": f"Bearer {test_token}"},
+        content_type="application/json",
+    )
+    data = json.loads(resp.data.decode())
+    assert resp.status_code == 400
+    assert "Operation Error" in data["message"]
 
 
-# def test_packages_009_update_user(test_app, test_database, add_package):
-#     package = add_package("test01", 1, 100)
-#     client = test_app.test_client()
-#     resp_one = client.put(
-#         f"/package/{package.id}",
-#         data=json.dumps(
-#             {
-#                 "package_name": "test01_updated",
-#                 "package_size": 1,
-#                 "package_price": 120,
-#             }
-#         ),
-#         content_type="application/json",
-#     )
-#     data = json.loads(resp_one.data.decode())
-#     assert resp_one.status_code == 200
-#     assert f"{package.id} was updated!" in data["message"]
+def test_categories_010_update_category(test_app, test_database, test_token, add_category):
+    test_database.session.query(TransactionCategory).delete()
+    category1 = add_category("test01", "income", 1)
+    client = test_app.test_client()
+    resp = client.put(
+        f"/api/v1/transactions/category/{category1.id}",
+        headers={"Authorization": f"Bearer {test_token}"},
+        data=json.dumps(
+            {
+                "category_name": "test_01_updated",
+                "category_type": "expense"
+            }
+        ),
+        content_type="application/json",
+    )
+    assert resp.status_code == 200
+    data = json.loads(resp.data.decode())
+    assert data["id"] == category1.id
+    assert data["category_name"] == "test_01_updated"
+    assert data["category_type"] == "expense"
+    resp = client.get(
+        f"/api/v1/transactions/category/{category1.id}",
+        headers={"Authorization": f"Bearer {test_token}"},
+        content_type="application/json",
+    )
+    assert resp.status_code == 200
+    data = json.loads(resp.data.decode())
+    assert data["id"] == category1.id
+    assert data["category_name"] == "test_01_updated"
+    assert data["category_type"] == "expense"
 
-#     resp_two = client.get(f"/package/{package.id}")
-#     data = json.loads(resp_two.data.decode())
-#     assert resp_two.status_code == 200
-#     assert "test01_updated" in data["package_name"]
-#     assert data["package_size"] == 1
-#     assert data["package_price"] == 120
+@pytest.mark.parametrize(
+    "payload, status_code, message",[
+        [{}, 400, "Input payload validation failed"],
+        [{
+            "category_name": "updated"
+        }, 400, "Input payload validation failed"],
+        [{
+            "category_name": "updated",
+            "category_type": "lol"
+        }, 400, "Input payload validation failed"]
+    ]
+)
+def test_categories_011_update_category_invalid_operation(test_app, test_database, test_token, add_category, payload, status_code, message):
+    client = test_app.test_client()
+    resp = client.get(
+        f"/api/v1/transactions/category",
+        headers={"Authorization": f"Bearer {test_token}"},
+        content_type="application/json",
+    )
+    assert resp.status_code == 200
+    data = json.loads(resp.data.decode())
+    id = data[0]["id"]
+    resp = client.put(
+        f"/api/v1/transactions/category/{id}",
+        headers={"Authorization": f"Bearer {test_token}"},
+        data=json.dumps(payload),
+        content_type="application/json",
+    )
+    assert resp.status_code == status_code
+    data = json.loads(resp.data.decode())
+    assert data["message"] == message
 
 
-# @pytest.mark.parametrize(
-#     "package_id, payload, status_code, message",
-#     [
-#         [1, {}, 400, "Input payload validation failed"],
-#         [1, {"package_name": "test01"}, 400, "Input payload validation failed"],
-#         [
-#             999,
-#             {"package_name": "test01", "package_size": 5, "package_price": 1200},
-#             404,
-#             "Package 999 does not exist",
-#         ],
-#     ],
-# )
-# def test_packages_010_update_user_invalid(
-#     test_app, test_database, package_id, payload, status_code, message
-# ):
-#     client = test_app.test_client()
-#     resp = client.put(
-#         f"/package/{package_id}",
-#         data=json.dumps(payload),
-#         content_type="application/json",
-#     )
-#     data = json.loads(resp.data.decode())
-#     assert resp.status_code == status_code
-#     assert message in data["message"]
+def test_categories_012_update_category_invalid_owner(test_app, test_database, test_token, add_category):
+    category = add_category("test_invalid_owner", "income", 2)
+    client = test_app.test_client()
+    resp = client.put(
+        f"/api/v1/transactions/category/{category.id}",
+        headers={"Authorization": f"Bearer {test_token}"},
+        data=json.dumps({
+            "category_name": "valid_owner",
+            "category_type": "expense",
+        }),
+        content_type="application/json",
+    )
+    assert resp.status_code == 404
+    data = json.loads(resp.data.decode())
+    assert data["message"] == "No Such Category"
+
+
+def test_categories_013_update_category_exception(test_app, test_database, test_token, add_category, monkeypatch):
+    def mock_update_category(category, catogory_name, category_type):
+        raise Exception
+    monkeypatch.setattr(
+        project.api.transactions.apis, "update_category", mock_update_category
+    )
+    category = add_category("test_exception", "income", 1)
+    client = test_app.test_client()
+    resp = client.put(
+        f"/api/v1/transactions/category/{category.id}",
+        headers={"Authorization": f"Bearer {test_token}"},
+        data=json.dumps({
+            "category_name": "test_exception_updated",
+            "category_type": "expense",
+        }),
+        content_type="application/json",
+    )
+    assert resp.status_code == 400
+    data = json.loads(resp.data.decode())
+    assert data["message"] == "Operation Error"
+
+
+def test_categories_014_delete_category(test_app, test_database, test_token, add_category):
+    category = add_category("test_delete", "income", 1)
+    client = test_app.test_client()
+    resp = client.delete(
+        f"/api/v1/transactions/category/{category.id}",
+        headers={"Authorization": f"Bearer {test_token}"},
+        content_type="application/json",
+    )
+    assert resp.status_code == 204
+
+
+def test_categories_015_delete_category_invalid_owner(test_app, test_database, test_token, add_category):
+    category = add_category("test_delete", "income", 2)
+    client = test_app.test_client()
+    resp = client.delete(
+        f"/api/v1/transactions/category/{category.id}",
+        headers={"Authorization": f"Bearer {test_token}"},
+        content_type="application/json",
+    )
+    assert resp.status_code == 404
+    data = json.loads(resp.data.decode())
+    assert data["message"] == "No Such Category"
+
+
+def test_categories_016_delete_category_invalid_owner(test_app, test_database, test_token, add_category, monkeypatch):
+    def mock_delete_category(category):
+        raise Exception
+    monkeypatch.setattr(
+        project.api.transactions.apis, "delete_category", mock_delete_category
+    )
+    category = add_category("test_delete", "income", 1)
+    client = test_app.test_client()
+    resp = client.delete(
+        f"/api/v1/transactions/category/{category.id}",
+        headers={"Authorization": f"Bearer {test_token}"},
+        content_type="application/json",
+    )
+    assert resp.status_code == 400
+    data = json.loads(resp.data.decode())
+    assert data["message"] == "Operation Error"

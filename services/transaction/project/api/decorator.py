@@ -15,7 +15,6 @@ def token_required(f):
         try:
             access_token = auth_header.split(" ")[-1]
             payload = decode_jwt_token(access_token)
-            print(payload)
             if (
                 "sub" not in payload
                 or "role" not in payload
