@@ -3,7 +3,7 @@ from flask_restx import Namespace, Resource, fields
 from werkzeug.exceptions import NotFound
 
 from project.api.decorator import token_required
-from project.api.transactions.models import ChoiceType
+from project.api.models import ChoiceType
 
 from project.api.transactions.crud import (  # isort:skip
     add_category,

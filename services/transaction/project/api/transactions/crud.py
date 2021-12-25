@@ -1,6 +1,6 @@
 from project import db
 
-from project.api.transactions.models import (  # isort:skip
+from project.api.models import (  # isort:skip
     TransactionCategory,
     TransactionList,
 )

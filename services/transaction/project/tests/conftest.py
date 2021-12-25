@@ -3,7 +3,7 @@ import pytest
 from flask import current_app
 
 from project import create_app, db
-from project.api.transactions.models import TransactionCategory
+from project.api.models import TransactionCategory
 
 
 @pytest.fixture(scope="module")

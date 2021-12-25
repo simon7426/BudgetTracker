@@ -3,7 +3,7 @@ import json
 import pytest
 
 import project.api.transactions.apis
-from project.api.transactions.models import TransactionCategory
+from project.api.models import TransactionCategory
 
 
 def test_categories_001_add_category(test_app, test_database, test_token):
