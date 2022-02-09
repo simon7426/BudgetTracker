@@ -1,7 +1,4 @@
 import enum
-import os
-
-from flask_admin.contrib.sqla import ModelView
 
 from project import db
 from project.api.utils import get_bd_time
@@ -118,12 +115,3 @@ class AccountTransfer(db.Model):
 
     def __repr__(self):
         return f"Transfer: from {self.from_account.account_name} to {self.to_account.account_name}"
-
-
-if os.getenv("FLASK_ENV") == "development":  # pragma: no cover
-    from project import admin
-
-    admin.add_view(ModelView(TransactionCategory, db.session))
-    admin.add_view(ModelView(TransactionList, db.session))
-    admin.add_view(ModelView(Account, db.session))
-    admin.add_view(ModelView(AccountTransfer, db.session))

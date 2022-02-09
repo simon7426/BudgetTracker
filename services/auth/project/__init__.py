@@ -1,30 +1,37 @@
 import os
 
 from flask import Flask
+from flask_bcrypt import Bcrypt
 from flask_cors import CORS
-from flask_migrate import Migrate
+from flask_redis import FlaskRedis
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate
 
 cors = CORS()
 db = SQLAlchemy()
 migrate = Migrate()
+bcrypt = Bcrypt()
+redis_client = FlaskRedis()
 
 
 def create_app():
     app = Flask(__name__)
+
     app_settings = os.environ.get("APP_SETTINGS", "project.config.DevelopmentConfig")
     app.config.from_object(app_settings)
 
     cors.init_app(app)
     db.init_app(app)
-    migrate.init_app(app, db)
+    migrate.init_app(app, db=db)
+    bcrypt.init_app(app)
+    redis_client.init_app(app)
 
-    from project.api import api
+    from project.apis import api
 
     api.init_app(app)
 
     @app.shell_context_processor
-    def ctx():  # pragma: no cover
-        return {"app": app, "db": db}
+    def ctx():
+        return {"app": app}
 
     return app

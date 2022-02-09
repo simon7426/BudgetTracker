@@ -1,0 +1,4 @@
+CREATE DATABASE budget_tracker_auth;
+CREATE DATABASE budget_tracker_auth_test;
+CREATE DATABASE budget_tracker_transaction;
+CREATE DATABASE budget_tracker_transaction_test;

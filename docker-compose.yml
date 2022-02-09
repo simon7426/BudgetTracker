@@ -1,0 +1,58 @@
+version: '3.8'
+
+services:
+  auth:
+    build:
+      context: ./services/auth
+      dockerfile: Dockerfile
+    container_name: budget-tracker-auth
+    entrypoint: ['/usr/src/budget-tracker/entrypoint.sh']
+    volumes:
+      - './services/auth:/usr/src/budget-tracker'
+    ports:
+      - 8001:8000
+    environment:
+      - APP_SETTINGS=project.config.DevelopmentConfig
+      - DATABASE_URL=postgresql://postgres:7426@db:5432/budget_tracker_auth
+      - DATABASE_TEST_URL=postgresql://postgres:7426@db:5432/budget_tracker_auth_test
+      - REDIS_URL=redis://redis:6379/0
+    depends_on:
+      - db
+      - redis
+  
+  transaction:
+    build:
+      context: ./services/transaction
+      dockerfile: Dockerfile
+    container_name: budget-tracker-transaction
+    entrypoint: ['/usr/src/budget-tracker/entrypoint.sh']
+    volumes:
+      - './services/transaction:/usr/src/budget-tracker'
+    ports:
+      - 8002:8000
+    environment:
+      - APP_SETTINGS=project.config.DevelopmentConfig
+      - SECRET_KEY=my_secret
+      - DATABASE_URL=postgresql://postgres:7426@db:5432/budget_tracker_transaction
+      - DATABASE_TEST_URL=postgresql://postgres:7426@db:5432/budget_tracker_transaction_test
+    depends_on:
+      - db
+  
+  db:
+    build: 
+      context: ./services/db
+      dockerfile: Dockerfile
+    container_name: budget-tracker-db
+    expose:
+      - 5432
+    volumes:
+      - ./budget-tracker-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=7426
+
+  redis:
+    image: redis:6.2.6-alpine
+    container_name: budget-tracker-redis
+    expose:
+      - 6379
