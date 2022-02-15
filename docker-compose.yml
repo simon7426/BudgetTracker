@@ -38,6 +38,24 @@ services:
     depends_on:
       - db
   
+  profile:
+    build:
+      context: ./services/profile
+      dockerfile: Dockerfile
+    container_name: budget-tracker-profile
+    entrypoint: ['/usr/src/budget-tracker/entrypoint.sh']
+    volumes:
+      - './services/profile:/usr/src/budget-tracker'
+    ports:
+      - 8003:8000
+    environment:
+      - APP_SETTINGS=project.config.DevelopmentConfig
+      - SECRET_KEY=my_secret
+      - DATABASE_URL=postgresql://postgres:7426@db:5432/budget_tracker_profile
+      - DATABASE_TEST_URL=postgresql://postgres:7426@db:5432/budget_tracker_profile_test
+    depends_on:
+      - db
+  
   db:
     build: 
       context: ./services/db
