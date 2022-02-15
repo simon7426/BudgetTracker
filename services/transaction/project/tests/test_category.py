@@ -2,7 +2,7 @@ import json
 
 import pytest
 
-import project.api.transaction_categories.apis
+import project.api.transaction_categories.views
 from project.api.models import TransactionCategory
 
 
@@ -60,7 +60,7 @@ def test_categories_003_add_category_exception(
         raise Exception
 
     monkeypatch.setattr(
-        project.api.transaction_categories.apis, "add_category", mock_add_category
+        project.api.transaction_categories.views, "add_category", mock_add_category
     )
     client = test_app.test_client()
     resp = client.post(
@@ -108,7 +108,7 @@ def test_categories_005_get_all_categories_exception(
         raise Exception
 
     monkeypatch.setattr(
-        project.api.transaction_categories.apis,
+        project.api.transaction_categories.views,
         "get_all_transaction_category",
         mock_get_all_transaction_category,
     )
@@ -175,7 +175,7 @@ def test_categories_009_test_single_category_exception(
         raise Exception
 
     monkeypatch.setattr(
-        project.api.transaction_categories.apis,
+        project.api.transaction_categories.views,
         "get_transaction_category",
         mock_get_transaction_category,
     )
@@ -285,7 +285,7 @@ def test_categories_013_update_category_exception(
         raise Exception
 
     monkeypatch.setattr(
-        project.api.transaction_categories.apis, "update_category", mock_update_category
+        project.api.transaction_categories.views, "update_category", mock_update_category
     )
     category = add_category("test_exception", "income", 1)
     client = test_app.test_client()
@@ -340,7 +340,7 @@ def test_categories_016_delete_category_invalid_owner(
         raise Exception
 
     monkeypatch.setattr(
-        project.api.transaction_categories.apis, "delete_category", mock_delete_category
+        project.api.transaction_categories.views, "delete_category", mock_delete_category
     )
     category = add_category("test_delete", "income", 1)
     client = test_app.test_client()

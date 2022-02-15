@@ -1,7 +1,7 @@
 from flask_restx import Api
 
 from project.api.alive import alive_namespace
-from project.api.transaction_categories.apis import transaction_category_namespace
+from project.api.transaction_categories.views import transaction_category_namespace
 
 api = Api(version="1.0", title="Budget Tracker Transaction Service API", doc="/docs")
 
