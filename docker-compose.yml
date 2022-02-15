@@ -32,7 +32,7 @@ services:
       - 8002:8000
     environment:
       - APP_SETTINGS=project.config.DevelopmentConfig
-      - SECRET_KEY=my_secret
+      - SECRET_KEY=my_precious
       - DATABASE_URL=postgresql://postgres:7426@db:5432/budget_tracker_transaction
       - DATABASE_TEST_URL=postgresql://postgres:7426@db:5432/budget_tracker_transaction_test
     depends_on:
@@ -50,7 +50,7 @@ services:
       - 8003:8000
     environment:
       - APP_SETTINGS=project.config.DevelopmentConfig
-      - SECRET_KEY=my_secret
+      - SECRET_KEY=my_precious
       - DATABASE_URL=postgresql://postgres:7426@db:5432/budget_tracker_profile
       - DATABASE_TEST_URL=postgresql://postgres:7426@db:5432/budget_tracker_profile_test
     depends_on:

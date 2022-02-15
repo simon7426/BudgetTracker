@@ -16,6 +16,7 @@ from project.apis.users.crud import (  # isort:skip
     get_account,
     get_activation,
     get_user_by_account,
+    get_user_by_id,
     get_user_by_username,
     verify_account,
     verify_activation,
@@ -136,8 +137,8 @@ class Login(Resource):
             auth_namespace.abort(401, "Invalid username or password.")
         if not user.active:
             auth_namespace.abort(401, "User is not verified.")
-        access_token = user.encode_token(user.username, "access")
-        refresh_token = user.encode_token(user.username, "refresh")
+        access_token = user.encode_token(user.id, "access")
+        refresh_token = user.encode_token(user.id, "refresh")
 
         response_object = {"access_token": access_token, "refresh_token": refresh_token}
         return response_object, 200
@@ -155,7 +156,7 @@ class Status(Resource):
             try:
                 access_token = auth_header.split(" ")[1]
                 resp, token_type = User.decode_token(access_token)
-                user = get_user_by_username(resp)
+                user = get_user_by_id(resp)
                 if not user or token_type != "access":
                     auth_namespace.abort(401, "Invalid token.")
                 return user, 200
@@ -178,7 +179,7 @@ class Refresh(Resource):
 
         try:
             resp, token_type = User.decode_token(refresh_token)
-            user = get_user_by_username(resp)
+            user = get_user_by_id(resp)
 
             if (
                 not user
@@ -188,8 +189,8 @@ class Refresh(Resource):
                 auth_namespace.abort(401, "Invalid token")
             add_token_to_blacklist(refresh_token)
             tokens = {}
-            tokens["access_token"] = user.encode_token(user.username, "access")
-            tokens["refresh_token"] = user.encode_token(user.username, "refresh")
+            tokens["access_token"] = user.encode_token(user.id, "access")
+            tokens["refresh_token"] = user.encode_token(user.id, "refresh")
             return tokens, 200
         except jwt.ExpiredSignatureError:
             auth_namespace.abort(401, "Signature expired. Please log in again.")
@@ -208,7 +209,7 @@ class Logout(Resource):
 
         try:
             resp, token_type = User.decode_token(refresh_token)
-            user = get_user_by_username(resp)
+            user = get_user_by_id(resp)
 
             if not user or token_type != "refresh":
                 auth_namespace.abort(401, "Invalid token")
@@ -291,7 +292,7 @@ class ChangePassword(Resource):
             try:
                 access_token = auth_header.split(" ")[1]
                 resp, token_type = User.decode_token(access_token)
-                user = get_user_by_username(resp)
+                user = get_user_by_id(resp)
                 if not user or token_type != "access":
                     auth_namespace.abort(401, "Invalid token/password.")
                 post_data = request.get_json()
@@ -322,7 +323,7 @@ class Accounts(Resource):
             try:
                 access_token = auth_header.split(" ")[1]
                 resp, token_type = User.decode_token(access_token)
-                user = get_user_by_username(resp)
+                user = get_user_by_id(resp)
                 if not user or token_type != "access":
                     auth_namespace.abort(401, "Invalid token/password.")
                 post_data = request.get_json()
@@ -350,7 +351,7 @@ class Accounts(Resource):
             try:
                 access_token = auth_header.split(" ")[1]
                 resp, token_type = User.decode_token(access_token)
-                user = get_user_by_username(resp)
+                user = get_user_by_id(resp)
                 if not user or token_type != "access":
                     auth_namespace.abort(401, "Invalid token/password.")
                 accounts = get_all_user_account(user.username)

@@ -285,7 +285,9 @@ def test_categories_013_update_category_exception(
         raise Exception
 
     monkeypatch.setattr(
-        project.api.transaction_categories.views, "update_category", mock_update_category
+        project.api.transaction_categories.views,
+        "update_category",
+        mock_update_category,
     )
     category = add_category("test_exception", "income", 1)
     client = test_app.test_client()
@@ -340,7 +342,9 @@ def test_categories_016_delete_category_invalid_owner(
         raise Exception
 
     monkeypatch.setattr(
-        project.api.transaction_categories.views, "delete_category", mock_delete_category
+        project.api.transaction_categories.views,
+        "delete_category",
+        mock_delete_category,
     )
     category = add_category("test_delete", "income", 1)
     client = test_app.test_client()

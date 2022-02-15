@@ -1,4 +1,4 @@
-from flask import request
+from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
 from werkzeug.exceptions import NotFound
 
@@ -33,6 +33,7 @@ transaction_category = transaction_category_namespace.model(
     },
 )
 
+
 class CategoryList(Resource):
     @token_required
     @transaction_category_namespace.marshal_with(
@@ -49,14 +50,15 @@ class CategoryList(Resource):
             categories = get_all_transaction_category(CategoryList.get.owner_id)
             return categories, 200
         except Exception as e:
-            print(e)
-            return transaction_category_namespace.abort(400, "Unable to fetch categories.")
+            current_app.logger.info(e)
+            transaction_category_namespace.abort(400, "Unable to fetch categories.")
 
     @token_required
-    @transaction_category_namespace.expect(transaction_category, validate=True)
-    @transaction_category_namespace.expect(parser, validate=True)
+    @transaction_category_namespace.expect(transaction_category, parser, validate=True)
     @transaction_category_namespace.marshal_with(transaction_category)
-    @transaction_category_namespace.response(201, "Successfully created category <category_id>.")
+    @transaction_category_namespace.response(
+        201, "Successfully created category <category_id>."
+    )
     @transaction_category_namespace.response(401, "Invalid token")
     @transaction_category_namespace.response(400, "Operation Error")
     def post(self):
@@ -68,8 +70,8 @@ class CategoryList(Resource):
             category = add_category(category_name, category_type, category_owner)
             return category, 201
         except Exception as e:
-            print(e)
-            return transaction_category_namespace.abort(400, "Unable to create category")
+            current_app.logger.info(e)
+            transaction_category_namespace.abort(400, "Unable to create category")
 
 
 class Category(Resource):
@@ -89,16 +91,15 @@ class Category(Resource):
                 transaction_category_namespace.abort(404, "No Such Category")
 
         except NotFound as e:
-            print(e)
+            current_app.logger.info(e)
             transaction_category_namespace.abort(404, "No Such Category")
 
         except Exception as e:
-            print(e)
+            current_app.logger.info(e)
             transaction_category_namespace.abort(400, "Operation Error")
 
     @token_required
-    @transaction_category_namespace.expect(transaction_category, validate=True)
-    @transaction_category_namespace.expect(parser, validate=True)
+    @transaction_category_namespace.expect(transaction_category, parser, validate=True)
     @transaction_category_namespace.marshal_with(transaction_category)
     @transaction_category_namespace.response(200, "Successfully updated category")
     @transaction_category_namespace.response(400, "Operation Error")
@@ -119,11 +120,11 @@ class Category(Resource):
                 transaction_category_namespace.abort(404, "No Such Category")
 
         except NotFound as e:
-            print(e)
+            current_app.logger.info(e)
             transaction_category_namespace.abort(404, "No Such Category")
 
         except Exception as e:
-            print(e)
+            current_app.logger.info(e)
             transaction_category_namespace.abort(400, "Operation Error")
 
     @token_required
@@ -141,10 +142,10 @@ class Category(Resource):
             else:
                 transaction_category_namespace.abort(404, "No Such Category.")
         except NotFound as e:
-            print(e)
+            current_app.logger.info(e)
             transaction_category_namespace.abort(404, "No Such Category")
         except Exception as e:
-            print(e)
+            current_app.logger.info(e)
             transaction_category_namespace.abort(400, "Operation Error")
 
 

@@ -2,6 +2,5 @@
 omit = tests/*
 branch = True
 [report]
-fail_under = 95
 precision = 2
 skip_covered = True

@@ -23,7 +23,7 @@ class User(db.Model):
             password, current_app.config.get("BCRYPT_LOG_ROUNDS")
         ).decode("utf-8")
 
-    def encode_token(self, username, token_type):
+    def encode_token(self, user_id, token_type):
         if token_type == "access":
             seconds = current_app.config.get("ACCESS_TOKEN_EXPIRATION")
         else:
@@ -33,7 +33,8 @@ class User(db.Model):
             "exp": datetime.utcnow() + timedelta(seconds=seconds),
             "iat": datetime.utcnow(),
             "type": token_type,
-            "sub": username,
+            "sub": user_id,
+            "role": current_app.config.get("DEFAULT_ROLE")
         }
         return jwt.encode(
             payload,

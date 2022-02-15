@@ -56,12 +56,14 @@ class TransactionList(db.Model):
         transaction_description,
         transaction_cost,
         transaction_category_id,
+        transaction_account_id,
     ):
         self.transaction_owner = transaction_owner
         self.transaction_type = transaction_type
         self.transaction_description = transaction_description
         self.transaction_cost = transaction_cost
         self.transaction_category_id = transaction_category_id
+        self.transaction_account_id = transaction_account_id
 
     def __repr__(self):
         return f"{self.transaction_type}: {self.transaction_description} {self.transaction_cost}"

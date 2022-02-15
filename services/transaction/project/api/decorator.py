@@ -1,7 +1,7 @@
 from functools import wraps
 
 import jwt
-from flask import abort, request
+from flask import abort, request, current_app
 
 from project.api.utils import decode_jwt_token
 
@@ -21,7 +21,6 @@ def token_required(f):
                 or "type" not in payload
                 or payload["type"] != "access"
             ):
-                print("here 20")
                 abort(401, "Invalid Token")
             setattr(decorated, "owner_id", payload["sub"])
             setattr(decorated, "owner_role", payload["role"])

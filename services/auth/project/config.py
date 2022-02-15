@@ -9,6 +9,7 @@ class BaseConfig:
     REFRESH_TOKEN_EXPIRATION = 86400
     ACTIVATION_CODE_EXPIRATION = 1200
     REDIS_URL = os.environ.get("REDIS_URL","redis://localhost:6379/0")
+    DEFAULT_ROLE = os.environ.get("DEFAULT_ROLE", "member")
 
 
 class DevelopmentConfig(BaseConfig):
