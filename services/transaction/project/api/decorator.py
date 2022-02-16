@@ -1,7 +1,7 @@
 from functools import wraps
 
 import jwt
-from flask import abort, request, current_app
+from flask import abort, request
 
 from project.api.utils import decode_jwt_token
 

@@ -55,9 +55,10 @@ class CategoryList(Resource):
 
     @token_required
     @transaction_category_namespace.expect(transaction_category, parser, validate=True)
-    @transaction_category_namespace.marshal_with(transaction_category)
-    @transaction_category_namespace.response(
-        201, "Successfully created category <category_id>."
+    @transaction_category_namespace.marshal_with(
+        transaction_category,
+        code=201,
+        description="Successfully created category <category_id>.",
     )
     @transaction_category_namespace.response(401, "Invalid token")
     @transaction_category_namespace.response(400, "Operation Error")
@@ -77,8 +78,9 @@ class CategoryList(Resource):
 class Category(Resource):
     @token_required
     @transaction_category_namespace.expect(parser, validate=True)
-    @transaction_category_namespace.marshal_with(transaction_category)
-    @transaction_category_namespace.response(200, "successfully retrived category")
+    @transaction_category_namespace.marshal_with(
+        transaction_category, code=200, description="successfully retrived category"
+    )
     @transaction_category_namespace.response(400, "Operation Error")
     @transaction_category_namespace.response(401, "Invalid Token")
     @transaction_category_namespace.response(404, "No Such Category")
@@ -100,8 +102,9 @@ class Category(Resource):
 
     @token_required
     @transaction_category_namespace.expect(transaction_category, parser, validate=True)
-    @transaction_category_namespace.marshal_with(transaction_category)
-    @transaction_category_namespace.response(200, "Successfully updated category")
+    @transaction_category_namespace.marshal_with(
+        transaction_category, code=200, description="Successfully updated category"
+    )
     @transaction_category_namespace.response(400, "Operation Error")
     @transaction_category_namespace.response(401, "Invalid Token")
     @transaction_category_namespace.response(404, "No Such Category")

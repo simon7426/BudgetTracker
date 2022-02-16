@@ -1,5 +1,8 @@
+from decimal import Decimal
+
 from flask import current_app, request
 from flask_restx import Namespace, Resource, fields
+from werkzeug.exceptions import NotFound
 
 from project.api.accounts.crud import (
     add_account,
@@ -9,7 +12,6 @@ from project.api.accounts.crud import (
     update_account,
 )
 from project.api.decorator import token_required
-from werkzeug.exceptions import NotFound
 
 account_namespace = Namespace("accounts")
 
@@ -34,8 +36,9 @@ account_model = account_namespace.model(
 class AccountsList(Resource):
     @token_required
     @account_namespace.expect(parser, validate=True)
-    @account_namespace.marshal_with(account_model, as_list=True)
-    @account_namespace.response(200, "Success")
+    @account_namespace.marshal_with(
+        account_model, as_list=True, code=200, description="Success"
+    )
     @account_namespace.response(400, "Operation error")
     @account_namespace.response(401, "Invalid Token")
     @account_namespace.response(404, "No accounts found.")
@@ -56,8 +59,7 @@ class AccountsList(Resource):
 
     @token_required
     @account_namespace.expect(parser, account_model, validate=True)
-    @account_namespace.marshal_with(account_model)
-    @account_namespace.response(201, "Created")
+    @account_namespace.marshal_with(account_model, code=201, description="Created")
     @account_namespace.response(400, "Operation error.")
     @account_namespace.response(401, "Invalid Token")
     def post(self):
@@ -67,7 +69,7 @@ class AccountsList(Resource):
             post_data = request.get_json()
             account_name = post_data.get("account_name")
             account_type = post_data.get("account_type")
-            account_balance = post_data.get("account_balance")
+            account_balance = Decimal(post_data.get("account_balance"))
             account_owner = user_id
             account = add_account(
                 account_name=account_name,
@@ -84,9 +86,8 @@ class AccountsList(Resource):
 @account_namespace.route("/<int:id>", endpoint="accounts")
 class Accounts(Resource):
     @token_required
-    @account_namespace.marshal_with(account_model)
     @account_namespace.expect(parser, validate=True)
-    @account_namespace.response(200, "Success")
+    @account_namespace.marshal_with(account_model, code=200, description="Success")
     @account_namespace.response(400, "Operation error")
     @account_namespace.response(401, "Invalid Token")
     @account_namespace.response(404, "Account <id> does not exists")
@@ -106,9 +107,8 @@ class Accounts(Resource):
             account_namespace.abort(400, "Operation error")
 
     @token_required
-    @account_namespace.marshal_with(account_model)
     @account_namespace.expect(parser, account_model, validate=True)
-    @account_namespace.response(200, "Success")
+    @account_namespace.marshal_with(account_model, code=200, description="Success")
     @account_namespace.response(400, "Operation error")
     @account_namespace.response(401, "Invalid Token")
     @account_namespace.response(404, "Account <id> does not exists")

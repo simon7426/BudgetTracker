@@ -39,7 +39,7 @@ class TransactionList(db.Model):
     transaction_owner = db.Column(db.Integer, nullable=False)
     transaction_type = db.Column(db.Enum(ChoiceType), nullable=False)
     transaction_description = db.Column(db.String(300), nullable=False)
-    transaction_cost = db.Column(db.Numeric(10, 2), nullable=False)
+    transaction_amount = db.Column(db.Numeric(10, 2), nullable=False)
     transaction_category_id = db.Column(
         db.Integer, db.ForeignKey("transaction_category.id"), nullable=False
     )
@@ -54,19 +54,19 @@ class TransactionList(db.Model):
         transaction_owner,
         transaction_type,
         transaction_description,
-        transaction_cost,
+        transaction_amount,
         transaction_category_id,
         transaction_account_id,
     ):
         self.transaction_owner = transaction_owner
         self.transaction_type = transaction_type
         self.transaction_description = transaction_description
-        self.transaction_cost = transaction_cost
+        self.transaction_amount = transaction_amount
         self.transaction_category_id = transaction_category_id
         self.transaction_account_id = transaction_account_id
 
     def __repr__(self):
-        return f"{self.transaction_type}: {self.transaction_description} {self.transaction_cost}"
+        return f"{self.transaction_type}: {self.transaction_description} {self.transaction_amount}"
 
 
 class Account(db.Model):
@@ -101,19 +101,25 @@ class AccountTransfer(db.Model):
     from_account_id = db.Column(
         db.Integer, db.ForeignKey("transaction_account.id"), nullable=False
     )
-    from_account = db.relationship("Account", foreign_keys=[from_account_id])
     to_account_id = db.Column(
         db.Integer, db.ForeignKey("transaction_account.id"), nullable=False
     )
-    to_account = db.relationship("Account", foreign_keys=[to_account_id])
-    transfer_cost = db.Column(db.Numeric(10, 2), default=0, nullable=False)
+    transfer_amount = db.Column(db.Numeric(10, 2), default=0, nullable=False)
+    account_owner = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=get_bd_time(), nullable=False)
     updated_at = db.Column(db.DateTime, onupdate=get_bd_time())
 
-    def __init__(self, from_account_id, to_account_id, transfer_cost):
+    from_account = db.relationship("Account", foreign_keys=[from_account_id])
+    to_account = db.relationship("Account", foreign_keys=[to_account_id])
+
+    def __init__(self, from_account_id, to_account_id, transfer_amount, account_owner):
         self.from_account_id = from_account_id
         self.to_account_id = to_account_id
-        self.transfer_cost = transfer_cost
+        self.transfer_amount = transfer_amount
+        self.account_owner = account_owner
 
     def __repr__(self):
-        return f"Transfer: from {self.from_account.account_name} to {self.to_account.account_name}"
+        return (
+            f"Transfer: from {self.from_account.account_name} to {self.to_account.account_name} "
+            f"by User {self.account_owner}"
+        )
