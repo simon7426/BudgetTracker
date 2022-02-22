@@ -55,7 +55,7 @@ class AccountTransferList(Resource):
             account_transfer_namespace.abort(404, "Not Found")
         except Exception as e:
             current_app.logger.info(e)
-            account_transfer_namespace.abort(404, "Not Found")
+            account_transfer_namespace.abort(404, "Operation Error")
 
     @token_required
     @account_transfer_namespace.expect(account_transfer, parser, validate=True)
