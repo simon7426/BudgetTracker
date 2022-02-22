@@ -1,13 +1,17 @@
-import { createApp } from 'vue';
-import App from './App.vue';
-import router from "./router";
-import store from "./store";
-import "bootstrap";
-import "bootstrap/dist/css/bootstrap.min.css";
-import { FontAwesomeIcon } from "./plugins/font-awesome";
+import { createApp } from 'vue'
+import { Quasar } from 'quasar'
 
-createApp(App)
-    .use(router)
-    .use(store)
-    .component("font-awesome-icon", FontAwesomeIcon)
-    .mount("#app")
+import '@quasar/extras/roboto-font/roboto-font.css'
+import '@quasar/extras/material-icons/material-icons.css'
+
+import 'quasar/src/css/index.sass'
+
+import App from './App.vue'
+
+const myApp = createApp(App)
+
+myApp.use(Quasar, {
+    plugins: {},
+})
+
+myApp.mount('#app')
