@@ -1,6 +1,6 @@
 from flask_restx import Namespace, Resource, fields
 
-alive_namespace = Namespace("alive")
+alive_namespace = Namespace("Alive")
 
 response = alive_namespace.model(
     "Alive",

@@ -15,7 +15,7 @@ from project.api.accounts_transafer.utils import (
 )
 from project.api.decorator import token_required
 
-account_transfer_namespace = Namespace("account-transfer")
+account_transfer_namespace = Namespace("Account Transfer")
 
 account_transfer = account_transfer_namespace.model(
     "Account Transfer",

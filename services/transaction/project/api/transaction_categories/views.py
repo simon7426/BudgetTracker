@@ -14,7 +14,7 @@ from project.api.transaction_categories.crud import (  # isort:skip
 )
 
 
-transaction_category_namespace = Namespace("transaction-categories")
+transaction_category_namespace = Namespace("Transaction Categories")
 
 parser = transaction_category_namespace.parser()
 parser.add_argument("Authorization", location="headers")

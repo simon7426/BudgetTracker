@@ -13,7 +13,7 @@ from project.api.accounts.crud import (
 )
 from project.api.decorator import token_required
 
-account_namespace = Namespace("accounts")
+account_namespace = Namespace("Accounts")
 
 parser = account_namespace.parser()
 parser.add_argument("Authorization", location="headers")
