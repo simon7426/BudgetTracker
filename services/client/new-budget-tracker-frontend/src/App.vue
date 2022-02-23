@@ -4,10 +4,28 @@
 import HelloWorld from "./components/HelloWorld.vue";
 import LoginPage from "./components/LoginPage.vue";
 import RegisterPage from "./components/RegisterPage.vue";
+import NavigationBar from "./components/NavigationBar.vue";
 </script>
 
 <template>
-  <LoginPage />
+  <q-layout view="hHh lpR fFf">
+    <NavigationBar />
+    <RegisterPage />
+  </q-layout>
 </template>
 
-<style></style>
+<style>
+.bg-cream-white {
+  background: #ffffea;
+}
+.q-card {
+  width: 25rem;
+}
+.card-header {
+  display: flex;
+  justify-content: center;
+}
+.card-header-img {
+  width: 100%;
+}
+</style>
