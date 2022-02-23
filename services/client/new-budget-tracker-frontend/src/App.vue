@@ -10,7 +10,7 @@ import NavigationBar from "./components/NavigationBar.vue";
 <template>
   <q-layout view="hHh lpR fFf">
     <NavigationBar />
-    <RegisterPage />
+    <router-view />
   </q-layout>
 </template>
 
