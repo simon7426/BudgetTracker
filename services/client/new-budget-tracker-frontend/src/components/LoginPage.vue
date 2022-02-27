@@ -1,12 +1,40 @@
 <script setup>
 import { ref } from "vue";
+import authService from "../services/auth.service";
+import { useRouter } from "vue-router";
 
 const username = ref("");
 const password = ref("");
+const isLoading = ref(false);
 const isPwd = ref(true);
+
+const router = useRouter()
+// function checkInput(username) {
+//   if(!!username){
+//     return "This field is required!"
+//   }
+// }
+
+const checkInput = [val => !!val || 'Field is required']
+
 function handleLogin() {
-  console.log(username.value);
-  console.log(password.value);
+  isLoading.value = true
+  const inp_username= username.value.trim()
+  const inp_password = password.value.trim()
+  const user = {
+    "username": inp_username,
+    "password": inp_password,
+  }
+  authService.login(user).then(
+    (data) => {
+      console.log("Login Success")
+      router.push({ name: "Profile" })
+    },
+    (error) => {
+      isLoading.value = false
+      console.log("error")
+    }
+  )
 }
 </script>
 
@@ -32,6 +60,7 @@ function handleLogin() {
             standout="bg-white text-black"
             type="text"
             label="Username"
+            :rules="checkInput"
           >
             <template #prepend>
               <q-icon name="account_circle" />
@@ -43,6 +72,7 @@ function handleLogin() {
             standout="bg-white text-black"
             :type="isPwd ? 'password' : 'text'"
             label="Password"
+            :rules="checkInput"
           >
             <template #prepend>
               <q-icon name="lock" />
@@ -64,6 +94,7 @@ function handleLogin() {
           size="lg"
           class="full-width"
           label="Login"
+          :loading="isLoading"
           @click="handleLogin"
         />
       </q-card-actions>

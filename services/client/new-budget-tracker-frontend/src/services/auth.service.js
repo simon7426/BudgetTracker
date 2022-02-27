@@ -4,17 +4,14 @@ import TokenService from "./token.service";
 class AuthService {
   login({ username, password }) {
     return api
-      .post("/login", {
+      .post("/auth-service/login", {
         username,
         password,
       })
       .then((response) => {
-        console.log(response.data);
-        user = {
-          refresh_token: user.data.refresh_token,
-        };
         if (response.data.access_token) {
-          TokenService.setUser(user);
+          TokenService.setUser(response.data.refresh_token);
+          TokenService.updateAccessToken(response.data.access_token);
         }
         return response.data;
       })
@@ -28,11 +25,25 @@ class AuthService {
   }
 
   register({ username, account_name, password }) {
-    return api.post("/register", {
+    return api.post("/auth-service/register", {
       username,
       account_name,
       password,
     });
+  }
+
+  refresh({ refresh_token }) {
+    return api
+      .post("/auth-service/refresh", {
+        refresh_token,
+      })
+      .then((response) => {
+        TokenService.updateLocalRefreshToken(response.data.refresh_token);
+        TokenService.updateAccessToken(response.data.access_token);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 }
 

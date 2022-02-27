@@ -3,6 +3,7 @@ import { Quasar } from 'quasar'
 import router from "./router"
 
 import { createPinia } from "pinia"
+import setupIntercetor from "./services/setupInterceptors"
 import '@quasar/extras/roboto-font/roboto-font.css'
 import '@quasar/extras/material-icons/material-icons.css'
 
@@ -12,7 +13,11 @@ import App from './App.vue'
 
 const myApp = createApp(App)
 
-myApp.use(createPinia())
+const store = createPinia()
+
+setupIntercetor(store)
+
+myApp.use(store)
 
 myApp.use(router)
 

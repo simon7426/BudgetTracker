@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+import authService from "../services/auth.service";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -6,7 +7,7 @@ export const useAuthStore = defineStore("auth", {
   }),
   getters: {
       isLoggedIn() {
-          this.access_token !== null
+         return this.access_token !== null
       }
   },
   actions: {
@@ -16,5 +17,8 @@ export const useAuthStore = defineStore("auth", {
     setToken(access_token) {
       this.access_token = access_token;
     },
+    removeToken() {
+      this.access_token = null;
+    }
   },
 });

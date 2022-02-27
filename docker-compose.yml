@@ -74,3 +74,15 @@ services:
     container_name: budget-tracker-redis
     expose:
       - 6379
+  
+  nginx:
+    build:
+      context: ./services/nginx
+      dockerfile: Dockerfile
+    container_name: budget-tracker-nginx
+    ports:
+      - 80:80
+    depends_on:
+      - auth
+      - transaction
+      - profile
