@@ -14,18 +14,18 @@ import NavigationBar from "./components/NavigationBar.vue";
   </q-layout>
 </template>
 
-<style>
-.bg-cream-white {
-  background: #ffffea;
-}
-.q-card {
-  width: 25rem;
-}
-.card-header {
-  display: flex;
-  justify-content: center;
-}
-.card-header-img {
-  width: 100%;
-}
+<style lang="sass">
+.bg-cream-white 
+  background: $primary
+
+.q-card 
+  width: 25rem
+
+.card-header 
+  display: flex
+  justify-content: center
+
+.card-header-img 
+  width: 100%
+
 </style>

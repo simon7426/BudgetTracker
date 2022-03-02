@@ -1,31 +1,58 @@
-<script setup></script>
+<script setup>
+import { useAuthStore } from '../stores/useAuth';
+const store = useAuthStore()
+</script>
 
 <template>
   <q-header elevated class="bg-light-green text-black">
     <q-toolbar>
+      <router-link class="no-decoration" :to="{name: 'Home'}">
       <q-avatar square size="2.5rem">
         <img src="../assets/logo-transperant.png" />
       </q-avatar>
+      </router-link>
       <q-toolbar-title class="text-white"> Budget Tracker </q-toolbar-title>
       <q-space />
-      <div class="q-gutter-sm">
-        <router-link class="no-decoration" to="/login"
+      <div v-if="store.isLoggedIn" class="q-gutter-sm">
+        <router-link class="no-decoration" :to="{name: 'Profile'}">
+        <q-btn
+            key="profile-button"
+            flat
+            rounded
+            color="dark"
+            class="text-white q-mt-sm"
+            label="Profile"
+          ></q-btn
+        ></router-link>
+        <router-link class="no-decoration" :to="{name: 'Logout'}">
+          <q-btn
+            key="logout-button"
+            flat
+            rounded
+            color="dark"
+            class="text-white q-mt-sm"
+            label="Logout"
+          ></q-btn
+        ></router-link>
+      </div>
+      <div v-else class="q-gutter-sm">
+        <router-link class="no-decoration" :to="{name: 'Login'}"
           ><q-btn
             key="login-button"
             flat
             rounded
             color="dark"
-            class="text-white"
+            class="text-white q-mt-sm"
             label="Login"
           ></q-btn
         ></router-link>
-        <router-link class="no-decoration" to="/register">
+        <router-link class="no-decoration" :to="{name: 'Register'}">
           <q-btn
             key="register-button"
             flat
             rounded
             color="dark"
-            class="text-white"
+            class="text-white q-mt-sm"
             label="Register"
           ></q-btn
         ></router-link>

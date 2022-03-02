@@ -1,12 +1,57 @@
 <script setup>
 import { ref } from "vue";
+import authService from "../services/auth.service";
+import { useRouter } from "vue-router";
+import { useQuasar } from "quasar";
 
 const username = ref("");
+const usernameRef = ref(null);
 const password = ref("");
+const passwordRef = ref(null);
+const isLoading = ref(false);
 const isPwd = ref(true);
+
+const router = useRouter();
+
+const checkInput = [(val) => !!val || "Field is required"];
+
+const q = useQuasar()
+
+function showNotif() {
+  q.notify({
+          type: 'negative',
+          message: 'Invalid Username/Password.',
+          position: 'bottom-right'
+        })
+}
+
 function handleLogin() {
-  console.log(username.value);
-  console.log(password.value);
+  const inp_username = username.value.trim();
+  const inp_password = password.value.trim();
+  if (inp_username.length !== 0 && inp_password.length !== 0) {
+    isLoading.value = true;
+    const user = {
+      username: inp_username,
+      password: inp_password,
+    };
+
+    authService.login(user).then(
+      (data) => {
+        console.log(data)
+        router.push({ name: "Home" });
+      },
+      (error) => {
+        isLoading.value = false;
+        username.value = ""
+        password.value = ""
+        showNotif()
+      }
+    );
+  }
+  else {
+    usernameRef.value.validate();
+    passwordRef.value.validate();
+  }
 }
 </script>
 
@@ -27,22 +72,26 @@ function handleLogin() {
       <q-card-section>
         <q-form class="q-gutter-md">
           <q-input
+            ref="usernameRef"
             v-model="username"
             outlined
             standout="bg-white text-black"
             type="text"
             label="Username"
+            :rules="checkInput"
           >
             <template #prepend>
               <q-icon name="account_circle" />
             </template>
           </q-input>
           <q-input
+            ref="passwordRef"
             v-model="password"
             outlined
             standout="bg-white text-black"
             :type="isPwd ? 'password' : 'text'"
             label="Password"
+            :rules="checkInput"
           >
             <template #prepend>
               <q-icon name="lock" />
@@ -64,6 +113,7 @@ function handleLogin() {
           size="lg"
           class="full-width"
           label="Login"
+          :loading="isLoading"
           @click="handleLogin"
         />
       </q-card-actions>
