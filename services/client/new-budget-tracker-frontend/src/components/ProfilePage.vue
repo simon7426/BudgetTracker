@@ -1,9 +1,11 @@
-<script setup>
-
-</script>
+<script setup></script>
 
 <template>
-  <div>
-    <h3>USER PROFILE</h3>
-  </div>
+  <q-page-container
+    class="bg-cream-white window-height window-width row justify-center items-center"
+  >
+    <div>
+      <h3>USER PROFILE</h3>
+    </div>
+  </q-page-container>
 </template>

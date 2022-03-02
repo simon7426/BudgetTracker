@@ -15,13 +15,20 @@ class AuthService {
         }
         return response.data;
       })
-      .catch((err) => {
-        console.log(err);
-      });
   }
 
   logout() {
-    TokenService.removeUser();
+    return api
+    .post("/auth-service/logout", {
+      refresh_token: TokenService.getLocalRefreshToken()
+    })
+    .then(() => {
+      TokenService.removeUser()
+    })
+    .catch((err) => {
+      console.log(err)
+      TokenService.removeUser()
+    })
   }
 
   register({ username, account_name, password }) {
@@ -40,9 +47,12 @@ class AuthService {
       .then((response) => {
         TokenService.updateLocalRefreshToken(response.data.refresh_token);
         TokenService.updateAccessToken(response.data.access_token);
+        return true
       })
       .catch((err) => {
         console.log(err);
+        TokenService.removeUser();
+        return false
       });
   }
 }

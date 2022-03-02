@@ -1,28 +1,39 @@
-import { createApp } from 'vue'
-import { Quasar } from 'quasar'
-import router from "./router"
+import { createApp } from "vue";
+import { Quasar, Notify } from "quasar";
+import router from "./router";
 
-import { createPinia } from "pinia"
-import setupIntercetor from "./services/setupInterceptors"
-import '@quasar/extras/roboto-font/roboto-font.css'
-import '@quasar/extras/material-icons/material-icons.css'
+import { createPinia } from "pinia";
+import setupIntercetor from "./services/setupInterceptors";
+import "@quasar/extras/roboto-font/roboto-font.css";
+import "@quasar/extras/material-icons/material-icons.css";
 
-import 'quasar/src/css/index.sass'
+import "quasar/src/css/index.sass";
 
-import App from './App.vue'
+import App from "./App.vue";
 
-const myApp = createApp(App)
+const myApp = createApp(App);
 
-const store = createPinia()
+const store = createPinia();
 
-setupIntercetor(store)
+setupIntercetor(store);
 
-myApp.use(store)
+myApp.use(store);
 
-myApp.use(router)
+myApp.use(router);
+
+// myApp.use(Quasar, {
+//     plugins: {},
+// })
 
 myApp.use(Quasar, {
-    plugins: {},
-})
+  plugins: {
+    Notify,
+  },
+  config: {
+    notify: {
+      /* look at QuasarConfOptions from the API card */
+    },
+  },
+});
 
-myApp.mount('#app')
+myApp.mount("#app");

@@ -21,7 +21,6 @@ const setup = (store) => {
     },
     async (err) => {
       const originalConfig = err.config;
-      console.log(err)
       if (originalConfig.url !== "/auth-service/login" && err.response) {
         if (err.response.status == 401 && !originalConfig._retry) {
           originalConfig._retry = true;
@@ -41,7 +40,6 @@ const setup = (store) => {
           }
         }
       }
-
       return Promise.reject(err);
     }
   );
