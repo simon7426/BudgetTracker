@@ -1,5 +1,6 @@
 <script setup>
 import { ref } from 'vue';
+import transactionService from "../services/transaction.service"
 const columns = [
   {
     name: "category_name",
@@ -23,6 +24,15 @@ const rows = [
     category_type: "Income",
   },
 ];
+
+transactionService.getCategories().then(
+  (data)=> {
+    console.log(data)
+  }
+).catch((err)=>{
+  console.log("Error in get categories")
+  console.log(err)
+})
 
 const loading = ref(false)
 

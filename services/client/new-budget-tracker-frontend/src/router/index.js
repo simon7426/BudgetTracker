@@ -61,8 +61,14 @@ router.beforeEach((to, from, next) => {
     const store = useAuthStore();
     if (!store.isLoggedIn) {
       const user = TokenService.getUser();
-      if (user !== null && AuthService.refresh(user)) {
-        next();
+      if (user !== null){ 
+        AuthService.refresh(user).then(
+          () =>{
+            next()
+          }
+        ).catch((err)=>{
+          console.log(err)
+        })
       } else {
         next({ name: "Login" });
       }

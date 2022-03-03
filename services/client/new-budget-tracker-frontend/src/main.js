@@ -15,7 +15,6 @@ const myApp = createApp(App);
 
 const store = createPinia();
 
-setupIntercetor(store);
 
 myApp.use(store);
 

@@ -5,8 +5,10 @@ import TokenService from "./token.service";
 const setup = (store) => {
   axiosInstance.interceptors.request.use(
     (config) => {
+      
       if (store.access_token) {
-        config.headers["Authorization"] = "Bearer " + access_token;
+        console.log(config)
+        config.headers["Authorization"] = "Bearer " + store.access_token;
       }
       return config;
     },
@@ -28,13 +30,13 @@ const setup = (store) => {
           try {
             const rs = await axiosInstance.post("/auth-service/refresh", {
               refresh_token: TokenService.getLocalRefreshToken(),
+            }).then((rs)=>{
+              const { access_token } = rs.data.access_token;
+              const { refresh_token } = rs.data.refresh_token;
+              TokenService.updateAccessToken(access_token)
+              TokenService.updateLocalRefreshToken(refresh_token);
+              return axiosInstance(originalConfig);
             });
-            const { access_token } = rs.data.access_token;
-            const { refresh_token } = rs.data.refresh_token;
-            TokenService.updateAccessToken(access_token)
-            TokenService.updateLocalRefreshToken(refresh_token);
-
-            return axiosInstance(originalConfig);
           } catch (_error) {
             return Promise.reject(_error);
           }
