@@ -51,7 +51,7 @@ class AuthService {
       })
       .catch((err) => {
         console.log(err);
-        // TokenService.removeUser();
+        this.logout()
         return false
       });
   }

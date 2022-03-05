@@ -68,6 +68,7 @@ router.beforeEach((to, from, next) => {
           }
         ).catch((err)=>{
           console.log(err)
+          next({ name: "Login" })
         })
       } else {
         next({ name: "Login" });

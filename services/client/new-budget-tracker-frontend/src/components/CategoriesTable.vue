@@ -18,24 +18,24 @@ const columns = [
   },
 ];
 
-const rows = [
-  {
-    category_name: "Salary",
-    category_type: "Income",
-  },
-];
+const rows = ref([])
+const loading = ref(true)
 
 transactionService.getCategories().then(
   (data)=> {
-    console.log(data)
+    console.log(data.length)
+    if (data.length) {
+      for (var i in data) {
+        rows.value.push(data[i])
+      }
+    }
+    loading.value = false
+    console.log(rows.value)
   }
 ).catch((err)=>{
   console.log("Error in get categories")
   console.log(err)
 })
-
-const loading = ref(false)
-
 </script>
 <template>
   <div class="q-pa-md">
