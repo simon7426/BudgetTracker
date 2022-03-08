@@ -1,5 +1,5 @@
 import { createApp } from "vue";
-import { Quasar, Notify } from "quasar";
+import { Quasar, Notify, Dialog } from "quasar";
 import router from "./router";
 
 import { createPinia } from "pinia";
@@ -27,6 +27,7 @@ myApp.use(router);
 myApp.use(Quasar, {
   plugins: {
     Notify,
+    Dialog,
   },
   config: {
     notify: {

@@ -41,6 +41,7 @@ instance.interceptors.response.use(
           return instance(originalConfig)
         }).catch((err)=>{
           console.log(err)
+          location.reload()
         })
       }
       catch (_error){
