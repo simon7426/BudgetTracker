@@ -1,6 +1,6 @@
 import api from "./api";
 
-class TransactionsService {
+class TransactionsServiceCategory {
   addCategory({ category_name, category_type }) {
     return api
       .post("/transactions-service/category", {
@@ -36,4 +36,4 @@ class TransactionsService {
   }
 }
 
-export default new TransactionsService();
+export default new TransactionsServiceCategory();

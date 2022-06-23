@@ -1,7 +1,7 @@
 /* eslint-disable vue/require-default-prop */
 <script setup>
 import { ref, toRefs } from "vue";
-import transactionServiceCategory from "../services/category.transaction.service";
+import transactionServiceAccounts from "../services/accounts.transaction.service";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 
 
@@ -14,8 +14,7 @@ const props = defineProps({
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
-const options = ["Income", "Expense"];
-const categoryID = ref(props.row.id)
+const accountId = ref(props.row.id)
 const isLoading = ref(false);
 
 const q = useQuasar();
@@ -33,18 +32,18 @@ function onCancelClick() {
 }
 
 const handleSubmit = () => {
-  console.log(`Delete Category ${categoryID.value}`)
-  transactionServiceCategory
-    .deleteCategory(categoryID.value)
+  console.log(`Delete Account ${accountId.value}`)
+  transactionServiceAccounts
+    .deleteAccount(accountId.value)
     .then((data) => {
       console.log(data);
-      showNotif("Category deleted successfully.", "positive");
+      showNotif("Account deleted successfully.", "positive");
       onDialogOK()
     })
     .catch((err) => {
-      console.log("Unable to add category");
+      console.log("Unable to delete account");
       console.log(err);
-      showNotif("Unable to delete category.", "negative");
+      showNotif("Unable to delete account.", "negative");
     });
   isLoading.value = false;
 };

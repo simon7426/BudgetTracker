@@ -1,24 +1,29 @@
 <script setup>
 import { ref } from "vue";
-import transactionServiceCategory from "../services/category.transaction.service";
+import transactionServiceAccounts from "../services/accounts.transaction.service";
 import { useDialogPluginComponent, useQuasar } from "quasar";
+
+const props = defineProps({
+  row: {
+    type: Object,
+    default: () => {},
+  },
+})
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
-const options = ["Income", "Expense"];
-const categoryName = ref("");
-const categoryNameRef = ref(null);
-const categoryType = ref("");
-const categoryTypeRef = ref(null);
+
+const accountID = ref(props.row.id)
+const accountName = ref(props.row.account_name);
+const accountNameRef = ref(null);
+const accountType = ref(props.row.account_type);
+const accountTypeRef = ref(null);
+const accountBalance = ref(props.row.account_balance);
+const accountBalanceRef = ref(null);
+
 const isLoading = ref(false);
 
 const checkInput = [(val) => !!val || "Field is required"];
-const checkCategoryType = [
-  (val) =>
-    val.toLowerCase() == "income" ||
-    val.toLowerCase() === "expense" ||
-    "Please select a value from the dropdown.",
-];
 
 const q = useQuasar();
 
@@ -35,33 +40,37 @@ function onCancelClick() {
 }
 
 const handleSubmit = () => {
-  const inp_name = categoryName.value;
-  const inp_type = categoryType.value.toLowerCase();
+  const inp_name = accountName.value;
+  const inp_type = accountType.value.toLowerCase();
+  const inp_balance = parseFloat(accountBalance.value);
   if (
     inp_name.length !== 0 &&
-    (inp_type === "income" || inp_type === "expense")
+    inp_type.length !== 0
   ) {
     isLoading.value = true;
-    const category = {
-      category_name: inp_name,
-      category_type: inp_type,
+    const account = {
+        account_id: accountID.value,
+      account_name: inp_name,
+      account_type: inp_type,
+      account_balance: inp_balance,
     };
-    transactionServiceCategory
-      .addCategory(category)
+    transactionServiceAccounts
+      .editAccount(account)
       .then((data) => {
         console.log(data);
-        showNotif("Category added successfully.", "positive");
+        showNotif("Account edited successfully.", "positive");
         onDialogOK(data)
       })
       .catch((err) => {
-        console.log("Unable to add category");
+        console.log("Unable to edit account");
         console.log(err);
-        showNotif("Unable to add category.", "negative");
+        showNotif("Unable to edit account.", "negative");
       });
     isLoading.value = false;
   } else {
-    categoryNameRef.value.validate();
-    categoryTypeRef.value.validate();
+    accountNameRef.value.validate();
+    accountTypeRef.value.validate();
+    accountBalanceRef.value.validate();
   }
 };
 </script>
@@ -70,29 +79,40 @@ const handleSubmit = () => {
   <q-dialog ref="dialogRef">
     <q-card flat class="bg-cream-white q-pa-lg shadow-1">
       <q-card-section class="card-header">
-        <p class="card-header-text">Add Category</p>
+        <p class="card-header-text">Edit Account</p>
       </q-card-section>
       <q-card-section>
         <q-form class="q-gutter-md">
           <q-input
-            ref="categoryNameRef"
-            v-model="categoryName"
+            ref="accountNameRef"
+            v-model="accountName"
             outlined
             standout="bg-white text-black"
             type="text"
             label="Name"
             :rules="checkInput"
-          >
-          </q-input>
-          <q-select
-            ref="categoryTypeRef"
-            v-model="categoryType"
-            standout="bg-white text-black"
-            outlined
-            :options="options"
-            label="Type"
-            :rules="checkCategoryType"
           />
+          
+          <q-input
+            ref="accountTypeRef"
+            v-model="accountType"
+            outlined
+            standout="bg-white text-black"
+            type="text"
+            label="Type"
+            :rules="checkInput"
+          />
+          <q-input
+            ref="accountBalanceRef"
+            v-model="accountBalance"
+            outlined
+            standout="bg-white text-black"
+            type="number"
+            label="Balance"
+            prefix="$"
+            :rules="checkInput"
+          />
+          
         </q-form>
       </q-card-section>
       <q-card-actions class="q-px-md card-buttons">
@@ -100,7 +120,7 @@ const handleSubmit = () => {
           unelevated
           flat
           size="md"
-          label="Add"
+          label="Edit"
           :loading="isLoading"
           @click="handleSubmit"
         />

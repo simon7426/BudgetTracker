@@ -1,7 +1,7 @@
 /* eslint-disable vue/require-default-prop */
 <script setup>
 import { ref, toRefs } from "vue";
-import transactionService from "../services/transaction.service";
+import transactionServiceCategory from "../services/category.transaction.service";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 
 
@@ -58,12 +58,12 @@ const handleSubmit = () => {
       category_name: inp_name,
       category_type: inp_type,
     };
-    transactionService
+    transactionServiceCategory
       .editCategory(category)
       .then((data) => {
         console.log(data);
         showNotif("Category edited successfully.", "positive");
-        onDialogOK()
+        onDialogOK(data)
       })
       .catch((err) => {
         console.log("Unable to edit category");

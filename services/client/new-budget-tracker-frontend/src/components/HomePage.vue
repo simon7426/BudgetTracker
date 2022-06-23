@@ -1,11 +1,12 @@
 <script setup>
 import CategoriesTable from "./CategoriesTable.vue";
+import AccountsTable from "./AccountsTable.vue";
 </script>
 <template>
 <q-page-container class="bg-cream-white window-height window-width">
     <div class="categoriesTable">
 
-    <CategoriesTable />
+    <AccountsTable />
     </div>
 </q-page-container>
 </template>
