@@ -31,7 +31,7 @@ instance.interceptors.response.use(
   (err) => {
     console.log("In response error")
     const originalConfig = err.config
-    if (err.response && err.response.status == 401 && originalConfig.url!=="/auth-service/refresh" && !originalConfig._retry) {
+    if (err.response && err.response.status == 401 && originalConfig.url!=="/auth-service/refresh" && originalConfig.url!=="/auth-service/login" && !originalConfig._retry) {
       originalConfig._retry = true;
       try {
         const refresh_token = tokenService.getLocalRefreshToken()
@@ -40,6 +40,7 @@ instance.interceptors.response.use(
           console.log(response)
           return instance(originalConfig)
         }).catch((err)=>{
+          console.log("Error fetching refresh token")
           console.log(err)
           location.reload()
         })
@@ -47,7 +48,6 @@ instance.interceptors.response.use(
       catch (_error){
         console.log(_error)
       }
-
     }
   }
 )

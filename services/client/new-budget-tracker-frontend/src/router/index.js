@@ -4,7 +4,6 @@ import ProfilePage from "../components/ProfilePage.vue";
 import RegisterPage from "../components/RegisterPage.vue";
 import LoginPage from "../components/LoginPage.vue";
 import LogoutPage from "../components/LogoutPage.vue";
-import CreateCategoriesForm from "../components/CreateCategoriesForm.vue";
 import { useAuthStore } from "../stores/useAuth";
 import TokenService from "../services/token.service";
 import AuthService from "../services/auth.service";
