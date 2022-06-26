@@ -77,12 +77,15 @@ const handleSubmit = () => {
   </q-dialog>
 </template>
 
-<style scoped>
-.card-header-text {
-  font-size: 1.5rem;
-  text-align: center;
-}
-.card-buttons {
-  justify-content: space-between;
-}
+<style scoped lang="sass">
+
+.card-header-text 
+  font-size: 1.5rem
+  text-align: center
+
+.card-buttons 
+  justify-content: space-between
+
+.bg-cream-white
+  background: $primary
 </style>

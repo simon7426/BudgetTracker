@@ -7,12 +7,40 @@ import LogoutPage from "../components/LogoutPage.vue";
 import { useAuthStore } from "../stores/useAuth";
 import TokenService from "../services/token.service";
 import AuthService from "../services/auth.service";
+import DashboardView from "../components/DashboardView.vue"
+import TransactionView from "../components/TransactionView.vue"
+import AccountsView from "../components/AccountsView.vue"
+import CategoriesView from  "../components/CategoriesView.vue"
 
 const routes = [
   {
     path: "/",
-    name: "Home",
-    component: HomePage,
+    name: "Dashboard",
+    component: DashboardView,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/transactions",
+    name: "Transactions",
+    component: TransactionView,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/accounts",
+    name: "Accounts",
+    component: AccountsView,
+    meta: {
+      requiresAuth: true,
+    },
+  },
+  {
+    path: "/categories",
+    name: "Category",
+    component: CategoriesView,
     meta: {
       requiresAuth: true,
     },

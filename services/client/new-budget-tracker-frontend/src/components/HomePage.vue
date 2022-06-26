@@ -1,17 +1,41 @@
 <script setup>
-import CategoriesTable from "./CategoriesTable.vue";
-import AccountsTable from "./AccountsTable.vue";
-</script>
-<template>
-<q-page-container class="bg-cream-white window-height window-width">
-    <div class="categoriesTable">
+import { ref } from "vue";
 
-    <AccountsTable />
-    </div>
-</q-page-container>
+import NavigationBar from "./NavigationBar.vue";
+import LeftDrawer from "./LeftDrawer.vue";
+</script>
+
+<template>
+  <q-layout view="hHh lpR lFf">
+    <NavigationBar />
+    <LeftDrawer />
+    <q-page-container class="no-padding">
+      <q-page
+        class="page-padding bg-cream-white window-height row justify-center items-start"
+      >
+        <router-view
+      /></q-page>
+    </q-page-container>
+  </q-layout>
 </template>
 
-<style scoped lang="sass">
-.categoriesTable
-    padding: 1rem
+<style lang="sass">
+.bg-cream-white
+  background: $primary
+
+.q-card
+  width: 25rem
+
+.card-header
+  display: flex
+  justify-content: center
+
+.card-header-img
+  width: 100%
+
+.no-padding
+  padding: 0
+
+.page-padding
+    padding: 5rem 250px
 </style>

@@ -4,10 +4,9 @@ import { ref } from "vue";
 import transactionServiceAccounts from "../services/accounts.transaction.service";
 import AccountsFormCreate from "./AccountsFormCreate.vue";
 import AccountsFormDelete from "./AccountsFormDelete.vue";
-import AccountsFormEdit from "./AccountsFormEdit.vue"
+import AccountsFormEdit from "./AccountsFormEdit.vue";
 
-
-const pagination = { sortBy: 'account_id', rowsPerPage: 0 }
+const pagination = { sortBy: "account_id", rowsPerPage: 0 };
 
 const columns = [
   {
@@ -32,7 +31,7 @@ const columns = [
     align: "center",
     sortable: true,
     field: (row) => row.account_type,
-    format: (val) => `${val.replace(/^./, val[0].toUpperCase())}`
+    format: (val) => `${val.replace(/^./, val[0].toUpperCase())}`,
   },
   {
     name: "account_balance",
@@ -41,7 +40,7 @@ const columns = [
     align: "center",
     sortable: true,
     field: (row) => row.account_balance,
-    format: (val) => `${val}`
+    format: (val) => `${val}`,
   },
   {
     name: "action",
@@ -52,16 +51,15 @@ const columns = [
   },
 ];
 
-const accountTable = ref(null)
+const accountTable = ref(null);
 const rows = ref([]);
 const loading = ref(true);
 const q = useQuasar();
 
-
 function getTransactionAccounts() {
-  rows.value = []
+  rows.value = [];
   transactionServiceAccounts
-  .getAccounts()
+    .getAccounts()
     .then((data) => {
       if (data.length) {
         for (var i in data) {
@@ -73,91 +71,115 @@ function getTransactionAccounts() {
     .catch((err) => {
       console.log("Error in get accounts");
       console.log(err);
-    });}
+    });
+}
 
-getTransactionAccounts()
+getTransactionAccounts();
 
 function addAccountDialog() {
   q.dialog({
     component: AccountsFormCreate,
-  }).onOk((payload)=> {
-    rows.value.push(payload)
-  })
+  }).onOk((payload) => {
+    rows.value.push(payload);
+  });
 }
 
 function editAccountDialog(account) {
   q.dialog({
     component: AccountsFormEdit,
     componentProps: {
-      row: account
-    }
+      row: account,
+    },
   }).onOk((payload) => {
-    rows.value[rows.value.findIndex((obj => obj.id == account.id))] = payload
-  })
+    rows.value[rows.value.findIndex((obj) => obj.id == account.id)] = payload;
+  });
 }
 
 function deleteAccountDialog(account) {
   q.dialog({
     component: AccountsFormDelete,
     componentProps: {
-      row: account
-    }
+      row: account,
+    },
   }).onOk(() => {
-    rows.value.splice(rows.value.findIndex((obj => obj.id == account.id)),1)
-  })
+    rows.value.splice(
+      rows.value.findIndex((obj) => obj.id == account.id),
+      1
+    );
+  });
 }
-
 </script>
 <template>
-  <q-card class="my-card">
-    <q-card-section>
-      <div class="text-h6 text-grey-8">
-        Accounts
-        <q-btn
-          label="Add"
-          class="float-right text-capitalize text-indigo-8 "
-          icon="add"
-          flat
-          rounded
-          @click="addAccountDialog"
-        />
-      </div>
-    </q-card-section>
-    <q-card-section class="q-pa-none">
+  <div class="window-width column q-px-md">
+    <div class="row justify-between text-h6 text-grey-8">
+      <div class="">Accounts</div>
+      <q-btn
+        label="Add"
+        class="float-right text-capitalize text-grey-9"
+        icon="add"
+        flat
+        @click="addAccountDialog"
+      />
+    </div>
+    <div class="q-pa-none">
       <q-table
         ref="accountTable"
         virtual-scroll
+        flat
+        separator="none"
         :pagination="pagination"
         :rows-per-page-options="[0]"
         :rows="rows"
         :columns="columns"
         row-key="account_id"
         :loading="loading"
-        :visible-columns="['account_name','account_type', 'account_balance','action']"
+        :visible-columns="[
+          'account_name',
+          'account_type',
+          'account_balance',
+          'action',
+        ]"
         binary-state-sort
         hide-pagination
+        class="bg-cream-white"
       >
         <template #body-cell-action="props">
           <q-td :props="props">
             <div class="td-action">
-                <q-btn icon="info" size="sm" flat dense />
-              <q-btn icon="edit" size="sm" class="q-ml-sm" flat dense  @click="editAccountDialog(props.row)"/>
-              <q-btn icon="delete" size="sm" class="q-ml-sm" flat dense @click="deleteAccountDialog(props.row)"  />
+              <q-btn icon="info" size="sm" flat dense />
+              <q-btn
+                icon="edit"
+                size="sm"
+                class="q-ml-sm"
+                flat
+                dense
+                @click="editAccountDialog(props.row)"
+              />
+              <q-btn
+                icon="delete"
+                size="sm"
+                class="q-ml-sm"
+                flat
+                dense
+                @click="deleteAccountDialog(props.row)"
+              />
             </div>
           </q-td>
         </template>
         <template #loading>
-          <q-inner-loading showing />
+          <q-inner-loading showing>
+            <q-spinner-gears size="10rem" color="primary" />
+          </q-inner-loading>
         </template>
       </q-table>
-    </q-card-section>
-  </q-card>
+    </div>
+  </div>
 </template>
 <style scoped lang="sass">
-.my-card
-  width: 100%
-  max-width: 30rem
 .td-action
   display: flex
   justify-content: space-around
+
+.bg-cream-white
+  background: $primary
 </style>

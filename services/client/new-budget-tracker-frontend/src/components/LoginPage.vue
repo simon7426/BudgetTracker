@@ -38,7 +38,7 @@ function handleLogin() {
     authService.login(user).then(
       (data) => {
         console.log(data)
-        router.push({ name: "Home" });
+        router.push({ name: "Dashboard" });
       },
       (error) => {
         isLoading.value = false;
@@ -56,9 +56,6 @@ function handleLogin() {
 </script>
 
 <template>
-  <q-page-container
-    class="bg-cream-white window-height window-width row justify-center items-center"
-  >
     <q-card flat class="bg-cream-white q-pa-lg shadow-1">
       <q-card-section class="card-header">
         <q-img
@@ -122,7 +119,9 @@ function handleLogin() {
       </q-card-section>
     </q-card>
     <router-view />
-  </q-page-container>
 </template>
 
-<style scoped></style>
+<style scoped lang="sass">
+.bg-cream-white
+  background: $primary
+</style>
