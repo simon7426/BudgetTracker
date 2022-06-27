@@ -8,19 +8,26 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  row: {
+    type: Object,
+    default: () => {},
+  },
 });
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 
+console.log(props.row)
+
 const accountOptions = ref(props.accountTable);
-console.log(typeof accountOptions.value);
 const options = ref(accountOptions.value);
-const fromAccount = ref("");
+
+const transferId = ref(props.row.id)
+const fromAccount = ref(props.row.from_account);
 const fromAccountRef = ref(null);
-const toAccount = ref("");
+const toAccount = ref(props.row.to_account);
 const toAccountRef = ref(null);
-const transferAmount = ref(0);
+const transferAmount = ref(props.row.transfer_amount);
 const transferAmountRef = ref(null);
 
 const isLoading = ref(false);
@@ -62,22 +69,24 @@ const isError = computed(() => {
 });
 
 const handleSubmit = () => {
+    const transfer_id = transferId.value;
   const from_account_id = fromAccount.value.id;
   const to_account_id = toAccount.value.id;
   const transfer_amount = parseFloat(transferAmount.value);
   if (from_account_id && to_account_id && transferAmount) {
     isLoading.value = true;
     const transfer = {
+        transfer_id,
       from_account_id,
       to_account_id,
       transfer_amount,
     };
 
     transactionServiceTransfer
-      .addTransfer(transfer)
+      .editTranfer(transfer)
       .then((data) => {
         console.log(data);
-        showNotif("Transfer added successfully.", "positive");
+        showNotif("Transfer edited successfully.", "positive");
         onDialogOK(data);
       })
       .catch((err) => {
@@ -98,7 +107,7 @@ const handleSubmit = () => {
   <q-dialog ref="dialogRef">
     <q-card flat class="bg-cream-white q-pa-lg shadow-1">
       <q-card-section class="card-header">
-        <p class="card-header-text">Transfer</p>
+        <p class="card-header-text">Edit Transfer</p>
       </q-card-section>
       <q-card-section>
         <q-form class="q-gutter-md">
@@ -169,7 +178,7 @@ const handleSubmit = () => {
           unelevated
           flat
           size="md"
-          label="Add"
+          label="Edit"
           :loading="isLoading"
           @click="handleSubmit"
         />

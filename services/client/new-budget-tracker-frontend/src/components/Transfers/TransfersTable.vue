@@ -4,6 +4,8 @@ import { ref } from "vue";
 import transactionServiceTransfers from "../../services/transfers.transaction.service";
 import transactionServiceAccounts from "../../services/accounts.transaction.service";
 import TransfersFormCreate from "./TransfersFormCreate.vue";
+import TransfersFormEdit from "./TransfersFormEdit.vue";
+import TransfersFormDelete from "./TransfersFormDelete.vue";
 
 const pagination = { sortBy: "transfer_id", rowsPerPage: 0 };
 
@@ -97,16 +99,19 @@ async function getTransactionAccountsTransfers() {
 
 getTransactionAccountsTransfers();
 
-function addTransferDialog() {
+function getAccountTable() {
   let accountTable = [];
   for (var i in accountDict.value) {
     accountTable.push(accountDict.value[i]);
   }
-  console.log(accountTable);
+  return accountTable;
+}
+
+function addTransferDialog() {
   q.dialog({
     component: TransfersFormCreate,
     componentProps: {
-      accountTable: accountTable,
+      accountTable: getAccountTable(),
     },
   }).onOk((payload) => {
     rows.value.push({
@@ -118,30 +123,36 @@ function addTransferDialog() {
   });
 }
 
-// function editCategory(category) {
-//   q.dialog({
-//     component: CategoriesFormEdit,
-//     componentProps: {
-//       row: category,
-//     },
-//   }).onOk((payload) => {
-//     rows.value[rows.value.findIndex((obj) => obj.id == category.id)] = payload;
-//   });
-// }
+function editTransfer(transfer) {
+  q.dialog({
+    component: TransfersFormEdit,
+    componentProps: {
+      accountTable: getAccountTable(),
+      row: transfer,
+    },
+  }).onOk((payload) => {
+    rows.value[rows.value.findIndex((obj) => obj.id == transfer.id)] = {
+      id: payload["id"],
+      from_account: accountDict.value[payload["from_account_id"]],
+      to_account: accountDict.value[payload["to_account_id"]],
+      transfer_amount: payload["transfer_amount"],
+    };
+  });
+}
 
-// function deleteCategory(category) {
-//   q.dialog({
-//     component: CategoriesFormDelete,
-//     componentProps: {
-//       row: category,
-//     },
-//   }).onOk(() => {
-//     rows.value.splice(
-//       rows.value.findIndex((obj) => obj.id == category.id),
-//       1
-//     );
-//   });
-// }
+function deleteTransfer(transfer) {
+  q.dialog({
+    component: TransfersFormDelete,
+    componentProps: {
+      row: transfer,
+    },
+  }).onOk(() => {
+    rows.value.splice(
+      rows.value.findIndex((obj) => obj.id == transfer.id),
+      1
+    );
+  });
+}
 </script>
 
 <template>
@@ -181,8 +192,14 @@ function addTransferDialog() {
         <template #body-cell-action="props">
           <q-td :props="props">
             <div class="td-action">
-              <q-btn icon="edit" size="sm" flat dense />
-              <q-btn icon="delete" size="sm" class="q-ml-sm" flat dense />
+              <q-btn
+                icon="edit"
+                size="sm"
+                flat
+                dense
+                @click="editTransfer(props.row)"
+              />
+              <q-btn icon="delete" size="sm" class="q-ml-sm" flat dense @click="deleteTransfer(props.row)"/>
             </div>
           </q-td>
         </template>

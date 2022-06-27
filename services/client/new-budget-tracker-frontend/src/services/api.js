@@ -1,4 +1,5 @@
 import axios from "axios";
+import router from "../router";
 import { useAuthStore } from "../stores/useAuth";
 import authService from "./auth.service";
 import tokenService from "./token.service";
@@ -9,6 +10,8 @@ const instance = axios.create({
     "Content-Type": "application/json",
   },
 });
+
+
 
 instance.interceptors.request.use(
   (config) => {
@@ -42,7 +45,7 @@ instance.interceptors.response.use(
         }).catch((err)=>{
           console.log("Error fetching refresh token")
           console.log(err)
-          location.reload()
+          router.push({ name: "Login" })
         })
       }
       catch (_error){
