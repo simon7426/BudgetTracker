@@ -1,7 +1,7 @@
 <script setup>
 import { useQuasar } from "quasar";
 import { ref } from "vue";
-import transactionServiceCategory from "../services/category.transaction.service";
+import transactionServiceCategory from "../../services/category.transaction.service";
 import CategoriesFormCreate from "./CategoriesFormCreate.vue";
 import CategoriesFormEdit from "./CategoriesFormEdit.vue";
 import CategoriesFormDelete from "./CategoriesFormDelete.vue";

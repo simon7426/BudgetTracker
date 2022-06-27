@@ -1,7 +1,7 @@
 /* eslint-disable vue/require-default-prop */
 <script setup>
 import { ref, toRefs } from "vue";
-import transactionServiceAccounts from "../services/accounts.transaction.service";
+import transactionServiceAccounts from "../../services/accounts.transaction.service";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 
 

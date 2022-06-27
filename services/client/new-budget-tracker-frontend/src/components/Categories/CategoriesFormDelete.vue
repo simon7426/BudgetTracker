@@ -1,7 +1,7 @@
 /* eslint-disable vue/require-default-prop */
 <script setup>
 import { ref, toRefs } from "vue";
-import transactionServiceCategory from "../services/category.transaction.service";
+import transactionServiceCategory from "../../services/category.transaction.service";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 
 

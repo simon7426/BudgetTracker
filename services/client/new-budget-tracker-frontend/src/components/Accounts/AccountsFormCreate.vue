@@ -1,29 +1,21 @@
 <script setup>
 import { ref } from "vue";
-import transactionServiceAccounts from "../services/accounts.transaction.service";
+import transactionServiceAccounts from "../../services/accounts.transaction.service";
 import { useDialogPluginComponent, useQuasar } from "quasar";
-
-const props = defineProps({
-  row: {
-    type: Object,
-    default: () => {},
-  },
-})
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
-
-const accountID = ref(props.row.id)
-const accountName = ref(props.row.account_name);
+const accountName = ref("");
 const accountNameRef = ref(null);
-const accountType = ref(props.row.account_type);
+const accountType = ref("");
 const accountTypeRef = ref(null);
-const accountBalance = ref(props.row.account_balance);
+const accountBalance = ref(0);
 const accountBalanceRef = ref(null);
 
 const isLoading = ref(false);
 
 const checkInput = [(val) => !!val || "Field is required"];
+const checkAmount = [(val) => val >= 0 || "Amount must be positive"]
 
 const q = useQuasar();
 
@@ -49,22 +41,21 @@ const handleSubmit = () => {
   ) {
     isLoading.value = true;
     const account = {
-        account_id: accountID.value,
       account_name: inp_name,
       account_type: inp_type,
       account_balance: inp_balance,
     };
     transactionServiceAccounts
-      .editAccount(account)
+      .addAccount(account)
       .then((data) => {
         console.log(data);
-        showNotif("Account edited successfully.", "positive");
+        showNotif("Account added successfully.", "positive");
         onDialogOK(data)
       })
       .catch((err) => {
-        console.log("Unable to edit account");
+        console.log("Unable to add account");
         console.log(err);
-        showNotif("Unable to edit account.", "negative");
+        showNotif("Unable to add account.", "negative");
       });
     isLoading.value = false;
   } else {
@@ -79,7 +70,7 @@ const handleSubmit = () => {
   <q-dialog ref="dialogRef">
     <q-card flat class="bg-cream-white q-pa-lg shadow-1">
       <q-card-section class="card-header">
-        <p class="card-header-text">Edit Account</p>
+        <p class="card-header-text">Add Account</p>
       </q-card-section>
       <q-card-section>
         <q-form class="q-gutter-md">
@@ -110,7 +101,7 @@ const handleSubmit = () => {
             type="number"
             label="Balance"
             prefix="$"
-            :rules="checkInput"
+            :rules="checkAmount"
           />
           
         </q-form>
@@ -120,7 +111,7 @@ const handleSubmit = () => {
           unelevated
           flat
           size="md"
-          label="Edit"
+          label="Add"
           :loading="isLoading"
           @click="handleSubmit"
         />

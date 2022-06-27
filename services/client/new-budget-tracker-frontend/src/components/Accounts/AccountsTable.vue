@@ -1,7 +1,7 @@
 <script setup>
 import { useQuasar } from "quasar";
 import { ref } from "vue";
-import transactionServiceAccounts from "../services/accounts.transaction.service";
+import transactionServiceAccounts from "../../services/accounts.transaction.service";
 import AccountsFormCreate from "./AccountsFormCreate.vue";
 import AccountsFormDelete from "./AccountsFormDelete.vue";
 import AccountsFormEdit from "./AccountsFormEdit.vue";

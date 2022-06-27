@@ -1,14 +1,24 @@
+/* eslint-disable vue/require-default-prop */
 <script setup>
-import { ref } from "vue";
-import transactionServiceCategory from "../services/category.transaction.service";
+import { ref, toRefs } from "vue";
+import transactionServiceCategory from "../../services/category.transaction.service";
 import { useDialogPluginComponent, useQuasar } from "quasar";
+
+
+const props = defineProps({
+  row: {
+    type: Object,
+    default: () => {},
+  },
+})
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 const options = ["Income", "Expense"];
-const categoryName = ref("");
+const categoryID = ref(props.row.id)
+const categoryName = ref(props.row.category_name);
 const categoryNameRef = ref(null);
-const categoryType = ref("");
+const categoryType = ref(props.row.category_type.replace(/^./, props.row.category_type[0].toUpperCase()));
 const categoryTypeRef = ref(null);
 const isLoading = ref(false);
 
@@ -37,26 +47,27 @@ function onCancelClick() {
 const handleSubmit = () => {
   const inp_name = categoryName.value;
   const inp_type = categoryType.value.toLowerCase();
+  console.log(inp_name, inp_type)
   if (
     inp_name.length !== 0 &&
     (inp_type === "income" || inp_type === "expense")
   ) {
     isLoading.value = true;
     const category = {
+      category_id: categoryID.value,
       category_name: inp_name,
       category_type: inp_type,
     };
     transactionServiceCategory
-      .addCategory(category)
+      .editCategory(category)
       .then((data) => {
-        console.log(data);
-        showNotif("Category added successfully.", "positive");
+        showNotif("Category edited successfully.", "positive");
         onDialogOK(data)
       })
       .catch((err) => {
-        console.log("Unable to add category");
+        console.log("Unable to edit category");
         console.log(err);
-        showNotif("Unable to add category.", "negative");
+        showNotif("Unable to edit category.", "negative");
       });
     isLoading.value = false;
   } else {
@@ -70,7 +81,7 @@ const handleSubmit = () => {
   <q-dialog ref="dialogRef">
     <q-card flat class="bg-cream-white q-pa-lg shadow-1">
       <q-card-section class="card-header">
-        <p class="card-header-text">Add Category</p>
+        <p class="card-header-text">Edit Category</p>
       </q-card-section>
       <q-card-section>
         <q-form class="q-gutter-md">
@@ -100,7 +111,7 @@ const handleSubmit = () => {
           unelevated
           flat
           size="md"
-          label="Add"
+          label="Edit"
           :loading="isLoading"
           @click="handleSubmit"
         />

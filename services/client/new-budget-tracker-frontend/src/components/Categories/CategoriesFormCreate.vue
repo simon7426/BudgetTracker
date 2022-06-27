@@ -1,20 +1,24 @@
 <script setup>
 import { ref } from "vue";
-import transactionServiceAccounts from "../services/accounts.transaction.service";
+import transactionServiceCategory from "../../services/category.transaction.service";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
-const accountName = ref("");
-const accountNameRef = ref(null);
-const accountType = ref("");
-const accountTypeRef = ref(null);
-const accountBalance = ref(0);
-const accountBalanceRef = ref(null);
-
+const options = ["Income", "Expense"];
+const categoryName = ref("");
+const categoryNameRef = ref(null);
+const categoryType = ref("");
+const categoryTypeRef = ref(null);
 const isLoading = ref(false);
 
 const checkInput = [(val) => !!val || "Field is required"];
+const checkCategoryType = [
+  (val) =>
+    val.toLowerCase() == "income" ||
+    val.toLowerCase() === "expense" ||
+    "Please select a value from the dropdown.",
+];
 
 const q = useQuasar();
 
@@ -31,36 +35,33 @@ function onCancelClick() {
 }
 
 const handleSubmit = () => {
-  const inp_name = accountName.value;
-  const inp_type = accountType.value.toLowerCase();
-  const inp_balance = parseFloat(accountBalance.value);
+  const inp_name = categoryName.value;
+  const inp_type = categoryType.value.toLowerCase();
   if (
     inp_name.length !== 0 &&
-    inp_type.length !== 0
+    (inp_type === "income" || inp_type === "expense")
   ) {
     isLoading.value = true;
-    const account = {
-      account_name: inp_name,
-      account_type: inp_type,
-      account_balance: inp_balance,
+    const category = {
+      category_name: inp_name,
+      category_type: inp_type,
     };
-    transactionServiceAccounts
-      .addAccount(account)
+    transactionServiceCategory
+      .addCategory(category)
       .then((data) => {
         console.log(data);
-        showNotif("Account added successfully.", "positive");
+        showNotif("Category added successfully.", "positive");
         onDialogOK(data)
       })
       .catch((err) => {
-        console.log("Unable to add account");
+        console.log("Unable to add category");
         console.log(err);
-        showNotif("Unable to add account.", "negative");
+        showNotif("Unable to add category.", "negative");
       });
     isLoading.value = false;
   } else {
-    accountNameRef.value.validate();
-    accountTypeRef.value.validate();
-    accountBalanceRef.value.validate();
+    categoryNameRef.value.validate();
+    categoryTypeRef.value.validate();
   }
 };
 </script>
@@ -69,40 +70,29 @@ const handleSubmit = () => {
   <q-dialog ref="dialogRef">
     <q-card flat class="bg-cream-white q-pa-lg shadow-1">
       <q-card-section class="card-header">
-        <p class="card-header-text">Add Account</p>
+        <p class="card-header-text">Add Category</p>
       </q-card-section>
       <q-card-section>
         <q-form class="q-gutter-md">
           <q-input
-            ref="accountNameRef"
-            v-model="accountName"
+            ref="categoryNameRef"
+            v-model="categoryName"
             outlined
             standout="bg-white text-black"
             type="text"
             label="Name"
             :rules="checkInput"
-          />
-          
-          <q-input
-            ref="accountTypeRef"
-            v-model="accountType"
-            outlined
+          >
+          </q-input>
+          <q-select
+            ref="categoryTypeRef"
+            v-model="categoryType"
             standout="bg-white text-black"
-            type="text"
+            outlined
+            :options="options"
             label="Type"
-            :rules="checkInput"
+            :rules="checkCategoryType"
           />
-          <q-input
-            ref="accountBalanceRef"
-            v-model="accountBalance"
-            outlined
-            standout="bg-white text-black"
-            type="number"
-            label="Balance"
-            prefix="$"
-            :rules="checkInput"
-          />
-          
         </q-form>
       </q-card-section>
       <q-card-actions class="q-px-md card-buttons">

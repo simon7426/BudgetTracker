@@ -27,6 +27,12 @@ const menuList = [
     separator: false
   },
   {
+    icon: 'currency_exchange',
+    label: 'Transfers',
+    separator: false,
+  }
+  ,
+  {
     icon: 'category',
     label: 'Category',
     separator: false

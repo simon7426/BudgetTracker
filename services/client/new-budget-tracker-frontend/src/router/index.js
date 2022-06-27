@@ -9,8 +9,9 @@ import TokenService from "../services/token.service";
 import AuthService from "../services/auth.service";
 import DashboardView from "../components/DashboardView.vue"
 import TransactionView from "../components/TransactionView.vue"
-import AccountsView from "../components/AccountsView.vue"
-import CategoriesView from  "../components/CategoriesView.vue"
+import AccountsView from "../components/Accounts/AccountsView.vue"
+import CategoriesView from  "../components/Categories/CategoriesView.vue"
+import TransfersView from "../components/Transfers/TransfersView.vue"
 
 const routes = [
   {
@@ -36,6 +37,15 @@ const routes = [
     meta: {
       requiresAuth: true,
     },
+  },
+  {
+    path: "/transfers",
+    name: "Transfers",
+    component: TransfersView,
+    meta: {
+      requiresAuth: true,
+    }
+
   },
   {
     path: "/categories",
