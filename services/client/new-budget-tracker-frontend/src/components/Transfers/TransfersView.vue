@@ -1,5 +1,5 @@
 <script setup>
-import TransfersTable from './TransfersTable.vue';
+import TransfersTable from "./TransfersTable.vue";
 </script>
 
 <template>

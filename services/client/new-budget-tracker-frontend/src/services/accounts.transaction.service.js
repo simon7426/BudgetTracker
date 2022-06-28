@@ -19,22 +19,24 @@ class TransactionsServiceAccounts {
     });
   }
 
-  editAccount({ account_id ,account_name, account_type, account_balance }) {
-    return api.put(`/transactions-service/accounts/${account_id}`, {
+  editAccount({ account_id, account_name, account_type, account_balance }) {
+    return api
+      .put(`/transactions-service/accounts/${account_id}`, {
         account_name,
         account_type,
         account_balance,
-    })
-    .then((response) => {
-      return response.data;
-    })
+      })
+      .then((response) => {
+        return response.data;
+      });
   }
 
   deleteAccount(account_id) {
-    return api.delete(`/transactions-service/accounts/${account_id}`)
-    .then((response) => {
-      return response.status
-    })
+    return api
+      .delete(`/transactions-service/accounts/${account_id}`)
+      .then((response) => {
+        return response.status;
+      });
   }
 }
 

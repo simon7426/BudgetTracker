@@ -7,11 +7,12 @@ import LogoutPage from "../components/LogoutPage.vue";
 import { useAuthStore } from "../stores/useAuth";
 import TokenService from "../services/token.service";
 import AuthService from "../services/auth.service";
-import DashboardView from "../components/DashboardView.vue"
-import TransactionView from "../components/TransactionView.vue"
-import AccountsView from "../components/Accounts/AccountsView.vue"
-import CategoriesView from  "../components/Categories/CategoriesView.vue"
-import TransfersView from "../components/Transfers/TransfersView.vue"
+import DashboardView from "../components/DashboardView.vue";
+
+import AccountsView from "../components/Accounts/AccountsView.vue";
+import CategoriesView from "../components/Categories/CategoriesView.vue";
+import TransfersView from "../components/Transfers/TransfersView.vue";
+import TransactionsView from "../components/Transactions/TransactionsView.vue";
 
 const routes = [
   {
@@ -25,7 +26,7 @@ const routes = [
   {
     path: "/transactions",
     name: "Transactions",
-    component: TransactionView,
+    component: TransactionsView,
     meta: {
       requiresAuth: true,
     },
@@ -44,8 +45,7 @@ const routes = [
     component: TransfersView,
     meta: {
       requiresAuth: true,
-    }
-
+    },
   },
   {
     path: "/categories",
@@ -99,37 +99,34 @@ router.beforeEach((to, from, next) => {
     const store = useAuthStore();
     if (!store.isLoggedIn) {
       const user = TokenService.getUser();
-      if (user !== null){ 
-        AuthService.refresh(user).then(
-          () =>{
-            next()
-          }
-        ).catch((err)=>{
-          console.log(err)
-          next({ name: "Login" })
-        })
+      if (user !== null) {
+        AuthService.refresh(user)
+          .then(() => {
+            next();
+          })
+          .catch((err) => {
+            console.log(err);
+            next({ name: "Login" });
+          });
       } else {
         next({ name: "Login" });
       }
     } else {
       next();
     }
-  } else if(to.matched.some((record) => record.meta.requiresNotAuth)) {
+  } else if (to.matched.some((record) => record.meta.requiresNotAuth)) {
     const store = useAuthStore();
     if (store.isLoggedIn) {
-      next({ name: "Profile" })
-    }
-    else {
+      next({ name: "Profile" });
+    } else {
       const user = TokenService.getUser();
       if (user !== null) {
         next({ name: "Profile" });
-      }
-      else {
-        next()
+      } else {
+        next();
       }
     }
-  }
-  else {
+  } else {
     next();
   }
 });

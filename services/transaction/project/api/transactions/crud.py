@@ -3,7 +3,7 @@ from project.api.models import TransactionList
 
 
 def get_all_transactions_by_transaction_owner(transaction_owner):
-    return TransactionList.query.get(transaction_owner=transaction_owner).all()
+    return TransactionList.query.filter_by(transaction_owner=transaction_owner).all()
 
 
 def get_transactions_by_id(id, transaction_owner):

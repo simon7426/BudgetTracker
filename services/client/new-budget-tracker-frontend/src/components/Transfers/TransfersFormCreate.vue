@@ -14,7 +14,6 @@ const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 
 const accountOptions = ref(props.accountTable);
-console.log(typeof accountOptions.value);
 const options = ref(accountOptions.value);
 const fromAccount = ref("");
 const fromAccountRef = ref(null);

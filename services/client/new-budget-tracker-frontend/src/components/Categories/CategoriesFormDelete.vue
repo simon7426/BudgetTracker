@@ -4,18 +4,17 @@ import { ref, toRefs } from "vue";
 import transactionServiceCategory from "../../services/category.transaction.service";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 
-
 const props = defineProps({
   row: {
     type: Object,
     default: () => {},
   },
-})
+});
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 const options = ["Income", "Expense"];
-const categoryID = ref(props.row.id)
+const categoryID = ref(props.row.id);
 const isLoading = ref(false);
 
 const q = useQuasar();
@@ -29,17 +28,17 @@ function showNotif(msg, type) {
 }
 
 function onCancelClick() {
-    onDialogCancel()
+  onDialogCancel();
 }
 
 const handleSubmit = () => {
-  console.log(`Delete Category ${categoryID.value}`)
+  console.log(`Delete Category ${categoryID.value}`);
   transactionServiceCategory
     .deleteCategory(categoryID.value)
     .then((data) => {
       console.log(data);
       showNotif("Category deleted successfully.", "positive");
-      onDialogOK()
+      onDialogOK();
     })
     .catch((err) => {
       console.log("Unable to add category");
@@ -79,11 +78,11 @@ const handleSubmit = () => {
 
 <style scoped lang="sass">
 
-.card-header-text 
+.card-header-text
   font-size: 1.5rem
   text-align: center
 
-.card-buttons 
+.card-buttons
   justify-content: space-between
 
 .bg-cream-white

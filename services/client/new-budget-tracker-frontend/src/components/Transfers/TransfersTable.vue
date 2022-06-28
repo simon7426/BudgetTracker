@@ -199,7 +199,14 @@ function deleteTransfer(transfer) {
                 dense
                 @click="editTransfer(props.row)"
               />
-              <q-btn icon="delete" size="sm" class="q-ml-sm" flat dense @click="deleteTransfer(props.row)"/>
+              <q-btn
+                icon="delete"
+                size="sm"
+                class="q-ml-sm"
+                flat
+                dense
+                @click="deleteTransfer(props.row)"
+              />
             </div>
           </q-td>
         </template>

@@ -57,12 +57,8 @@ class TransactionsList(Resource):
             transactions_list = get_all_transactions_by_transaction_owner(
                 transaction_owner=user_id
             )
-            if transactions_list:
-                return transactions_list, 200
-            else:
-                raise NotFound
-        except NotFound:
-            transactions_namespace.abort(404, "Not Found")
+            return transactions_list, 200
+
         except Exception as e:
             current_app.logger.info(e)
             transactions_namespace.abort(400, "Operation Error")

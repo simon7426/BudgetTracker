@@ -15,7 +15,6 @@ const myApp = createApp(App);
 
 const store = createPinia();
 
-
 myApp.use(store);
 
 myApp.use(router);

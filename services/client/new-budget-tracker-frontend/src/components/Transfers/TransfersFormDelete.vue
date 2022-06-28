@@ -1,20 +1,19 @@
 /* eslint-disable vue/require-default-prop */
 <script setup>
 import { ref, toRefs } from "vue";
-import transactionServiceTransfer from "../../services/transfers.transaction.service"
+import transactionServiceTransfer from "../../services/transfers.transaction.service";
 import { useDialogPluginComponent, useQuasar } from "quasar";
-
 
 const props = defineProps({
   row: {
     type: Object,
     default: () => {},
   },
-})
+});
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
-const transactionId = ref(props.row.id)
+const transactionId = ref(props.row.id);
 const isLoading = ref(false);
 
 const q = useQuasar();
@@ -28,7 +27,7 @@ function showNotif(msg, type) {
 }
 
 function onCancelClick() {
-    onDialogCancel()
+  onDialogCancel();
 }
 
 const handleSubmit = () => {
@@ -37,7 +36,7 @@ const handleSubmit = () => {
     .then((data) => {
       console.log(data);
       showNotif("Transaction deleted successfully.", "positive");
-      onDialogOK()
+      onDialogOK();
     })
     .catch((err) => {
       console.log("Unable to delete account");
@@ -75,13 +74,12 @@ const handleSubmit = () => {
   </q-dialog>
 </template>
 
-
 <style scoped lang="sass">
-.card-header-text 
+.card-header-text
   font-size: 1.5rem
   text-align: center
 
-.card-buttons 
+.card-buttons
   justify-content: space-between
 
 .bg-cream-white

@@ -4,21 +4,25 @@ import { ref, toRefs } from "vue";
 import transactionServiceCategory from "../../services/category.transaction.service";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 
-
 const props = defineProps({
   row: {
     type: Object,
     default: () => {},
   },
-})
+});
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 const options = ["Income", "Expense"];
-const categoryID = ref(props.row.id)
+const categoryID = ref(props.row.id);
 const categoryName = ref(props.row.category_name);
 const categoryNameRef = ref(null);
-const categoryType = ref(props.row.category_type.replace(/^./, props.row.category_type[0].toUpperCase()));
+const categoryType = ref(
+  props.row.category_type.replace(
+    /^./,
+    props.row.category_type[0].toUpperCase()
+  )
+);
 const categoryTypeRef = ref(null);
 const isLoading = ref(false);
 
@@ -41,13 +45,13 @@ function showNotif(msg, type) {
 }
 
 function onCancelClick() {
-    onDialogCancel()
+  onDialogCancel();
 }
 
 const handleSubmit = () => {
   const inp_name = categoryName.value;
   const inp_type = categoryType.value.toLowerCase();
-  console.log(inp_name, inp_type)
+  console.log(inp_name, inp_type);
   if (
     inp_name.length !== 0 &&
     (inp_type === "income" || inp_type === "expense")
@@ -62,7 +66,7 @@ const handleSubmit = () => {
       .editCategory(category)
       .then((data) => {
         showNotif("Category edited successfully.", "positive");
-        onDialogOK(data)
+        onDialogOK(data);
       })
       .catch((err) => {
         console.log("Unable to edit category");
@@ -100,6 +104,7 @@ const handleSubmit = () => {
             v-model="categoryType"
             standout="bg-white text-black"
             outlined
+            options-selected-class="bg-light-green-3 text-grey-9"
             :options="options"
             label="Type"
             :rules="checkCategoryType"
@@ -128,10 +133,10 @@ const handleSubmit = () => {
 </template>
 
 <style scoped lang="sass">
-.card-header-text 
+.card-header-text
   font-size: 2rem
 
-.card-buttons 
+.card-buttons
   justify-content: space-between
 
 .bg-cream-white

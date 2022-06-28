@@ -17,12 +17,12 @@ const props = defineProps({
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 
-console.log(props.row)
+console.log(props.row);
 
 const accountOptions = ref(props.accountTable);
 const options = ref(accountOptions.value);
 
-const transferId = ref(props.row.id)
+const transferId = ref(props.row.id);
 const fromAccount = ref(props.row.from_account);
 const fromAccountRef = ref(null);
 const toAccount = ref(props.row.to_account);
@@ -69,14 +69,14 @@ const isError = computed(() => {
 });
 
 const handleSubmit = () => {
-    const transfer_id = transferId.value;
+  const transfer_id = transferId.value;
   const from_account_id = fromAccount.value.id;
   const to_account_id = toAccount.value.id;
   const transfer_amount = parseFloat(transferAmount.value);
   if (from_account_id && to_account_id && transferAmount) {
     isLoading.value = true;
     const transfer = {
-        transfer_id,
+      transfer_id,
       from_account_id,
       to_account_id,
       transfer_amount,

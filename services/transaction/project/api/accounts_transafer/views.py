@@ -47,12 +47,8 @@ class AccountTransferList(Resource):
         try:
             user_id = AccountTransferList.get.owner_id
             transfer_list = get_account_transfer_by_user_id(user_id)
-            if transfer_list:
-                return transfer_list, 200
-            else:
-                raise NotFound
-        except NotFound:
-            account_transfer_namespace.abort(404, "Not Found")
+            return transfer_list, 200
+
         except Exception as e:
             current_app.logger.info(e)
             account_transfer_namespace.abort(404, "Operation Error")

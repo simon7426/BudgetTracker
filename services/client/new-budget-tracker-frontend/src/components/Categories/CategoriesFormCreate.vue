@@ -31,7 +31,7 @@ function showNotif(msg, type) {
 }
 
 function onCancelClick() {
-    onDialogCancel()
+  onDialogCancel();
 }
 
 const handleSubmit = () => {
@@ -51,7 +51,7 @@ const handleSubmit = () => {
       .then((data) => {
         console.log(data);
         showNotif("Category added successfully.", "positive");
-        onDialogOK(data)
+        onDialogOK(data);
       })
       .catch((err) => {
         console.log("Unable to add category");
@@ -89,6 +89,7 @@ const handleSubmit = () => {
             v-model="categoryType"
             standout="bg-white text-black"
             outlined
+            options-selected-class="bg-light-green-3 text-grey-9"
             :options="options"
             label="Type"
             :rules="checkCategoryType"
@@ -117,10 +118,10 @@ const handleSubmit = () => {
 </template>
 
 <style scoped lang="sass">
-.card-header-text 
+.card-header-text
   font-size: 2rem
 
-.card-buttons 
+.card-buttons
   justify-content: space-between
 
 .bg-cream-white
