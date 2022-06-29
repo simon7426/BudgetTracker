@@ -1,21 +1,21 @@
 <script setup>
-import { useAuthStore } from '../stores/useAuth';
-const store = useAuthStore()
+import { useAuthStore } from "../stores/useAuth";
+const store = useAuthStore();
 </script>
 
 <template>
   <q-header elevated class="bg-light-green text-black">
     <q-toolbar>
-      <router-link class="no-decoration" :to="{name: 'Home'}">
-      <q-avatar square size="2.5rem">
-        <img src="../assets/logo-transperant.png" />
-      </q-avatar>
+      <router-link class="no-decoration" :to="{ name: 'Dashboard' }">
+        <q-avatar square size="2.5rem">
+          <img src="../assets/logo-transperant.png" />
+        </q-avatar>
       </router-link>
       <q-toolbar-title class="text-white"> Budget Tracker </q-toolbar-title>
       <q-space />
       <div v-if="store.isLoggedIn" class="q-gutter-sm">
-        <router-link class="no-decoration" :to="{name: 'Profile'}">
-        <q-btn
+        <router-link class="no-decoration" :to="{ name: 'Profile' }">
+          <q-btn
             key="profile-button"
             flat
             rounded
@@ -24,7 +24,7 @@ const store = useAuthStore()
             label="Profile"
           ></q-btn
         ></router-link>
-        <router-link class="no-decoration" :to="{name: 'Logout'}">
+        <router-link class="no-decoration" :to="{ name: 'Logout' }">
           <q-btn
             key="logout-button"
             flat
@@ -36,7 +36,7 @@ const store = useAuthStore()
         ></router-link>
       </div>
       <div v-else class="q-gutter-sm">
-        <router-link class="no-decoration" :to="{name: 'Login'}"
+        <router-link class="no-decoration" :to="{ name: 'Login' }"
           ><q-btn
             key="login-button"
             flat
@@ -46,7 +46,7 @@ const store = useAuthStore()
             label="Login"
           ></q-btn
         ></router-link>
-        <router-link class="no-decoration" :to="{name: 'Register'}">
+        <router-link class="no-decoration" :to="{ name: 'Register' }">
           <q-btn
             key="register-button"
             flat

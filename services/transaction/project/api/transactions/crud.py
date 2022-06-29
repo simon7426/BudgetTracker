@@ -3,7 +3,7 @@ from project.api.models import TransactionList
 
 
 def get_all_transactions_by_transaction_owner(transaction_owner):
-    return TransactionList.query.get(transaction_owner=transaction_owner).all()
+    return TransactionList.query.filter_by(transaction_owner=transaction_owner).all()
 
 
 def get_transactions_by_id(id, transaction_owner):
@@ -14,6 +14,7 @@ def get_transactions_by_id(id, transaction_owner):
 
 def add_transactions(
     transaction_owner,
+    transaction_date,
     transaction_type,
     transaction_description,
     transaction_amount,
@@ -22,6 +23,7 @@ def add_transactions(
 ):
     transactions = TransactionList(
         transaction_owner=transaction_owner,
+        transaction_date=transaction_date,
         transaction_type=transaction_type,
         transaction_description=transaction_description,
         transaction_amount=transaction_amount,
@@ -35,12 +37,14 @@ def add_transactions(
 
 def update_transaction(
     transaction,
+    transaction_date,
     transaction_type,
     transaction_description,
     transaction_amount,
     transaction_category_id,
     transaction_account_id,
 ):
+    transaction.transaction_date = transaction_date
     transaction.transaction_type = transaction_type
     transaction.transaction_description = transaction_description
     transaction.transaction_amount = transaction_amount

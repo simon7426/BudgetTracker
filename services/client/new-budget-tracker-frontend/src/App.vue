@@ -1,31 +1,7 @@
 <script setup>
-// This starter template is using Vue 3 <script setup> SFCs
-// Check out https://v3.vuejs.org/api/sfc-script-setup.html#sfc-script-setup
-import HelloWorld from "./components/HelloWorld.vue";
-import LoginPage from "./components/LoginPage.vue";
-import RegisterPage from "./components/RegisterPage.vue";
-import NavigationBar from "./components/NavigationBar.vue";
+import HomePage from "./components/HomePage.vue";
 </script>
 
 <template>
-  <q-layout view="hHh lpR fFf">
-    <NavigationBar />
-    <router-view />
-  </q-layout>
+  <HomePage />
 </template>
-
-<style lang="sass">
-.bg-cream-white 
-  background: $primary
-
-.q-card 
-  width: 25rem
-
-.card-header 
-  display: flex
-  justify-content: center
-
-.card-header-img 
-  width: 100%
-
-</style>

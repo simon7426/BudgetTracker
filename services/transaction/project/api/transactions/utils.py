@@ -1,4 +1,5 @@
 from flask_restx import ValidationError
+from datetime import datetime
 
 from project.api.accounts.crud import get_account_by_id
 from project.api.accounts_transafer.crud import rollback_database
@@ -11,6 +12,7 @@ from project.api.transactions.crud import (
 
 def add_transactions_handler(
     transaction_owner,
+    transaction_date,
     transaction_type,
     transaction_description,
     transaction_amount,
@@ -32,6 +34,7 @@ def add_transactions_handler(
         raise ValidationError
     transactions = add_transactions(
         transaction_owner=transaction_owner,
+        transaction_date = datetime.strptime(transaction_date, '%Y-%m-%d').date(),
         transaction_type=transaction_type,
         transaction_description=transaction_description,
         transaction_amount=transaction_amount,
@@ -60,6 +63,7 @@ def delete_transaction_handler(transaction):
 def update_transaction_handler(
     transaction,
     transaction_type,
+    transaction_date,
     transaction_description,
     transaction_amount,
     transaction_category_id,
@@ -90,6 +94,7 @@ def update_transaction_handler(
             raise ValidationError
         transaction = update_transaction(
             transaction=transaction,
+            transaction_date = datetime.strptime(transaction_date, '%Y-%m-%d').date(),
             transaction_type=transaction_type,
             transaction_description=transaction_description,
             transaction_amount=transaction_amount,

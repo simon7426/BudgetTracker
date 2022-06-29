@@ -37,6 +37,7 @@ class TransactionList(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     transaction_owner = db.Column(db.Integer, nullable=False)
+    transaction_date = db.Column(db.Date, nullable=False)
     transaction_type = db.Column(db.Enum(ChoiceType), nullable=False)
     transaction_description = db.Column(db.String(300), nullable=False)
     transaction_amount = db.Column(db.Numeric(10, 2), nullable=False)
@@ -52,6 +53,7 @@ class TransactionList(db.Model):
     def __init__(
         self,
         transaction_owner,
+        transaction_date,
         transaction_type,
         transaction_description,
         transaction_amount,
@@ -59,6 +61,7 @@ class TransactionList(db.Model):
         transaction_account_id,
     ):
         self.transaction_owner = transaction_owner
+        self.transaction_date = transaction_date
         self.transaction_type = transaction_type
         self.transaction_description = transaction_description
         self.transaction_amount = transaction_amount
@@ -66,7 +69,7 @@ class TransactionList(db.Model):
         self.transaction_account_id = transaction_account_id
 
     def __repr__(self):
-        return f"{self.transaction_type}: {self.transaction_description} {self.transaction_amount}"
+        return f"{self.transaction_type}: {self.transaction_description} {self.transaction_amount} on {self.transaction_date}"
 
 
 class Account(db.Model):

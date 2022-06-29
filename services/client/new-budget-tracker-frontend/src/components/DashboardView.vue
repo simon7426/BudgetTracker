@@ -2,6 +2,6 @@
 
 <template>
   <div>
-    <h3>User Profile</h3>
+    <h3>USER Dashboard</h3>
   </div>
 </template>

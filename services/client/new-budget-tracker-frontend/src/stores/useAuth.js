@@ -6,9 +6,9 @@ export const useAuthStore = defineStore("auth", {
     access_token: null,
   }),
   getters: {
-      isLoggedIn() {
-         return this.access_token !== null
-      }
+    isLoggedIn() {
+      return this.access_token !== null;
+    },
   },
   actions: {
     logout() {
@@ -19,6 +19,6 @@ export const useAuthStore = defineStore("auth", {
     },
     removeToken() {
       this.access_token = null;
-    }
+    },
   },
 });

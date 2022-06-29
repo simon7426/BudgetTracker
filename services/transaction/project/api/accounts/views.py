@@ -47,12 +47,7 @@ class AccountsList(Resource):
         try:
             user_id = AccountsList.get.owner_id
             accounts = get_all_accounts_by_user_id(user_id)
-            if accounts:
-                return accounts, 200
-            else:
-                raise NotFound
-        except NotFound:
-            account_namespace.abort(404, "No accounts found.")
+            return accounts, 200
         except Exception as e:
             current_app.logger.info(e)
             account_namespace.abort(400, "Operation error")

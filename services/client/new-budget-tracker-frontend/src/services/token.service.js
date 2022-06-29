@@ -1,11 +1,10 @@
-import { useAuthStore } from "../stores/useAuth"
+import { useAuthStore } from "../stores/useAuth";
 
 class TokenService {
-
   getAccessToken() {
     const values = useAuthStore();
     const { access_token } = values;
-    return access_token.value
+    return access_token.value;
   }
 
   getLocalRefreshToken() {
@@ -19,9 +18,9 @@ class TokenService {
     localStorage.setItem("user", JSON.stringify(user));
   }
 
-  updateAccessToken(token){
+  updateAccessToken(token) {
     const values = useAuthStore();
-    values.setToken(token)
+    values.setToken(token);
   }
 
   getUser() {
