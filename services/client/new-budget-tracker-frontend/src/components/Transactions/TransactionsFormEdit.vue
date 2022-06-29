@@ -12,24 +12,6 @@ const dateOption = {
   month: "long",
   day: "numeric",
 };
-const today = new Date();
-const transactionDate = ref(today.toISOString().substring(0, 10));
-const transactionDateRef = ref(null);
-const transactionDateFormatted = ref(
-  today.toLocaleDateString("en-US", dateOption)
-);
-const transactionDateFormattedRef = ref(null);
-const transactionType = ref("");
-const transactionTypeRef = ref(null);
-const transactionDescription = ref("");
-const transactionDescriptionRef = ref(null);
-const transactionAmount = ref(0);
-const transactionAmountRef = ref(null);
-const transactionCategory = ref("");
-const transactionCategoryRef = ref(null);
-const transactionAccount = ref("");
-const transactionAccountRef = ref(null);
-const isLoading = ref(false);
 
 const props = defineProps({
   accountTable: {
@@ -40,7 +22,36 @@ const props = defineProps({
     type: Array,
     default: () => [],
   },
+  row: {
+    type: Object,
+    default: () => {},
+  },
 });
+
+const selectedDate = new Date(props.row.transaction_date);
+const transactionId = ref(props.row.id);
+const transactionDate = ref(selectedDate.toISOString().substring(0, 10));
+const transactionDateRef = ref(null);
+const transactionDateFormatted = ref(
+  selectedDate.toLocaleDateString("en-US", dateOption)
+);
+const transactionDateFormattedRef = ref(null);
+const transactionType = ref(
+  props.row.transaction_type.replace(
+    /^./,
+    props.row.transaction_type[0].toUpperCase()
+  )
+);
+const transactionTypeRef = ref(null);
+const transactionDescription = ref(props.row.transaction_description);
+const transactionDescriptionRef = ref(null);
+const transactionAmount = ref(props.row.transaction_amount);
+const transactionAmountRef = ref(null);
+const transactionCategory = ref(props.row.transaction_category);
+const transactionCategoryRef = ref(null);
+const transactionAccount = ref(props.row.transaction_account);
+const transactionAccountRef = ref(null);
+const isLoading = ref(false);
 
 const accountOptions = ref(props.accountTable);
 const optionsAccount = ref(accountOptions.value);
@@ -127,7 +138,9 @@ function updateCategory() {
 }
 
 function updateDate() {
-  transactionDateFormatted.value = new Date(transactionDate.value).toLocaleDateString('en-US', dateOption)
+  transactionDateFormatted.value = new Date(
+    transactionDate.value
+  ).toLocaleDateString("en-US", dateOption);
 }
 
 const q = useQuasar();
@@ -164,6 +177,7 @@ const handleSubmit = () => {
     const inp_account_id = inp_account.id;
     isLoading.value = true;
     const transaction = {
+      transaction_id: transactionId.value,
       transaction_type: inp_type,
       transaction_date: inp_date,
       transaction_amount: inp_amount,
@@ -172,15 +186,15 @@ const handleSubmit = () => {
       transaction_account_id: inp_account_id,
     };
     transactionService
-      .addTransaction(transaction)
+      .editTransaction(transaction)
       .then((data) => {
-        showNotif("Transaction added successfully.", "positive");
+        showNotif("Transaction edited successfully.", "positive");
         onDialogOK(data);
       })
       .catch((err) => {
-        console.log("Unable to add transaction.");
+        console.log("Unable to edit transaction.");
         console.log(err);
-        showNotif("Unable to add transaction.", "negative");
+        showNotif("Unable to edit transaction.", "negative");
       });
     isLoading.value = false;
   } else {
@@ -198,7 +212,7 @@ const handleSubmit = () => {
   <q-dialog ref="dialogRef">
     <q-card flat class="bg-cream-white q-pa-lg shadow-1">
       <q-card-section class="card-header">
-        <p class="card-header-text">Add Transaction</p>
+        <p class="card-header-text">Edit Transaction</p>
       </q-card-section>
       <q-card-section>
         <q-form class="q-gutter-md">
@@ -314,7 +328,7 @@ const handleSubmit = () => {
           unelevated
           flat
           size="md"
-          label="Add"
+          label="Edit"
           :loading="isLoading"
           @click="handleSubmit"
         />

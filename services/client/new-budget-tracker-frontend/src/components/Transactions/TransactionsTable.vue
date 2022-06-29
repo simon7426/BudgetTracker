@@ -5,8 +5,15 @@ import transactionServiceCategories from "../../services/category.transaction.se
 import transactionServiceAccounts from "../../services/accounts.transaction.service";
 import transactionService from "../../services/transactions.transaction.service";
 import TransactionsFormCreate from "./TransactionsFormCreate.vue";
+import TransactionsFormEdit from "./TransactionsFormEdit.vue";
+import TransactionsFormDelete from "./TransactionsFormDelete.vue";
 
 const pagination = { sortBy: "transaction_id", rowsPerPage: 0 };
+const dateOption = {
+  year: "numeric",
+  month: "long",
+  day: "numeric",
+};
 
 const columns = [
   {
@@ -15,6 +22,15 @@ const columns = [
     align: "center",
     field: (row) => row.id,
     format: (val) => `${val}`,
+  },
+  {
+    name: "transaction_date",
+    label: "Date",
+    align: "center",
+    sortable: true,
+    sort: (a, b, rowA, rowB) => new Date(a) < new Date(b),
+    field: (row) => row.transaction_date,
+    format: (val) => `${val.toLocaleDateString("en-US", dateOption)}`,
   },
   {
     name: "transaction_type",
@@ -116,6 +132,7 @@ async function getTransactions() {
         for (var i in data) {
           rows.value.push({
             id: data[i]["id"],
+            transaction_date: new Date(data[i]["transaction_date"]),
             transaction_type: data[i]["transaction_type"],
             transaction_description: data[i]["transaction_description"],
             transaction_amount: data[i]["transaction_amount"],
@@ -163,6 +180,7 @@ function addTransactionDialog() {
   }).onOk((payload) => {
     rows.value.push({
       id: payload["id"],
+      transaction_date: new Date(payload["transaction_date"]),
       transaction_type: payload["transaction_type"],
       transaction_description: payload["transaction_description"],
       transaction_amount: payload["transaction_amount"],
@@ -173,36 +191,41 @@ function addTransactionDialog() {
   });
 }
 
-// function editTransfer(transfer) {
-//   q.dialog({
-//     component: TransfersFormEdit,
-//     componentProps: {
-//       accountTable: getAccountTable(),
-//       row: transfer,
-//     },
-//   }).onOk((payload) => {
-//     rows.value[rows.value.findIndex((obj) => obj.id == transfer.id)] = {
-//       id: payload["id"],
-//       from_account: accountDict.value[payload["from_account_id"]],
-//       to_account: accountDict.value[payload["to_account_id"]],
-//       transfer_amount: payload["transfer_amount"],
-//     };
-//   });
-// }
+function editTransaction(transaction) {
+  q.dialog({
+    component: TransactionsFormEdit,
+    componentProps: {
+      accountTable: getAccountTable(),
+      categoryTable: getCategoryTable(),
+      row: transaction,
+    },
+  }).onOk((payload) => {
+    rows.value[rows.value.findIndex((obj) => obj.id == transaction.id)] = {
+      id: payload["id"],
+      transaction_date: new Date(payload["transaction_date"]),
+      transaction_type: payload["transaction_type"],
+      transaction_description: payload["transaction_description"],
+      transaction_amount: payload["transaction_amount"],
+      transaction_category:
+        categoryDict.value[payload["transaction_category_id"]],
+      transaction_account: accountDict.value[payload["transaction_account_id"]],
+    };
+  });
+}
 
-// function deleteTransfer(transfer) {
-//   q.dialog({
-//     component: TransfersFormDelete,
-//     componentProps: {
-//       row: transfer,
-//     },
-//   }).onOk(() => {
-//     rows.value.splice(
-//       rows.value.findIndex((obj) => obj.id == transfer.id),
-//       1
-//     );
-//   });
-// }
+function deleteTransaction(transaction) {
+  q.dialog({
+    component: TransactionsFormDelete,
+    componentProps: {
+      row: transaction,
+    },
+  }).onOk(() => {
+    rows.value.splice(
+      rows.value.findIndex((obj) => obj.id == transaction.id),
+      1
+    );
+  });
+}
 </script>
 
 <template>
@@ -230,11 +253,13 @@ function addTransactionDialog() {
         row-key="transaction_id"
         :loading="loading"
         :visible-columns="[
+          'transaction_date',
           'transaction_type',
           'transaction_description',
           'transaction_amount',
           'transaction_category',
           'transaction_account',
+          'action',
         ]"
         binary-state-sort
         hide-pagination
@@ -243,8 +268,14 @@ function addTransactionDialog() {
         <template #body-cell-action="props">
           <q-td :props="props">
             <div class="td-action">
-              <q-btn icon="edit" size="sm" flat dense />
-              <q-btn icon="delete" size="sm" class="q-ml-sm" flat dense />
+              <q-btn
+                icon="edit"
+                size="sm"
+                flat
+                dense
+                @click="editTransaction(props.row)"
+              />
+              <q-btn icon="delete" size="sm" class="q-ml-sm" flat dense @click="deleteTransaction(props.row)"/>
             </div>
           </q-td>
         </template>

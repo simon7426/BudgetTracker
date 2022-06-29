@@ -1,5 +1,3 @@
-from asyncio.log import logger
-
 from flask import current_app, request
 from flask_restx import Namespace, Resource, ValidationError, fields
 from werkzeug.exceptions import NotFound
@@ -25,6 +23,7 @@ transactions = transactions_namespace.model(
     "Transactions",
     {
         "id": fields.Integer(readOnly=True),
+        "transaction_date": fields.Date(required=True),
         "transaction_type": fields.String(
             enum=ChoiceType._member_names_,
             attribute="transaction_type.value",
@@ -73,6 +72,7 @@ class TransactionsList(Resource):
         try:
             post_data = request.get_json()
             transaction_owner = TransactionsList.post.owner_id
+            transaction_date = post_data.get("transaction_date")
             transaction_type = post_data.get("transaction_type")
             transaction_description = post_data.get("transaction_description")
             transaction_amount = post_data.get("transaction_amount")
@@ -80,6 +80,7 @@ class TransactionsList(Resource):
             transaction_account_id = post_data.get("transaction_account_id")
             transactions = add_transactions_handler(
                 transaction_owner=transaction_owner,
+                transaction_date = transaction_date,
                 transaction_type=transaction_type,
                 transaction_description=transaction_description,
                 transaction_amount=transaction_amount,
@@ -131,6 +132,7 @@ class Transactions(Resource):
             put_data = request.get_json()
             transaction_owner = Transactions.put.owner_id
             transaction_type = put_data.get("transaction_type")
+            transaction_date = put_data.get("transaction_date")
             transaction_description = put_data.get("transaction_description")
             transaction_amount = put_data.get("transaction_amount")
             transaction_category_id = put_data.get("transaction_category_id")
@@ -142,6 +144,7 @@ class Transactions(Resource):
                 transaction = update_transaction_handler(
                     transaction=transaction,
                     transaction_type=transaction_type,
+                    transaction_date=transaction_date,
                     transaction_description=transaction_description,
                     transaction_amount=transaction_amount,
                     transaction_category_id=transaction_category_id,
@@ -155,11 +158,11 @@ class Transactions(Resource):
         except NotFound:
             transactions_namespace.abort(404, f"Transaction {id} does not exists.")
         except Exception as e:
-            current_app, logger.info(e)
+            current_app.logger.info(e)
             transactions_namespace.abort(400, "Operation error")
 
     @token_required
-    @transactions_namespace.expect(parser, transactions, validate=True)
+    @transactions_namespace.expect(parser, validate=True)
     @transactions_namespace.response(204, "No Content")
     @transactions_namespace.response(400, "Operation error")
     @transactions_namespace.response(404, "Transaction <id> does not exists.")

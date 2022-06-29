@@ -1,7 +1,7 @@
 /* eslint-disable vue/require-default-prop */
 <script setup>
 import { ref } from "vue";
-import transactionServiceTransfer from "../../services/transfers.transaction.service";
+import transactionService from "../../services/transactions.transaction.service";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 
 const props = defineProps({
@@ -31,17 +31,17 @@ function onCancelClick() {
 }
 
 const handleSubmit = () => {
-  transactionServiceTransfer
-    .deleteTransfer(transactionId.value)
+  transactionService
+    .deleteTransaction(transactionId.value)
     .then((data) => {
       console.log(data);
-      showNotif("Transfer deleted successfully.", "positive");
+      showNotif("Transaction deleted successfully.", "positive");
       onDialogOK();
     })
     .catch((err) => {
-      console.log("Unable to delete transfer");
+      console.log("Unable to delete transaction");
       console.log(err);
-      showNotif("Unable to delete transfer.", "negative");
+      showNotif("Unable to delete transaction.", "negative");
     });
   isLoading.value = false;
 };
