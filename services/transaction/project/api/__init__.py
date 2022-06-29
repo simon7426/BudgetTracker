@@ -3,6 +3,7 @@ from flask_restx import Api
 from project.api.accounts.views import account_namespace
 from project.api.accounts_transafer.views import account_transfer_namespace
 from project.api.alive import alive_namespace
+from project.api.summary.views import summary_namespace
 from project.api.transaction_categories.views import transaction_category_namespace
 from project.api.transactions.views import transactions_namespace
 
@@ -19,3 +20,4 @@ api.add_namespace(
 api.add_namespace(
     transactions_namespace, path="/api/v1/transactions-service/transactions"
 )
+api.add_namespace(summary_namespace, path="/api/v1/transactions-service/summary")

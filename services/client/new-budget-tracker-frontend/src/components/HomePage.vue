@@ -19,23 +19,31 @@ import LeftDrawer from "./LeftDrawer.vue";
   </q-layout>
 </template>
 
-<style lang="sass">
-.bg-cream-white
-  background: $primary
+<style lang="scss">
+.bg-cream-white {
+  background: $primary;
+}
 
-.q-card
-  width: 25rem
+.card-header {
+  display: flex;
+  justify-content: center;
+}
 
-.card-header
-  display: flex
-  justify-content: center
+.card-header-img {
+  width: 100%;
+}
 
-.card-header-img
-  width: 100%
+.no-padding {
+  padding: 0;
+}
 
-.no-padding
-  padding: 0
+.page-padding {
+  padding: 4rem 0rem;
+}
 
-.page-padding
-    padding: 5rem 250px
+@media (min-width: 768px) {
+  .page-padding {
+    padding: 5rem 250px;
+  }
+}
 </style>

@@ -69,7 +69,10 @@ class TransactionList(db.Model):
         self.transaction_account_id = transaction_account_id
 
     def __repr__(self):
-        return f"{self.transaction_type}: {self.transaction_description} {self.transaction_amount} on {self.transaction_date}"
+        return (
+            f"{self.transaction_type}: {self.transaction_description}"
+            f"{self.transaction_amount} on {self.transaction_date}"
+        )
 
 
 class Account(db.Model):

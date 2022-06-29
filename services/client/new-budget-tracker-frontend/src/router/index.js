@@ -7,7 +7,7 @@ import LogoutPage from "../components/LogoutPage.vue";
 import { useAuthStore } from "../stores/useAuth";
 import TokenService from "../services/token.service";
 import AuthService from "../services/auth.service";
-import DashboardView from "../components/DashboardView.vue";
+import DashboardView from "../components/Dashboard/DashboardView.vue";
 
 import AccountsView from "../components/Accounts/AccountsView.vue";
 import CategoriesView from "../components/Categories/CategoriesView.vue";

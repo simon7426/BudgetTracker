@@ -80,7 +80,7 @@ class TransactionsList(Resource):
             transaction_account_id = post_data.get("transaction_account_id")
             transactions = add_transactions_handler(
                 transaction_owner=transaction_owner,
-                transaction_date = transaction_date,
+                transaction_date=transaction_date,
                 transaction_type=transaction_type,
                 transaction_description=transaction_description,
                 transaction_amount=transaction_amount,
