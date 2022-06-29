@@ -146,7 +146,6 @@ function deleteAccountDialog(account) {
         <template #body-cell-action="props">
           <q-td :props="props">
             <div class="td-action">
-              <q-btn icon="info" size="sm" flat dense />
               <q-btn
                 icon="edit"
                 size="sm"
