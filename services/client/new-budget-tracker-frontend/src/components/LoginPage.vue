@@ -120,7 +120,4 @@ function handleLogin() {
   <router-view />
 </template>
 
-<style scoped lang="sass">
-.bg-cream-white
-  background: $primary
-</style>
+<style scoped lang="sass"></style>
