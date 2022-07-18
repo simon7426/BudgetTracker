@@ -1,7 +1,7 @@
 from flask_restx import Namespace, Resource, fields
 
 from project.api.decorator import token_required
-from project.api.summary.utils import get_basic_summary
+from project.api.summary.utils import get_summary
 
 summary_namespace = Namespace("Transactions")
 
@@ -16,6 +16,9 @@ basicSummaryModel = summary_namespace.model(
         "expenseMonth": fields.Float(required=True),
         "incomeAll": fields.Float(required=True),
         "expenseAll": fields.Float(required=True),
+        "previousMonths": fields.List(fields.String),
+        "incomeLastYear": fields.List(fields.Integer),
+        "expenseLastYear": fields.List(fields.Integer),
     },
 )
 
@@ -29,6 +32,7 @@ class BasicSummary(Resource):
         """Get Basic Summary of the User"""
         try:
             user_id = BasicSummary.get.owner_id
-            return get_basic_summary(user_id), 200
-        except Exception:
+            return get_summary(user_id), 200
+        except Exception as e:
+            print(e)
             summary_namespace.abort(400, "Operation Error")

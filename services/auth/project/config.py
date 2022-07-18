@@ -5,8 +5,8 @@ class BaseConfig:
     TESTING = False
     SQLALCHEMY_TRACK_MODIFICATIONS = False
     SECRET_KEY = os.environ.get("SECRET_KEY", "my_precious")
-    ACCESS_TOKEN_EXPIRATION = 300
-    REFRESH_TOKEN_EXPIRATION = 86400
+    ACCESS_TOKEN_EXPIRATION = os.environ.get("ACCESS_TOKEN_EXPIRATION", 3600)
+    REFRESH_TOKEN_EXPIRATION = os.environ.get("REFRESH_TOKEN_EXPIRATION", 86400)
     ACTIVATION_CODE_EXPIRATION = 1200
     REDIS_URL = os.environ.get("REDIS_URL","redis://localhost:6379/0")
     DEFAULT_ROLE = os.environ.get("DEFAULT_ROLE", "member")
