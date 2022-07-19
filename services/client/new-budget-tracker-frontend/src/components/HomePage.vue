@@ -3,6 +3,9 @@ import { ref } from "vue";
 
 import NavigationBar from "./NavigationBar.vue";
 import LeftDrawer from "./LeftDrawer.vue";
+function myTweak(offset) {
+  return { minHeight: offset ? `calc(100vh - ${offset}px)` : "100vh" };
+}
 </script>
 
 <template>
@@ -11,7 +14,8 @@ import LeftDrawer from "./LeftDrawer.vue";
     <LeftDrawer />
     <q-page-container class="no-padding">
       <q-page
-        class="page-padding bg-cream-white window-height row justify-center items-start"
+        :style-fn="myTweak"
+        class="page-padding bg-cream-white row justify-center items-start"
       >
         <router-view
       /></q-page>

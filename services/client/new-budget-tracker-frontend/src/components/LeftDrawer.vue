@@ -63,7 +63,7 @@ function isActive(props) {
             v-ripple
             clickable
             :active="isActive(menuItem.label)"
-            active-class="bg-light-green-3 text-grey-9"
+            active-class="drawerActive"
             @click="drawerClicked($event, menuItem)"
           >
             <q-item-section avatar>
@@ -79,7 +79,13 @@ function isActive(props) {
     </q-scroll-area>
   </q-drawer>
 </template>
-<style scoped lang="sass">
-.drawerStyle
-    background: $primary
+<style scoped lang="scss">
+.drawerStyle {
+  background: $primary;
+}
+
+.drawerActive {
+  background: $accent;
+  color: #000000
+}
 </style>

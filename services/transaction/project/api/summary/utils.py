@@ -2,6 +2,7 @@ from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
 from sqlalchemy import extract, func
+from sqlalchemy.orm import joinedload
 
 from project.api.models import Account, ChoiceType, TransactionList
 
@@ -78,7 +79,11 @@ def get_last_months(start_date, months):
 
 
 def get_summary(user_id):
-    transactions = TransactionList.query.filter_by(transaction_owner=user_id).all()
+    transactions = (
+        TransactionList.query.filter_by(transaction_owner=user_id)
+        .options(joinedload("transaction_category"))
+        .all()
+    )
     today = get_today()
     current_balance = get_current_balance(user_id)
     income_all, expense_all, = (
@@ -86,6 +91,7 @@ def get_summary(user_id):
         0,
     )
     income, expense = {}, {}
+    income_category, expense_category = {}, {}
     last_12_months = get_last_months(today, 12)
     for transaction in transactions:
         if transaction.transaction_type == ChoiceType.income:
@@ -98,6 +104,12 @@ def get_summary(user_id):
                 income[income_key] += transaction.transaction_amount
             else:
                 income[income_key] = transaction.transaction_amount
+            income_category_key = transaction.transaction_category.category_name
+            if income_category_key in income_category:
+                income_category[income_category_key] += transaction.transaction_amount
+            else:
+                income_category[income_category_key] = transaction.transaction_amount
+
         else:
             expense_all += transaction.transaction_amount
             expense_key = (
@@ -108,11 +120,15 @@ def get_summary(user_id):
                 expense[expense_key] += transaction.transaction_amount
             else:
                 expense[expense_key] = transaction.transaction_amount
+            expense_category_key = transaction.transaction_category.category_name
+            if expense_category_key in expense_category:
+                expense_category[expense_category_key] += transaction.transaction_amount
+            else:
+                expense_category[expense_category_key] = transaction.transaction_amount
     income_group, expense_group = [], []
     for months in last_12_months:
         income_group.append(income.get(months, 0))
         expense_group.append(expense.get(months, 0))
-
     return {
         "balance": parse_amount(current_balance),
         "incomeAll": parse_amount(income_all),
@@ -122,4 +138,8 @@ def get_summary(user_id):
         "previousMonths": parse_month(last_12_months),
         "incomeLastYear": income_group,
         "expenseLastYear": expense_group,
+        "incomeCategory": list(income_category.keys()),
+        "incomeCategoryValues": list(income_category.values()),
+        "expenseCategory": list(expense_category.keys()),
+        "expenseCategoryValues": list(expense_category.values()),
     }

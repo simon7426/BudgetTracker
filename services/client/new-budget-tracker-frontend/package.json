@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.12.5",
+    "apexcharts": "^3.35.3",
     "axios": "^0.26.0",
     "pinia": "^2.0.14",
     "quasar": "^2.5.5",
@@ -19,7 +20,8 @@
     "vue-axios": "^3.4.1",
     "vue-flip": "^2.2.0",
     "vue-number-animation": "^1.1.2",
-    "vue-router": "^4.0.12"
+    "vue-router": "^4.0.12",
+    "vue3-apexcharts": "^1.4.1"
   },
   "devDependencies": {
     "@quasar/vite-plugin": "^1.0.4",

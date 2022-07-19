@@ -70,7 +70,7 @@ class TransactionList(db.Model):
 
     def __repr__(self):
         return (
-            f"{self.transaction_type}: {self.transaction_description}"
+            f"{self.transaction_type}: {self.transaction_description} "
             f"{self.transaction_amount} on {self.transaction_date}"
         )
 

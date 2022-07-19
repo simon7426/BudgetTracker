@@ -20,10 +20,10 @@ function handleRegister() {
   <q-card flat class="bg-cream-white q-pa-lg shadow-1">
     <q-card-section class="card-header">
       <q-img
-        :ratio="16 / 9"
+        :ratio="1 / 1"
         fit="fill"
         class="card-header-img"
-        src="../assets/logo16.png"
+        src="../assets/logoalter2.png"
         alt="logo"
       />
     </q-card-section>

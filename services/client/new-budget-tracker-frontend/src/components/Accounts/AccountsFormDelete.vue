@@ -4,17 +4,16 @@ import { ref, toRefs } from "vue";
 import transactionServiceAccounts from "../../services/accounts.transaction.service";
 import { useDialogPluginComponent, useQuasar } from "quasar";
 
-
 const props = defineProps({
   row: {
     type: Object,
     default: () => {},
   },
-})
+});
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
-const accountId = ref(props.row.id)
+const accountId = ref(props.row.id);
 const isLoading = ref(false);
 
 const q = useQuasar();
@@ -28,17 +27,17 @@ function showNotif(msg, type) {
 }
 
 function onCancelClick() {
-    onDialogCancel()
+  onDialogCancel();
 }
 
 const handleSubmit = () => {
-  console.log(`Delete Account ${accountId.value}`)
+  console.log(`Delete Account ${accountId.value}`);
   transactionServiceAccounts
     .deleteAccount(accountId.value)
     .then((data) => {
       console.log(data);
       showNotif("Account deleted successfully.", "positive");
-      onDialogOK()
+      onDialogOK();
     })
     .catch((err) => {
       console.log("Unable to delete account");
@@ -76,15 +75,17 @@ const handleSubmit = () => {
   </q-dialog>
 </template>
 
+<style scoped lang="scss">
+.card-header-text {
+  font-size: 1.5rem;
+  text-align: center;
+}
 
-<style scoped lang="sass">
-.card-header-text 
-  font-size: 1.5rem
-  text-align: center
+.card-buttons {
+  justify-content: space-between;
+}
 
-.card-buttons 
-  justify-content: space-between
-
-.bg-cream-white
-  background: $primary
+.bg-cream-white {
+  background: $primary;
+}
 </style>

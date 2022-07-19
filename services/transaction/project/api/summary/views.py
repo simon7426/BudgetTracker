@@ -19,6 +19,10 @@ basicSummaryModel = summary_namespace.model(
         "previousMonths": fields.List(fields.String),
         "incomeLastYear": fields.List(fields.Integer),
         "expenseLastYear": fields.List(fields.Integer),
+        "incomeCategory": fields.List(fields.String),
+        "incomeCategoryValues": fields.List(fields.Integer),
+        "expenseCategory": fields.List(fields.String),
+        "expenseCategoryValues": fields.List(fields.Integer),
     },
 )
 
