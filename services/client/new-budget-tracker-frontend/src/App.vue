@@ -5,3 +5,8 @@ import HomePage from "./components/HomePage.vue";
 <template>
   <HomePage />
 </template>
+<style lang="scss">
+.bg-cream-white {
+  background: $primary;
+}
+</style>

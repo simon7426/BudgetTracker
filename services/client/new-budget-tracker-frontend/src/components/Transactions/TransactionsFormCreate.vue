@@ -127,7 +127,9 @@ function updateCategory() {
 }
 
 function updateDate() {
-  transactionDateFormatted.value = new Date(transactionDate.value).toLocaleDateString('en-US', dateOption)
+  transactionDateFormatted.value = new Date(
+    transactionDate.value
+  ).toLocaleDateString("en-US", dateOption);
 }
 
 const q = useQuasar();

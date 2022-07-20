@@ -1,4 +1,4 @@
-version: '3.8'
+version: "3.8"
 
 services:
   auth:
@@ -6,9 +6,9 @@ services:
       context: ./services/auth
       dockerfile: Dockerfile
     container_name: budget-tracker-auth
-    entrypoint: ['/usr/src/budget-tracker/entrypoint.sh']
+    entrypoint: ["/usr/src/budget-tracker/entrypoint.sh"]
     volumes:
-      - './services/auth:/usr/src/budget-tracker'
+      - "./services/auth:/usr/src/budget-tracker"
     ports:
       - 8001:8000
     environment:
@@ -19,15 +19,15 @@ services:
     depends_on:
       - db
       - redis
-  
+
   transaction:
     build:
       context: ./services/transaction
       dockerfile: Dockerfile
     container_name: budget-tracker-transaction
-    entrypoint: ['/usr/src/budget-tracker/entrypoint.sh']
+    entrypoint: ["/usr/src/budget-tracker/entrypoint.sh"]
     volumes:
-      - './services/transaction:/usr/src/budget-tracker'
+      - "./services/transaction:/usr/src/budget-tracker"
     ports:
       - 8002:8000
     environment:
@@ -37,15 +37,15 @@ services:
       - DATABASE_TEST_URL=postgresql://postgres:7426@db:5432/budget_tracker_transaction_test
     depends_on:
       - db
-  
+
   profile:
     build:
       context: ./services/profile
       dockerfile: Dockerfile
     container_name: budget-tracker-profile
-    entrypoint: ['/usr/src/budget-tracker/entrypoint.sh']
+    entrypoint: ["/usr/src/budget-tracker/entrypoint.sh"]
     volumes:
-      - './services/profile:/usr/src/budget-tracker'
+      - "./services/profile:/usr/src/budget-tracker"
     ports:
       - 8003:8000
     environment:
@@ -55,9 +55,23 @@ services:
       - DATABASE_TEST_URL=postgresql://postgres:7426@db:5432/budget_tracker_profile_test
     depends_on:
       - db
-  
+
+  client:
+    build:
+      context: ./services/client/new-budget-tracker-frontend
+      dockerfile: Dockerfile
+    container_name: budget-tracker-client
+    volumes:
+      - "./services/client/new-budget-tracker-frontend:/app"
+    ports:
+      - 8080:8080
+    depends_on:
+      - auth
+      - transaction
+      - profile
+
   db:
-    build: 
+    build:
       context: ./services/db
       dockerfile: Dockerfile
     container_name: budget-tracker-db
@@ -74,7 +88,7 @@ services:
     container_name: budget-tracker-redis
     expose:
       - 6379
-  
+
   nginx:
     build:
       context: ./services/nginx

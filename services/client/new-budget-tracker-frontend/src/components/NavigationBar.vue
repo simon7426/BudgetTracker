@@ -4,11 +4,11 @@ const store = useAuthStore();
 </script>
 
 <template>
-  <q-header elevated class="bg-light-green text-black">
+  <q-header elevated class="nav-color text-black">
     <q-toolbar>
       <router-link class="no-decoration" :to="{ name: 'Dashboard' }">
         <q-avatar square size="2.5rem">
-          <img src="../assets/logo-transperant.png" />
+          <img src="../assets/logoalter.png" />
         </q-avatar>
       </router-link>
       <q-toolbar-title class="text-white"> Budget Tracker </q-toolbar-title>
@@ -60,9 +60,13 @@ const store = useAuthStore();
     </q-toolbar>
   </q-header>
 </template>
-<style scoped>
+<style scoped lang="scss">
 .no-decoration {
   text-decoration: none;
   color: inherit;
+}
+
+.nav-color {
+  background-color: $secondary;
 }
 </style>

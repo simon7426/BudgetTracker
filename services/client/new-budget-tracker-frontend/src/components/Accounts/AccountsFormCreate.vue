@@ -15,7 +15,7 @@ const accountBalanceRef = ref(null);
 const isLoading = ref(false);
 
 const checkInput = [(val) => !!val || "Field is required"];
-const checkAmount = [(val) => val >= 0 || "Amount must be positive"]
+const checkAmount = [(val) => val >= 0 || "Amount must be positive"];
 
 const q = useQuasar();
 
@@ -28,17 +28,14 @@ function showNotif(msg, type) {
 }
 
 function onCancelClick() {
-    onDialogCancel()
+  onDialogCancel();
 }
 
 const handleSubmit = () => {
   const inp_name = accountName.value;
   const inp_type = accountType.value.toLowerCase();
   const inp_balance = parseFloat(accountBalance.value);
-  if (
-    inp_name.length !== 0 &&
-    inp_type.length !== 0
-  ) {
+  if (inp_name.length !== 0 && inp_type.length !== 0) {
     isLoading.value = true;
     const account = {
       account_name: inp_name,
@@ -50,7 +47,7 @@ const handleSubmit = () => {
       .then((data) => {
         console.log(data);
         showNotif("Account added successfully.", "positive");
-        onDialogOK(data)
+        onDialogOK(data);
       })
       .catch((err) => {
         console.log("Unable to add account");
@@ -83,7 +80,7 @@ const handleSubmit = () => {
             label="Name"
             :rules="checkInput"
           />
-          
+
           <q-input
             ref="accountTypeRef"
             v-model="accountType"
@@ -103,7 +100,6 @@ const handleSubmit = () => {
             prefix="$"
             :rules="checkAmount"
           />
-          
         </q-form>
       </q-card-section>
       <q-card-actions class="q-px-md card-buttons">
@@ -127,13 +123,16 @@ const handleSubmit = () => {
   </q-dialog>
 </template>
 
-<style scoped lang="sass">
-.card-header-text 
-  font-size: 2rem
+<style scoped lang="scss">
+.card-header-text {
+  font-size: 2rem;
+}
 
-.card-buttons 
-  justify-content: space-between
+.card-buttons {
+  justify-content: space-between;
+}
 
-.bg-cream-white
-  background: $primary
+.bg-cream-white {
+  background: $primary;
+}
 </style>

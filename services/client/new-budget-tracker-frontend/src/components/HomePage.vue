@@ -3,6 +3,9 @@ import { ref } from "vue";
 
 import NavigationBar from "./NavigationBar.vue";
 import LeftDrawer from "./LeftDrawer.vue";
+function myTweak(offset) {
+  return { minHeight: offset ? `calc(100vh - ${offset}px)` : "100vh" };
+}
 </script>
 
 <template>
@@ -11,7 +14,8 @@ import LeftDrawer from "./LeftDrawer.vue";
     <LeftDrawer />
     <q-page-container class="no-padding">
       <q-page
-        class="page-padding bg-cream-white window-height row justify-center items-start"
+        :style-fn="myTweak"
+        class="page-padding bg-cream-white row justify-center items-start"
       >
         <router-view
       /></q-page>
@@ -19,23 +23,31 @@ import LeftDrawer from "./LeftDrawer.vue";
   </q-layout>
 </template>
 
-<style lang="sass">
-.bg-cream-white
-  background: $primary
+<style lang="scss">
+.bg-cream-white {
+  background: $primary;
+}
 
-.q-card
-  width: 25rem
+.card-header {
+  display: flex;
+  justify-content: center;
+}
 
-.card-header
-  display: flex
-  justify-content: center
+.card-header-img {
+  width: 100%;
+}
 
-.card-header-img
-  width: 100%
+.no-padding {
+  padding: 0;
+}
 
-.no-padding
-  padding: 0
+.page-padding {
+  padding: 4rem 0rem;
+}
 
-.page-padding
-    padding: 5rem 250px
+@media (min-width: 768px) {
+  .page-padding {
+    padding: 5rem 250px;
+  }
+}
 </style>
