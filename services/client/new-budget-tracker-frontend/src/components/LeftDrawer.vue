@@ -86,6 +86,6 @@ function isActive(props) {
 
 .drawerActive {
   background: $accent;
-  color: #000000
+  color: #000000;
 }
 </style>

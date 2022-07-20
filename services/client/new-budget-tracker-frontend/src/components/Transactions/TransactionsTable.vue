@@ -275,7 +275,14 @@ function deleteTransaction(transaction) {
                 dense
                 @click="editTransaction(props.row)"
               />
-              <q-btn icon="delete" size="sm" class="q-ml-sm" flat dense @click="deleteTransaction(props.row)"/>
+              <q-btn
+                icon="delete"
+                size="sm"
+                class="q-ml-sm"
+                flat
+                dense
+                @click="deleteTransaction(props.row)"
+              />
             </div>
           </q-td>
         </template>

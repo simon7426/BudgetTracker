@@ -67,6 +67,6 @@ const store = useAuthStore();
 }
 
 .nav-color {
-  background-color: $secondary
+  background-color: $secondary;
 }
 </style>

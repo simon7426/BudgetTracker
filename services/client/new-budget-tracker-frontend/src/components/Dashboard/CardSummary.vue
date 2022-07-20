@@ -50,11 +50,11 @@ const previousMonths = ref([]);
 const incomeLastYear = ref([]);
 const expenseLastYear = ref([]);
 
-const incomeChartTitle = ref("Income by Category")
+const incomeChartTitle = ref("Income by Category");
 const incomeCategory = ref([]);
 const incomeCategoryValues = ref([]);
 
-const expenseChartTitle = ref("Expense by Category")
+const expenseChartTitle = ref("Expense by Category");
 const expenseCategory = ref([]);
 const expenseCategoryValues = ref([]);
 
@@ -119,7 +119,7 @@ getBasicSummary();
           :amount="incomeCategoryValues"
         />
         <dashboard-chart-pie
-        :title="expenseChartTitle"
+          :title="expenseChartTitle"
           :categories="expenseCategory"
           :amount="expenseCategoryValues"
         />
