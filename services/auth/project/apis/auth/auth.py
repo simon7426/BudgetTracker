@@ -5,8 +5,7 @@ from flask import request
 from flask_restx import Namespace, Resource, fields
 
 from project import bcrypt
-from project.apis.auth.utils import (add_token_to_blacklist,
-                                     check_token_in_blacklist)
+from project.apis.auth.utils import add_token_to_blacklist, check_token_in_blacklist
 from project.apis.models import User
 
 from project.apis.users.crud import (  # isort:skip

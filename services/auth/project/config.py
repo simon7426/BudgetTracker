@@ -8,7 +8,7 @@ class BaseConfig:
     ACCESS_TOKEN_EXPIRATION = os.environ.get("ACCESS_TOKEN_EXPIRATION", 3600)
     REFRESH_TOKEN_EXPIRATION = os.environ.get("REFRESH_TOKEN_EXPIRATION", 86400)
     ACTIVATION_CODE_EXPIRATION = 1200
-    REDIS_URL = os.environ.get("REDIS_URL","redis://localhost:6379/0")
+    REDIS_URL = os.environ.get("REDIS_URL", "redis://localhost:6379/0")
     DEFAULT_ROLE = os.environ.get("DEFAULT_ROLE", "member")
 
 
@@ -32,9 +32,6 @@ class TestingConfig(BaseConfig):
 
 class ProductionConfig(BaseConfig):
     url = os.environ.get("DATABASE_URL")
-
-    if url is not None and url.startswith("postgres://"):
-        url = url.replace("postgres://", "postgresql://", 1)
 
     SQLALCHEMY_DATABASE_URI = url
     SECRET_KEY = os.getenv("SECRET_KEY", "my_precious")

@@ -34,7 +34,7 @@ class User(db.Model):
             "iat": datetime.utcnow(),
             "type": token_type,
             "sub": user_id,
-            "role": current_app.config.get("DEFAULT_ROLE")
+            "role": current_app.config.get("DEFAULT_ROLE"),
         }
         return jwt.encode(
             payload,

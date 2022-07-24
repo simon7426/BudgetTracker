@@ -3,9 +3,9 @@ import os
 from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
+from flask_migrate import Migrate
 from flask_redis import FlaskRedis
 from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate
 
 cors = CORS()
 db = SQLAlchemy()

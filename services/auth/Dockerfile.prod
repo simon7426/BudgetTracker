@@ -24,8 +24,8 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requir
 
 
 # lint
+RUN pip install black==22.3.0 flake8===4.0.1 isort==5.10.1
 COPY . .
-RUN pip install black==21.11b1 flake8===4.0.1 isort==5.10.1
 RUN flake8 project
 RUN black project --check
 RUN isort project --profile black --check-only
@@ -43,10 +43,6 @@ WORKDIR /usr/src/app
 # set environment variables
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
-ENV FLASK_ENV production
-ENV APP_SETTINGS project.config.ProductionConfig
-ARG SECRET_KEY
-ENV SECRET_KEY $SECRET_KEY
 
 # install system dependencies
 RUN apt-get update \
