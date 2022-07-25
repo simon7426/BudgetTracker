@@ -61,10 +61,10 @@ services:
       context: ./services/client/new-budget-tracker-frontend
       dockerfile: Dockerfile
     container_name: budget-tracker-client
-    volumes:
-      - "./services/client/new-budget-tracker-frontend:/app"
     ports:
       - 8080:8080
+    environment:
+      - VITE_BASE_URL=http://hello.world
     depends_on:
       - auth
       - transaction

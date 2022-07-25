@@ -45,15 +45,15 @@ const chartOptions = ref({
   },
   responsive: [
     {
-      breakpoint: 480,
-      options: {
-        chart: {
-          width: 200,
-        },
-        legend: {
-          position: "bottom",
-        },
-      },
+      // breakpoint: 480,
+      // options: {
+      //   chart: {
+      //     width: 200,
+      //   },
+      //   legend: {
+      //     position: "bottom",
+      //   },
+      // },
     },
   ],
 });
