@@ -1,6 +1,6 @@
 <script setup>
 import { useQuasar } from "quasar";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import transactionServiceCategories from "../../services/category.transaction.service";
 import transactionServiceAccounts from "../../services/accounts.transaction.service";
 import transactionService from "../../services/transactions.transaction.service";
@@ -8,7 +8,7 @@ import TransactionsFormCreate from "./TransactionsFormCreate.vue";
 import TransactionsFormEdit from "./TransactionsFormEdit.vue";
 import TransactionsFormDelete from "./TransactionsFormDelete.vue";
 
-const pagination = { sortBy: "transaction_id", rowsPerPage: 0 };
+
 const dateOption = {
   year: "numeric",
   month: "long",
@@ -91,6 +91,11 @@ const transactionsTable = ref(null);
 const rows = ref([]);
 const loading = ref(true);
 const q = useQuasar();
+const firstPageId = ref(Math.pow(10, 9));
+const previousPageIds = ref([]);
+const limit = ref(100);
+const nextPageDisabled = ref(false);
+const previousPageDisabled = computed(() => previousPageIds.value.length === 0);
 
 async function getTransactions() {
   rows.value = [];
@@ -126,10 +131,53 @@ async function getTransactions() {
     });
 
   await transactionService
-    .getTransactions()
+    .getTransactions(firstPageId.value, limit.value + 1)
     .then((data) => {
+      console.log(data)
+      if (data.length > limit.value) {
+        nextPageDisabled.value = false;
+      } else {
+        nextPageDisabled.value = true;
+      }
       if (data.length) {
-        for (var i in data) {
+        for (var i in data.slice(0, limit.value)) {
+          rows.value.push({
+            id: data[i]["id"],
+            transaction_date: new Date(data[i]["transaction_date"]),
+            transaction_type: data[i]["transaction_type"],
+            transaction_description: data[i]["transaction_description"],
+            transaction_amount: data[i]["transaction_amount"],
+            transaction_category:
+              categoryDict.value[data[i]["transaction_category_id"]],
+            transaction_account:
+              accountDict.value[data[i]["transaction_account_id"]],
+          });
+        }
+      }
+      loading.value = false;
+    })
+    .catch((err) => {
+      console.log("Error in get transactions");
+      console.log(err);
+    });
+}
+
+getTransactions();
+
+async function getNextPage() {
+  var nextPageId = rows.value[rows.value.length - 1].id - 1;
+  previousPageIds.value.push(rows.value[0].id);
+  await transactionService
+    .getTransactions(nextPageId, limit.value + 1)
+    .then((data) => {
+      rows.value = [];
+      if (data.length > limit.value) {
+        nextPageDisabled.value = false;
+      } else {
+        nextPageDisabled.value = true;
+      }
+      if (data.length) {
+        for (var i in data.slice(0, limit.value)) {
           rows.value.push({
             id: data[i]["id"],
             transaction_date: new Date(data[i]["transaction_date"]),
@@ -152,7 +200,43 @@ async function getTransactions() {
     });
 }
 
-getTransactions();
+async function getPreviousPage() {
+  await transactionService
+    .getTransactions(
+      previousPageIds.value[previousPageIds.value.length - 1],
+      limit.value + 1
+    )
+    .then((data) => {
+      previousPageIds.value.pop();
+      rows.value = [];
+      if (data.length > limit.value) {
+        nextPageDisabled.value = false;
+      } else {
+        nextPageDisabled.value = true;
+      }
+      if (data.length) {
+        for (var i in data.slice(0, limit.value)) {
+          rows.value.push({
+            id: data[i]["id"],
+            transaction_date: new Date(data[i]["transaction_date"]),
+            transaction_type: data[i]["transaction_type"],
+            transaction_description: data[i]["transaction_description"],
+            transaction_amount: data[i]["transaction_amount"],
+            transaction_category:
+              categoryDict.value[data[i]["transaction_category_id"]],
+            transaction_account:
+              accountDict.value[data[i]["transaction_account_id"]],
+          });
+        }
+      }
+
+      loading.value = false;
+    })
+    .catch((err) => {
+      console.log("Error in get transactions");
+      console.log(err);
+    });
+}
 
 function getAccountTable() {
   let accountTable = [];
@@ -246,7 +330,7 @@ function deleteTransaction(transaction) {
         virtual-scroll
         flat
         separator="none"
-        :pagination="pagination"
+
         :rows-per-page-options="[0]"
         :rows="rows"
         :columns="columns"
@@ -261,7 +345,6 @@ function deleteTransaction(transaction) {
           'transaction_account',
           'action',
         ]"
-        binary-state-sort
         hide-pagination
         class="bg-cream-white"
       >
@@ -291,6 +374,26 @@ function deleteTransaction(transaction) {
             <q-spinner-gears size="10rem" color="primary" />
           </q-inner-loading>
         </template>
+        <template #bottom>
+          <div class="row justify-between full-width">
+            <q-btn
+              flat
+              rounded
+              :disabled="previousPageDisabled"
+              color="secondary"
+              label="<< Previous"
+              @click="getPreviousPage"
+            />
+            <q-btn
+              flat
+              rounded
+              :disabled="nextPageDisabled"
+              color="secondary"
+              label="Next >>"
+              @click="getNextPage"
+            />
+          </div>
+        </template>
       </q-table>
     </div>
   </div>
@@ -305,4 +408,6 @@ function deleteTransaction(transaction) {
   background: $primary
 .table-header
   align-self: center
+.full-width
+  width: 100%
 </style>

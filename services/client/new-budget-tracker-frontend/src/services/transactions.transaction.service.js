@@ -23,10 +23,12 @@ class TransactionService {
       });
   }
 
-  getTransactions() {
-    return api.get("/transactions-service/transactions").then((response) => {
-      return response.data;
-    });
+  getTransactions(keyset, limit) {
+    return api
+      .get("/transactions-service/transactions", { params: { keyset, limit } })
+      .then((response) => {
+        return response.data;
+      });
   }
 
   editTransaction({
