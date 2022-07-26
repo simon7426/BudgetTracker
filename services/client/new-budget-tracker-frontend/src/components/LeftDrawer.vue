@@ -20,7 +20,7 @@ watch(leftDrawerOpenRo, (value) => {
 });
 
 watch(leftDrawerOpen, (value) => {
-  if (value === false){
+  if (value === false) {
     emit("drawerClosed");
   }
 });

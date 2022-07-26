@@ -34,7 +34,6 @@ const handleSubmit = () => {
   transactionServiceTransfer
     .deleteTransfer(transactionId.value)
     .then((data) => {
-      console.log(data);
       showNotif("Transfer deleted successfully.", "positive");
       onDialogOK();
     })

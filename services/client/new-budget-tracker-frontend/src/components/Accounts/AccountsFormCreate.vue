@@ -45,7 +45,6 @@ const handleSubmit = () => {
     transactionServiceAccounts
       .addAccount(account)
       .then((data) => {
-        console.log(data);
         showNotif("Account added successfully.", "positive");
         onDialogOK(data);
       })

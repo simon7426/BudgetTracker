@@ -43,7 +43,6 @@ async function handleLogin() {
 
     await authService.login(user).then(
       (data) => {
-        console.log(data);
         router.push({ name: "Dashboard" });
       },
       (error) => {

@@ -391,9 +391,9 @@ function deleteTransaction(transaction) {
                 >
               </q-item-section>
               <q-item-section class="q-pa-md q-ml-none">
-                <q-item-label class="text-grey-9 text-weight-bolder">${{
-                  props.row.transaction_amount
-                }}</q-item-label>
+                <q-item-label class="text-grey-9 text-weight-bolder"
+                  >${{ props.row.transaction_amount }}</q-item-label
+                >
               </q-item-section>
               <q-item-section>
                 <div class="row justify-around full-width">

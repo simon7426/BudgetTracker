@@ -5,7 +5,6 @@ const setup = (store) => {
   axiosInstance.interceptors.request.use(
     (config) => {
       if (store.access_token) {
-        console.log(config);
         config.headers["Authorization"] = "Bearer " + store.access_token;
       }
       return config;

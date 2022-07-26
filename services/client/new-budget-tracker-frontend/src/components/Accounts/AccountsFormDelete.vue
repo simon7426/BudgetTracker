@@ -31,11 +31,9 @@ function onCancelClick() {
 }
 
 const handleSubmit = () => {
-  console.log(`Delete Account ${accountId.value}`);
   transactionServiceAccounts
     .deleteAccount(accountId.value)
     .then((data) => {
-      console.log(data);
       showNotif("Account deleted successfully.", "positive");
       onDialogOK();
     })
