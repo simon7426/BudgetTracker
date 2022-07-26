@@ -108,7 +108,7 @@ class Register(Resource):
         username = post_data.get("username")
         account_name = post_data.get("account_name")
         password = post_data.get("password")
-        token = post_data.get("token")
+        # token = post_data.get("token")
 
         # if not verify_recaptcha(token, "register"):
         #     auth_namespace.abort("Recaptcha not valid.")

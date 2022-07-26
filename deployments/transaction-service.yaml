@@ -5,7 +5,6 @@ metadata:
   namespace: tracker
 data:
   APP_SETTINGS: project.config.ProductionConfig
-  SECRET_KEY: my_precious_tracker
   DATABASE_URL: postgresql://postgres:7426@10.1.0.13:5432/budget_tracker_transaction
 
 ---
@@ -25,10 +24,12 @@ spec:
     spec:
       containers:
         - name: budget-tracker-transaction
-          image: simon7426/budget-tracker-transaction-prod:0.1
+          image: simon7426/budget-tracker-transaction-prod:0.2
           envFrom:
             - configMapRef:
                 name: budget-tracker-transaction-configmap
+            - secretRef:
+                name: secretkey
           ports:
             - containerPort: 8000
 ---

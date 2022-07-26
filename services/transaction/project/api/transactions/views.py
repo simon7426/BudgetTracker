@@ -57,7 +57,7 @@ class TransactionsList(Resource):
         """Get all transactions for an user"""
         try:
             args = query_parser.parse_args()
-            keyset = args["keyset"] if args["keyset"] else 10**9+7
+            keyset = args["keyset"] if args["keyset"] else 10**9 + 7
             limit = args["limit"] if args["limit"] else 5
 
             user_id = TransactionsList.get.owner_id

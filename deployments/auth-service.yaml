@@ -5,7 +5,6 @@ metadata:
   namespace: tracker
 data:
   APP_SETTINGS: project.config.ProductionConfig
-  SECRET_KEY: my_precious_tracker
   DATABASE_URL: postgresql://postgres:7426@10.1.0.13:5432/budget_tracker_auth
   REDIS_URL: redis://redis:6379/0
 
@@ -26,10 +25,14 @@ spec:
     spec:
       containers:
         - name: budget-tracker-auth
-          image: simon7426/budget-tracker-auth-prod:0.1
+          image: simon7426/budget-tracker-auth-prod:0.2
           envFrom:
             - configMapRef:
                 name: budget-tracker-auth-configmap
+            - secretRef:
+                name: secretkey
+            - secretRef:
+                name: recaptchakey
           ports:
             - containerPort: 8000
 ---

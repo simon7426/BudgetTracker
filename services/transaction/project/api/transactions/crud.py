@@ -3,9 +3,15 @@ from project.api.models import TransactionList
 
 
 def get_all_transactions_by_transaction_owner(transaction_owner, keyset, limit):
-    return TransactionList.query.filter(
-        TransactionList.transaction_owner == transaction_owner, TransactionList.id <= keyset).order_by(
-        TransactionList.id.desc()).limit(limit).all()
+    return (
+        TransactionList.query.filter(
+            TransactionList.transaction_owner == transaction_owner,
+            TransactionList.id <= keyset,
+        )
+        .order_by(TransactionList.id.desc())
+        .limit(limit)
+        .all()
+    )
 
 
 def get_transactions_by_id(id, transaction_owner):

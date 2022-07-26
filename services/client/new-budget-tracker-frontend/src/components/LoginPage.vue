@@ -110,7 +110,7 @@ async function handleLogin() {
     <q-card-actions class="q-px-md">
       <q-btn
         unelevated
-        color="light-green"
+        color="secondary"
         size="lg"
         class="full-width"
         label="Login"
