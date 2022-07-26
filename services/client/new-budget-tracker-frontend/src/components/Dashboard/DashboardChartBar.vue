@@ -9,7 +9,6 @@ const props = defineProps({
 
 const { previousMonths, incomeLastYear, expenseLastYear } = toRefs(props);
 
-console.log(props);
 const series = ref([
   {
     name: "Income",

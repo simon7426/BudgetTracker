@@ -8,7 +8,6 @@ import TransactionsFormCreate from "./TransactionsFormCreate.vue";
 import TransactionsFormEdit from "./TransactionsFormEdit.vue";
 import TransactionsFormDelete from "./TransactionsFormDelete.vue";
 
-
 const dateOption = {
   year: "numeric",
   month: "long",
@@ -133,7 +132,6 @@ async function getTransactions() {
   await transactionService
     .getTransactions(firstPageId.value, limit.value + 1)
     .then((data) => {
-      console.log(data)
       if (data.length > limit.value) {
         nextPageDisabled.value = false;
       } else {
@@ -330,7 +328,6 @@ function deleteTransaction(transaction) {
         virtual-scroll
         flat
         separator="none"
-
         :rows-per-page-options="[0]"
         :rows="rows"
         :columns="columns"

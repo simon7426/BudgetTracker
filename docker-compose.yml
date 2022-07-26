@@ -16,6 +16,7 @@ services:
       - DATABASE_URL=postgresql://postgres:7426@db:5432/budget_tracker_auth
       - DATABASE_TEST_URL=postgresql://postgres:7426@db:5432/budget_tracker_auth_test
       - REDIS_URL=redis://redis:6379/0
+      - RECAPTCHA_SERVER_KEY=${RECAPTCHA_SERVER_KEY}
     depends_on:
       - db
       - redis

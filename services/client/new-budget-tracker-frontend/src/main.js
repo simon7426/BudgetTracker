@@ -7,6 +7,7 @@ import VueApexCharts from "vue3-apexcharts";
 import VueNumber from "vue-number-animation";
 import { createPinia } from "pinia";
 import setupIntercetor from "./services/setupInterceptors";
+import { VueReCaptcha } from "vue-recaptcha-v3";
 import "@quasar/extras/roboto-font/roboto-font.css";
 import "@quasar/extras/material-icons/material-icons.css";
 import "@quasar/extras/fontawesome-v5/fontawesome-v5.css";
@@ -27,6 +28,10 @@ myApp.use(router);
 myApp.use(VueNumber);
 
 myApp.use(VueApexCharts);
+
+myApp.use(VueReCaptcha, {
+  siteKey: "6Lft2R4hAAAAABOqIEoYJHXo1xZL9O60pf9o2NVW",
+});
 
 // myApp.use(Quasar, {
 //     plugins: {},

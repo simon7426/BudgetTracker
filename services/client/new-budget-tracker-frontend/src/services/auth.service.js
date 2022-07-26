@@ -2,11 +2,12 @@ import api from "./api";
 import TokenService from "./token.service";
 
 class AuthService {
-  login({ username, password }) {
+  login({ username, password, token }) {
     return api
       .post("/auth-service/login", {
         username,
         password,
+        token,
       })
       .then((response) => {
         if (response.data.access_token) {
@@ -31,11 +32,12 @@ class AuthService {
       });
   }
 
-  register({ username, account_name, password }) {
+  register({ username, account_name, password, token }) {
     return api.post("/auth-service/register", {
       username,
       account_name,
       password,
+      token,
     });
   }
 
