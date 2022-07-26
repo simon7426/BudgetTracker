@@ -260,7 +260,7 @@ function addTransactionDialog() {
       categoryTable: getCategoryTable(),
     },
   }).onOk((payload) => {
-    rows.value.push({
+    rows.value.unshift({
       id: payload["id"],
       transaction_date: new Date(payload["transaction_date"]),
       transaction_type: payload["transaction_type"],
@@ -347,27 +347,6 @@ function deleteTransaction(transaction) {
         hide-header
         class="bg-cream-white"
       >
-        <!-- <template #body-cell-action="props">
-          <q-td :props="props">
-            <div class="td-action">
-              <q-btn
-                icon="edit"
-                size="sm"
-                flat
-                dense
-                @click="editTransaction(props.row)"
-              />
-              <q-btn
-                icon="delete"
-                size="sm"
-                class="q-ml-sm"
-                flat
-                dense
-                @click="deleteTransaction(props.row)"
-              />
-            </div>
-          </q-td>
-        </template> -->
         <template #item="props">
           <div class="col-md-12 col-sm-12 col-xs-12">
             <q-item class="q-pa-none bg-cream-white text-center">
@@ -394,6 +373,7 @@ function deleteTransaction(transaction) {
                 <q-item-label class="text-grey-9 text-weight-bolder"
                   >${{ props.row.transaction_amount }}</q-item-label
                 >
+                <q-item-label class="text-grey-9">With: {{ props.row.transaction_account.account_name }}</q-item-label>
               </q-item-section>
               <q-item-section>
                 <div class="row justify-around full-width">
