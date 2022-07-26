@@ -51,7 +51,7 @@ full_user = auth_namespace.clone(
     {
         "account_name": fields.String(required=True),
         "password": fields.String(required=True),
-        "token": fields.String(required=True),
+        # "token": fields.String(required=True),
     },
 )
 
@@ -100,7 +100,7 @@ class Register(Resource):
     @auth_namespace.marshal_with(user)
     @auth_namespace.expect(full_user, validate=True)
     @auth_namespace.response(201, "Success")
-    @auth_namespace.response(400, "Recaptcha not valid.")
+    # @auth_namespace.response(400, "Recaptcha not valid.")
     @auth_namespace.response(400, "Sorry. That email already exists.")
     @auth_namespace.response(400, "Sorry. That username already exists.")
     def post(self):
@@ -110,8 +110,8 @@ class Register(Resource):
         password = post_data.get("password")
         token = post_data.get("token")
 
-        if not verify_recaptcha(token, "register"):
-            auth_namespace.abort("Recaptcha not valid.")
+        # if not verify_recaptcha(token, "register"):
+        #     auth_namespace.abort("Recaptcha not valid.")
 
         user_email = get_user_by_account(account_name)
         if user_email:

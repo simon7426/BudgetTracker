@@ -26,7 +26,7 @@ def verify_recaptcha(token, action):
 
     if response.status_code == 200:
         data = response.json()
-        if data["success"] and data["action"] == action:
+        if data["success"] and data["action"] == action and data["score"] > 0.5:
             return True
 
     return False

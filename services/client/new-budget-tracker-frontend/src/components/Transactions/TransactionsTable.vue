@@ -326,6 +326,7 @@ function deleteTransaction(transaction) {
       <q-table
         ref="transactionTable"
         virtual-scroll
+        grid
         flat
         separator="none"
         :rows-per-page-options="[0]"
@@ -343,9 +344,10 @@ function deleteTransaction(transaction) {
           'action',
         ]"
         hide-pagination
+        hide-header
         class="bg-cream-white"
       >
-        <template #body-cell-action="props">
+        <!-- <template #body-cell-action="props">
           <q-td :props="props">
             <div class="td-action">
               <q-btn
@@ -365,6 +367,55 @@ function deleteTransaction(transaction) {
               />
             </div>
           </q-td>
+        </template> -->
+        <template #item="props">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <q-item class="q-pa-none bg-cream-white text-center">
+              <q-item-section class="q-pa-md q-ml-none">
+                <q-item-label class="text-grey-9">{{
+                  props.row.transaction_date.toLocaleDateString(
+                    "en-US",
+                    dateOption
+                  )
+                }}</q-item-label>
+              </q-item-section>
+              <q-item-section class="q-pa-md q-ml-none">
+                <q-item-label class="text-grey-9">{{
+                  props.row.transaction_description
+                }}</q-item-label>
+                <q-item-label class="text-grey-9"
+                  >Category:
+                  {{
+                    props.row.transaction_category.category_name
+                  }}</q-item-label
+                >
+              </q-item-section>
+              <q-item-section class="q-pa-md q-ml-none">
+                <q-item-label class="text-grey-9 text-weight-bolder">${{
+                  props.row.transaction_amount
+                }}</q-item-label>
+              </q-item-section>
+              <q-item-section>
+                <div class="row justify-around full-width">
+                  <q-btn
+                    icon="edit"
+                    size="sm"
+                    flat
+                    dense
+                    @click="editTransaction(props.row)"
+                  />
+                  <q-btn
+                    icon="delete"
+                    size="sm"
+                    class="q-ml-sm"
+                    flat
+                    dense
+                    @click="deleteTransaction(props.row)"
+                  />
+                </div>
+              </q-item-section>
+            </q-item>
+          </div>
         </template>
         <template #loading>
           <q-inner-loading showing>
