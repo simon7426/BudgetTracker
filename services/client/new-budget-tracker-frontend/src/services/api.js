@@ -5,8 +5,8 @@ import authService from "./auth.service";
 import tokenService from "./token.service";
 
 const instance = axios.create({
-  // baseURL: import.meta.env.VITE_BASE_URL+"/api/v1",
-  baseURL: "https://tracker.simonislam.com"+"/api/v1",
+  baseURL: "/api/v1",
+  // baseURL: "https://tracker.simonislam.com"+"/api/v1",
   // baseURL: "http://hello.world" + "/api/v1",
   headers: {
     "Content-Type": "application/json",
