@@ -1,3 +1,4 @@
+from collections import defaultdict
 from datetime import datetime, timedelta
 
 from dateutil.relativedelta import relativedelta
@@ -90,9 +91,11 @@ def get_summary(user_id):
         0,
         0,
     )
-    income, expense = {}, {}
-    income_category, expense_category = {}, {}
-    income_category_month, expense_category_month = {}, {}
+    income, expense = defaultdict(lambda: 0), defaultdict(lambda: 0)
+    income_category, expense_category = defaultdict(lambda: 0), defaultdict(lambda: 0)
+    income_category_month, expense_category_month = defaultdict(lambda: 0), defaultdict(
+        lambda: 0
+    )
     last_12_months = get_last_months(today, 12)
     for transaction in transactions:
         if transaction.transaction_type == ChoiceType.income:
@@ -101,41 +104,26 @@ def get_summary(user_id):
                 transaction.transaction_date.year,
                 transaction.transaction_date.month,
             )
-            if income_key in income:
-                income[income_key] += transaction.transaction_amount
-            else:
-                income[income_key] = transaction.transaction_amount
+            income[income_key] += transaction.transaction_amount
             income_category_key = transaction.transaction_category.category_name
-            if income_category_key in income_category:
-                income_category[income_category_key] += transaction.transaction_amount
-            else:
-                income_category[income_category_key] = transaction.transaction_amount
+            income_category[income_category_key] += transaction.transaction_amount
             if income_key == (today.year, today.month):
-                if income_category_key in income_category_month:
-                    income_category_month[income_category_key] += transaction.transaction_amount
-                else:
-                    income_category_month[income_category_key] = transaction.transaction_amount
-
+                income_category_month[
+                    income_category_key
+                ] += transaction.transaction_amount
         else:
             expense_all += transaction.transaction_amount
             expense_key = (
                 transaction.transaction_date.year,
                 transaction.transaction_date.month,
             )
-            if expense_key in expense:
-                expense[expense_key] += transaction.transaction_amount
-            else:
-                expense[expense_key] = transaction.transaction_amount
+            expense[expense_key] += transaction.transaction_amount
             expense_category_key = transaction.transaction_category.category_name
-            if expense_category_key in expense_category:
-                expense_category[expense_category_key] += transaction.transaction_amount
-            else:
-                expense_category[expense_category_key] = transaction.transaction_amount
+            expense_category[expense_category_key] += transaction.transaction_amount
             if expense_key == (today.year, today.month):
-                if expense_category_key in expense_category_month:
-                    expense_category_month[expense_category_key] += transaction.transaction_amount
-                else:
-                    expense_category_month[expense_category_key] = transaction.transaction_amount
+                expense_category_month[
+                    expense_category_key
+                ] += transaction.transaction_amount
     income_group, expense_group = [], []
     for months in last_12_months:
         income_group.append(income.get(months, 0))
