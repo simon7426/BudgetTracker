@@ -96,6 +96,14 @@ const limit = ref(100);
 const nextPageDisabled = ref(false);
 const previousPageDisabled = computed(() => previousPageIds.value.length === 0);
 
+function getUpper(val) {
+  return val.replace(/^./, val[0].toUpperCase());
+}
+
+function isIncome(val) {
+  return val === "income";
+}
+
 async function getTransactions() {
   rows.value = [];
   accountDict.value = {};
@@ -357,9 +365,12 @@ function deleteTransaction(transaction) {
                     dateOption
                   )
                 }}</q-item-label>
+                <!-- <q-item-label :class=" isIncome(props.row.transaction_type) ? 'income-text':'expense-text'">
+                  {{ getUpper(props.row.transaction_type) }}
+                </q-item-label> -->
               </q-item-section>
               <q-item-section class="q-pa-md q-ml-none">
-                <q-item-label class="text-grey-9">{{
+                <q-item-label class="text-grey-10">{{
                   props.row.transaction_description
                 }}</q-item-label>
                 <q-item-label class="text-grey-9"
@@ -371,9 +382,21 @@ function deleteTransaction(transaction) {
               </q-item-section>
               <q-item-section class="q-pa-md q-ml-none">
                 <q-item-label class="text-grey-9 text-weight-bolder"
-                  >${{ props.row.transaction_amount }}</q-item-label
+                  >${{ props.row.transaction_amount
+                  }}<q-icon
+                    :name="
+                      isIncome(props.row.transaction_type)
+                        ? 'arrow_upward'
+                        : 'arrow_downward'
+                    "
+                    :color="
+                      isIncome(props.row.transaction_type) ? 'positive' : 'negative'
+                    "
+                /></q-item-label>
+                <q-item-label class="text-grey-9"
+                  >With:
+                  {{ props.row.transaction_account.account_name }}</q-item-label
                 >
-                <q-item-label class="text-grey-9">With: {{ props.row.transaction_account.account_name }}</q-item-label>
               </q-item-section>
               <q-item-section>
                 <div class="row justify-around full-width">
@@ -438,4 +461,10 @@ function deleteTransaction(transaction) {
   align-self: center
 .full-width
   width: 100%
+
+.income-text
+  color: $positive
+
+.expense-text
+  color: $negative
 </style>
