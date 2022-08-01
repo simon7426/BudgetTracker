@@ -50,13 +50,22 @@ const previousMonths = ref([]);
 const incomeLastYear = ref([]);
 const expenseLastYear = ref([]);
 
-const incomeChartTitle = ref("Income by Category");
+const incomeChartTitle = ref("Historical income by category");
 const incomeCategory = ref([]);
 const incomeCategoryValues = ref([]);
 
-const expenseChartTitle = ref("Expense by Category");
+const expenseChartTitle = ref("Historical expense by category");
 const expenseCategory = ref([]);
 const expenseCategoryValues = ref([]);
+
+const incomeChartMonthTitle = ref("This month's income by category");
+const incomeCategoryMonth = ref([]);
+const incomeCategoryMonthValues = ref([]);
+
+const expenseChartMonthTitle = ref("This month's expense by category");
+const expenseCategoryMonth = ref([]);
+const expenseCategoryMonthValues = ref([]);
+
 
 async function getBasicSummary() {
   await summaryService
@@ -84,6 +93,12 @@ async function getBasicSummary() {
 
       expenseCategory.value = data["expenseCategory"];
       expenseCategoryValues.value = data["expenseCategoryValues"];
+
+      incomeCategoryMonth.value = data["incomeCategoryMonth"];
+      incomeCategoryMonthValues.value = data["incomeCategoryMonthValues"];
+
+      expenseCategoryMonth.value = data["expenseCategoryMonth"];
+      expenseCategoryMonthValues.value = data["expenseCategoryMonthValues"];
 
       dataLoaded.value = true;
     })
@@ -122,6 +137,17 @@ getBasicSummary();
           :title="expenseChartTitle"
           :categories="expenseCategory"
           :amount="expenseCategoryValues"
+        />
+
+        <dashboard-chart-pie
+          :title="incomeChartMonthTitle"
+          :categories="incomeCategoryMonth"
+          :amount="incomeCategoryMonthValues"
+        />
+        <dashboard-chart-pie
+          :title="expenseChartMonthTitle"
+          :categories="expenseCategoryMonth"
+          :amount="expenseCategoryMonthValues"
         />
       </div>
     </q-card-section>
