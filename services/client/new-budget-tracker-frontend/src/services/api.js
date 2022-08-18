@@ -31,7 +31,6 @@ instance.interceptors.response.use(
     return response;
   },
   (err) => {
-    console.log("In response error");
     const originalConfig = err.config;
     if (
       err.response &&
@@ -51,13 +50,15 @@ instance.interceptors.response.use(
             return instance(originalConfig);
           })
           .catch((err) => {
-            console.log("Error fetching refresh token");
             console.log(err);
             router.push({ name: "Login" });
           });
       } catch (_error) {
         console.log(_error);
       }
+    }
+    else {
+      router.push({ name: "Login" })
     }
   }
 );
