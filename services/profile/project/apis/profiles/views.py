@@ -71,23 +71,25 @@ class ProfileList(Resource):
         return response_object, 201
 
 
-class Profile(Resource):
+class ProfileDetail(Resource):
     @token_required
     @profile_namespace.expect(parser, validate=True)
     @profile_namespace.marshal_with(profile_model)
-    def get(self, user_id):
+    def get(self):
         """Retrive budget tracker profile by user id"""
-        return get_profile_by_user_id(user_id=user_id), 200
+        return get_profile_by_user_id(user_id=ProfileDetail.get.owner_id), 200
 
+
+class ProfileUpdate(Resource):
     @token_required
     @profile_namespace.expect(parser, profile_model, validate=True)
     @profile_namespace.response(200, "Profile update for user <user_id>.")
     @profile_namespace.response(400, "Unable to update profile.")
     @profile_namespace.response(404, "Profile does not exitsts.")
-    def put(self, user_id):
+    def put(self):
         """Updates the budget tracker profile of an user"""
         put_data = request.get_json()
-        user_id = Profile.put.owner_id
+        user_id = ProfileUpdate.put.owner_id
         first_name = put_data.get("first_name")
         last_name = put_data.get("last_name")
         gender = put_data.get("gender")
@@ -110,15 +112,15 @@ class Profile(Resource):
         response_object = {"message": f"Profile updated for user {profile.user_id}"}
         return response_object, 200
 
+
+class ProfileDelete(Resource):
     @token_required
     @profile_namespace.expect(parser, validate=True)
     @profile_namespace.response(204, "Profile for user <user_id> was deleted.")
     @profile_namespace.response(403, "Access Denied.")
     @profile_namespace.response(404, "Profile does not exitsts.")
-    def delete(self, user_id):
-        if user_id != Profile.delete.owner_id:
-            profile_namespace.abort(403, "Access Denied.")
-        profile = get_profile_by_user_id(user_id=user_id)
+    def delete(self):
+        profile = get_profile_by_user_id(user_id=ProfileDelete.delete.owner_id)
         if profile is None:
             profile_namespace.abort(404, "Profile does not exitsts.")
         profile = delete_profile(profile=profile)
@@ -128,5 +130,18 @@ class Profile(Resource):
         return response_object, 204
 
 
+class ProfilePicture(Resource):
+    @token_required
+    @profile_namespace.expect(parser, validate=True)
+    @profile_namespace.response(200, "Profile picture updated.")
+    @profile_namespace.response(403, "Access Denied.")
+    @profile_namespace.response(404, "Profile does not exitsts.")
+    def get(self):
+        pass
+
+
+
 profile_namespace.add_resource(ProfileList, "", endpoint="profile-list")
-profile_namespace.add_resource(Profile, "/<int:user_id>", endpoint="profile")
+profile_namespace.add_resource(ProfileDetail, "/detail", endpoint="profile-detail")
+profile_namespace.add_resource(ProfileUpdate, "/update", endpoint="profile-update")
+profile_namespace.add_resource(ProfileDelete, "/delete", endpoint="profile-delete")

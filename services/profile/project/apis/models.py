@@ -16,6 +16,7 @@ class Profile(db.Model):
     birth_date = db.Column(db.Date)
     blood_group = db.Column(db.String(10))
     about = db.Column(db.Text)
+    image = db.Column(db.String(128), nullable=True)
 
     created_at = db.Column(db.DateTime, default=datetime.utcnow(), nullable=False)
     updated_at = db.Column(
