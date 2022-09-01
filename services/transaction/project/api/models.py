@@ -16,8 +16,8 @@ class TransactionCategory(db.Model):
     category_name = db.Column(db.String(128), nullable=False)
     category_type = db.Column(db.Enum(ChoiceType), nullable=False)
     category_owner = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, default=get_bd_time(), nullable=False)
-    updated_at = db.Column(db.DateTime, onupdate=get_bd_time())
+    created_at = db.Column(db.DateTime, default=get_bd_time, nullable=False)
+    updated_at = db.Column(db.DateTime, onupdate=get_bd_time)
 
     transactions = db.relationship(
         "TransactionList", backref="transaction_category", lazy=True
@@ -47,8 +47,8 @@ class TransactionList(db.Model):
     transaction_account_id = db.Column(
         db.Integer, db.ForeignKey("transaction_account.id"), nullable=False
     )
-    created_at = db.Column(db.DateTime, default=get_bd_time(), nullable=False)
-    updated_at = db.Column(db.DateTime, onupdate=get_bd_time())
+    created_at = db.Column(db.DateTime, default=get_bd_time, nullable=False)
+    updated_at = db.Column(db.DateTime, onupdate=get_bd_time)
 
     def __init__(
         self,
@@ -83,8 +83,8 @@ class Account(db.Model):
     account_type = db.Column(db.String(128), nullable=False)
     account_balance = db.Column(db.Numeric(10, 2), nullable=False)
     account_owner = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, default=get_bd_time(), nullable=False)
-    updated_at = db.Column(db.DateTime, onupdate=get_bd_time())
+    created_at = db.Column(db.DateTime, default=get_bd_time, nullable=False)
+    updated_at = db.Column(db.DateTime, onupdate=get_bd_time)
 
     transactions = db.relationship(
         "TransactionList", backref="transaction_account", lazy=True
@@ -112,8 +112,8 @@ class AccountTransfer(db.Model):
     )
     transfer_amount = db.Column(db.Numeric(10, 2), default=0, nullable=False)
     account_owner = db.Column(db.Integer, nullable=False)
-    created_at = db.Column(db.DateTime, default=get_bd_time(), nullable=False)
-    updated_at = db.Column(db.DateTime, onupdate=get_bd_time())
+    created_at = db.Column(db.DateTime, default=get_bd_time, nullable=False)
+    updated_at = db.Column(db.DateTime, onupdate=get_bd_time)
 
     from_account = db.relationship("Account", foreign_keys=[from_account_id])
     to_account = db.relationship("Account", foreign_keys=[to_account_id])

@@ -3,7 +3,7 @@
 ###########
 
 # Pull ofiicial base image
-FROM python:3.8.12-slim-buster as builder
+FROM python:3.8.12-alpine as builder
 
 # set working directory
 WORKDIR /usr/src/app
@@ -29,7 +29,7 @@ RUN isort project --profile black --check-only
 ###############
 
 # official base image
-FROM python:3.8.12-slim-buster
+FROM python:3.8.12-alpine
 
 # set working directory
 WORKDIR /usr/src/app
