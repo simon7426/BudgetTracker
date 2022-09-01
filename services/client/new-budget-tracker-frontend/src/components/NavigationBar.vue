@@ -1,11 +1,36 @@
 <script setup>
+import { ref } from "vue";
 import { useAuthStore } from "../stores/useAuth";
+import { useQuasar } from "quasar";
 const store = useAuthStore();
+const q = useQuasar();
+const isMobile = ref(false);
+const emit = defineEmits(["drawerToggled"]);
+
+async function is_mobile() {
+  if (q.platform.is.mobile === true) {
+    isMobile.value = true;
+  } else {
+    emit("drawerToggled");
+  }
+}
+async function drawerToggled() {
+  emit("drawerToggled");
+}
+is_mobile();
 </script>
 
 <template>
   <q-header elevated class="nav-color text-black">
     <q-toolbar>
+      <q-btn
+        v-if="isMobile && store.isLoggedIn"
+        round
+        dense
+        icon="menu"
+        color="secondary"
+        @click="drawerToggled"
+      />
       <router-link class="no-decoration" :to="{ name: 'Dashboard' }">
         <q-avatar square size="2.5rem">
           <img src="../assets/logoalter.png" />

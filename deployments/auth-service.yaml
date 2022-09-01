@@ -1,0 +1,49 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: budget-tracker-auth-configmap
+  namespace: tracker
+data:
+  APP_SETTINGS: project.config.ProductionConfig
+  DATABASE_URL: postgresql://postgres:7426@10.1.0.13:5432/budget_tracker_auth
+  REDIS_URL: redis://redis:6379/0
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: budget-tracker-auth
+  namespace: tracker
+spec:
+  selector:
+    matchLabels:
+      app: budget-tracker-auth
+  template:
+    metadata:
+      labels:
+        app: budget-tracker-auth
+    spec:
+      containers:
+        - name: budget-tracker-auth
+          image: simon7426/budget-tracker-auth-prod:0.2
+          envFrom:
+            - configMapRef:
+                name: budget-tracker-auth-configmap
+            - secretRef:
+                name: secretkey
+            - secretRef:
+                name: recaptchakey
+          ports:
+            - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: budget-tracker-auth-service
+  namespace: tracker
+spec:
+  selector:
+    app: budget-tracker-auth
+  ports:
+    - port: 8000
+      targetPort: 8000

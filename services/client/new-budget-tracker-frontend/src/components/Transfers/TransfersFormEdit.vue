@@ -17,8 +17,6 @@ const props = defineProps({
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
 
-console.log(props.row);
-
 const accountOptions = ref(props.accountTable);
 const options = ref(accountOptions.value);
 
@@ -85,7 +83,6 @@ const handleSubmit = () => {
     transactionServiceTransfer
       .editTranfer(transfer)
       .then((data) => {
-        console.log(data);
         showNotif("Transfer edited successfully.", "positive");
         onDialogOK(data);
       })

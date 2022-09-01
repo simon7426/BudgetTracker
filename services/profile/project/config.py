@@ -16,7 +16,8 @@ class DevelopmentConfig(BaseConfig):
 class TestingConfig(BaseConfig):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_TEST_URL", "postgresql://postgres:7426@db:5432/budget_tracker_profile_test"
+        "DATABASE_TEST_URL",
+        "postgresql://postgres:7426@db:5432/budget_tracker_profile_test",
     )
 
 

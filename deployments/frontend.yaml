@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: budget-tracker-frontend
+  namespace: tracker
+spec:
+  selector:
+    matchLabels:
+      app: budget-tracker-frontend
+  template:
+    metadata:
+      labels:
+        app: budget-tracker-frontend
+    spec:
+      containers:
+        - name: budget-tracker-frontend
+          image: simon7426/budget-tracker-client-prod:0.1
+          ports:
+            - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: budget-tracker-frontend-service
+  namespace: tracker
+spec:
+  selector:
+    app: budget-tracker-frontend
+  ports:
+    - port: 80
+      targetPort: 80

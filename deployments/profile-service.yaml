@@ -1,0 +1,46 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: budget-tracker-profile-configmap
+  namespace: tracker
+data:
+  APP_SETTINGS: project.config.ProductionConfig
+  DATABASE_URL: postgresql://postgres:7426@10.1.0.13:5432/budget_tracker_profile
+
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: budget-tracker-profile
+  namespace: tracker
+spec:
+  selector:
+    matchLabels:
+      app: budget-tracker-profile
+  template:
+    metadata:
+      labels:
+        app: budget-tracker-profile
+    spec:
+      containers:
+        - name: budget-tracker-profile
+          image: simon7426/budget-tracker-profile-prod:0.1
+          envFrom:
+            - configMapRef:
+                name: budget-tracker-profile-configmap
+            - secretRef:
+                name: secretkey
+          ports:
+            - containerPort: 8000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: budget-tracker-profile-service
+  namespace: tracker
+spec:
+  selector:
+    app: budget-tracker-profile
+  ports:
+    - port: 8000
+      targetPort: 8000

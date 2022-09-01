@@ -1,12 +1,30 @@
 <script setup>
-import { ref } from "vue";
+import { ref, toRef, watch } from "vue";
 import { useRouter } from "vue-router";
 
 import { useAuthStore } from "../stores/useAuth";
 const store = useAuthStore();
 const router = useRouter();
 
-const leftDrawerOpen = ref(true);
+const props = defineProps({
+  drawerOpen: Boolean,
+});
+
+const emit = defineEmits(["drawerClosed"]);
+
+const leftDrawerOpen = ref(false);
+const leftDrawerOpenRo = toRef(props, "drawerOpen");
+
+watch(leftDrawerOpenRo, (value) => {
+  leftDrawerOpen.value = leftDrawerOpenRo.value;
+});
+
+watch(leftDrawerOpen, (value) => {
+  if (value === false) {
+    emit("drawerClosed");
+  }
+});
+
 const miniState = ref(true);
 
 const menuList = [

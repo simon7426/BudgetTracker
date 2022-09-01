@@ -1,6 +1,6 @@
 <script setup>
 import { useQuasar } from "quasar";
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import transactionServiceCategories from "../../services/category.transaction.service";
 import transactionServiceAccounts from "../../services/accounts.transaction.service";
 import transactionService from "../../services/transactions.transaction.service";
@@ -8,7 +8,6 @@ import TransactionsFormCreate from "./TransactionsFormCreate.vue";
 import TransactionsFormEdit from "./TransactionsFormEdit.vue";
 import TransactionsFormDelete from "./TransactionsFormDelete.vue";
 
-const pagination = { sortBy: "transaction_id", rowsPerPage: 0 };
 const dateOption = {
   year: "numeric",
   month: "long",
@@ -91,6 +90,19 @@ const transactionsTable = ref(null);
 const rows = ref([]);
 const loading = ref(true);
 const q = useQuasar();
+const firstPageId = ref(Math.pow(10, 9));
+const previousPageIds = ref([]);
+const limit = ref(100);
+const nextPageDisabled = ref(false);
+const previousPageDisabled = computed(() => previousPageIds.value.length === 0);
+
+function getUpper(val) {
+  return val.replace(/^./, val[0].toUpperCase());
+}
+
+function isIncome(val) {
+  return val === "income";
+}
 
 async function getTransactions() {
   rows.value = [];
@@ -126,10 +138,52 @@ async function getTransactions() {
     });
 
   await transactionService
-    .getTransactions()
+    .getTransactions(firstPageId.value, limit.value + 1)
     .then((data) => {
+      if (data.length > limit.value) {
+        nextPageDisabled.value = false;
+      } else {
+        nextPageDisabled.value = true;
+      }
       if (data.length) {
-        for (var i in data) {
+        for (var i in data.slice(0, limit.value)) {
+          rows.value.push({
+            id: data[i]["id"],
+            transaction_date: new Date(data[i]["transaction_date"]),
+            transaction_type: data[i]["transaction_type"],
+            transaction_description: data[i]["transaction_description"],
+            transaction_amount: data[i]["transaction_amount"],
+            transaction_category:
+              categoryDict.value[data[i]["transaction_category_id"]],
+            transaction_account:
+              accountDict.value[data[i]["transaction_account_id"]],
+          });
+        }
+      }
+      loading.value = false;
+    })
+    .catch((err) => {
+      console.log("Error in get transactions");
+      console.log(err);
+    });
+}
+
+getTransactions();
+
+async function getNextPage() {
+  var nextPageId = rows.value[rows.value.length - 1].id - 1;
+  previousPageIds.value.push(rows.value[0].id);
+  await transactionService
+    .getTransactions(nextPageId, limit.value + 1)
+    .then((data) => {
+      rows.value = [];
+      if (data.length > limit.value) {
+        nextPageDisabled.value = false;
+      } else {
+        nextPageDisabled.value = true;
+      }
+      if (data.length) {
+        for (var i in data.slice(0, limit.value)) {
           rows.value.push({
             id: data[i]["id"],
             transaction_date: new Date(data[i]["transaction_date"]),
@@ -152,7 +206,43 @@ async function getTransactions() {
     });
 }
 
-getTransactions();
+async function getPreviousPage() {
+  await transactionService
+    .getTransactions(
+      previousPageIds.value[previousPageIds.value.length - 1],
+      limit.value + 1
+    )
+    .then((data) => {
+      previousPageIds.value.pop();
+      rows.value = [];
+      if (data.length > limit.value) {
+        nextPageDisabled.value = false;
+      } else {
+        nextPageDisabled.value = true;
+      }
+      if (data.length) {
+        for (var i in data.slice(0, limit.value)) {
+          rows.value.push({
+            id: data[i]["id"],
+            transaction_date: new Date(data[i]["transaction_date"]),
+            transaction_type: data[i]["transaction_type"],
+            transaction_description: data[i]["transaction_description"],
+            transaction_amount: data[i]["transaction_amount"],
+            transaction_category:
+              categoryDict.value[data[i]["transaction_category_id"]],
+            transaction_account:
+              accountDict.value[data[i]["transaction_account_id"]],
+          });
+        }
+      }
+
+      loading.value = false;
+    })
+    .catch((err) => {
+      console.log("Error in get transactions");
+      console.log(err);
+    });
+}
 
 function getAccountTable() {
   let accountTable = [];
@@ -178,7 +268,7 @@ function addTransactionDialog() {
       categoryTable: getCategoryTable(),
     },
   }).onOk((payload) => {
-    rows.value.push({
+    rows.value.unshift({
       id: payload["id"],
       transaction_date: new Date(payload["transaction_date"]),
       transaction_type: payload["transaction_type"],
@@ -244,9 +334,9 @@ function deleteTransaction(transaction) {
       <q-table
         ref="transactionTable"
         virtual-scroll
+        grid
         flat
         separator="none"
-        :pagination="pagination"
         :rows-per-page-options="[0]"
         :rows="rows"
         :columns="columns"
@@ -261,35 +351,99 @@ function deleteTransaction(transaction) {
           'transaction_account',
           'action',
         ]"
-        binary-state-sort
         hide-pagination
+        hide-header
         class="bg-cream-white"
       >
-        <template #body-cell-action="props">
-          <q-td :props="props">
-            <div class="td-action">
-              <q-btn
-                icon="edit"
-                size="sm"
-                flat
-                dense
-                @click="editTransaction(props.row)"
-              />
-              <q-btn
-                icon="delete"
-                size="sm"
-                class="q-ml-sm"
-                flat
-                dense
-                @click="deleteTransaction(props.row)"
-              />
-            </div>
-          </q-td>
+        <template #item="props">
+          <div class="col-md-12 col-sm-12 col-xs-12">
+            <q-item class="q-pa-none bg-cream-white text-center">
+              <q-item-section class="q-pa-md q-ml-none">
+                <q-item-label class="text-grey-9">{{
+                  props.row.transaction_date.toLocaleDateString(
+                    "en-US",
+                    dateOption
+                  )
+                }}</q-item-label>
+                <!-- <q-item-label :class=" isIncome(props.row.transaction_type) ? 'income-text':'expense-text'">
+                  {{ getUpper(props.row.transaction_type) }}
+                </q-item-label> -->
+              </q-item-section>
+              <q-item-section class="q-pa-md q-ml-none">
+                <q-item-label class="text-grey-10">{{
+                  props.row.transaction_description
+                }}</q-item-label>
+                <q-item-label class="text-grey-9"
+                  >Category:
+                  {{
+                    props.row.transaction_category.category_name
+                  }}</q-item-label
+                >
+              </q-item-section>
+              <q-item-section class="q-pa-md q-ml-none">
+                <q-item-label class="text-grey-9 text-weight-bolder"
+                  >${{ props.row.transaction_amount
+                  }}<q-icon
+                    :name="
+                      isIncome(props.row.transaction_type)
+                        ? 'arrow_upward'
+                        : 'arrow_downward'
+                    "
+                    :color="
+                      isIncome(props.row.transaction_type) ? 'positive' : 'negative'
+                    "
+                /></q-item-label>
+                <q-item-label class="text-grey-9"
+                  >With:
+                  {{ props.row.transaction_account.account_name }}</q-item-label
+                >
+              </q-item-section>
+              <q-item-section>
+                <div class="row justify-around full-width">
+                  <q-btn
+                    icon="edit"
+                    size="sm"
+                    flat
+                    dense
+                    @click="editTransaction(props.row)"
+                  />
+                  <q-btn
+                    icon="delete"
+                    size="sm"
+                    class="q-ml-sm"
+                    flat
+                    dense
+                    @click="deleteTransaction(props.row)"
+                  />
+                </div>
+              </q-item-section>
+            </q-item>
+          </div>
         </template>
         <template #loading>
           <q-inner-loading showing>
             <q-spinner-gears size="10rem" color="primary" />
           </q-inner-loading>
+        </template>
+        <template #bottom>
+          <div class="row justify-between full-width">
+            <q-btn
+              flat
+              rounded
+              :disabled="previousPageDisabled"
+              color="secondary"
+              label="<< Previous"
+              @click="getPreviousPage"
+            />
+            <q-btn
+              flat
+              rounded
+              :disabled="nextPageDisabled"
+              color="secondary"
+              label="Next >>"
+              @click="getNextPage"
+            />
+          </div>
         </template>
       </q-table>
     </div>
@@ -305,4 +459,12 @@ function deleteTransaction(transaction) {
   background: $primary
 .table-header
   align-self: center
+.full-width
+  width: 100%
+
+.income-text
+  color: $positive
+
+.expense-text
+  color: $negative
 </style>

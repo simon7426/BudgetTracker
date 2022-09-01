@@ -23,6 +23,10 @@ basicSummaryModel = summary_namespace.model(
         "incomeCategoryValues": fields.List(fields.Integer),
         "expenseCategory": fields.List(fields.String),
         "expenseCategoryValues": fields.List(fields.Integer),
+        "incomeCategoryMonth": fields.List(fields.String),
+        "incomeCategoryMonthValues": fields.List(fields.Integer),
+        "expenseCategoryMonth": fields.List(fields.String),
+        "expenseCategoryMonthValues": fields.List(fields.Integer),
     },
 )
 

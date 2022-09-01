@@ -32,11 +32,9 @@ function onCancelClick() {
 }
 
 const handleSubmit = () => {
-  console.log(`Delete Category ${categoryID.value}`);
   transactionServiceCategory
     .deleteCategory(categoryID.value)
     .then((data) => {
-      console.log(data);
       showNotif("Category deleted successfully.", "positive");
       onDialogOK();
     })

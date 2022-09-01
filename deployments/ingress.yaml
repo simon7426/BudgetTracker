@@ -1,0 +1,48 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-tracker
+  namespace: tracker
+  annotations:
+    cert-manager.io/cluster-issuer: "letsencrypt-simon-portfolio"
+    kubernetes.io/ingress.class: "nginx"
+    nginx.ingress.kubernetes.io/from-to-www-redirect: "true"
+  labels:
+    name: ingress-tracker
+spec:
+  tls:
+    - hosts:
+        - tracker.simonislam.com
+      secretName: tracker-tls
+  rules:
+    - host: tracker.simonislam.com
+      http:
+        paths:
+          - pathType: Prefix
+            path: "/"
+            backend:
+              service:
+                name: budget-tracker-frontend-service
+                port:
+                  number: 80
+          - pathType: Prefix
+            path: "/api/v1/auth-service"
+            backend:
+              service:
+                name: budget-tracker-auth-service
+                port:
+                  number: 8000
+          - pathType: Prefix
+            path: "/api/v1/transactions-service"
+            backend:
+              service:
+                name: budget-tracker-transaction-service
+                port:
+                  number: 8000
+          - pathType: Prefix
+            path: "/api/v1/profile-service"
+            backend:
+              service:
+                name: budget-tracker-profile-service
+                port:
+                  number: 8000

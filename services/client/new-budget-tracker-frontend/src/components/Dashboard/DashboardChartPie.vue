@@ -12,7 +12,6 @@ const props = defineProps({
 
 const { categories, amount, title } = toRefs(props);
 
-console.log(props);
 const series = ref(amount.value);
 
 const chartOptions = ref({
@@ -22,7 +21,6 @@ const chartOptions = ref({
   dataLabels: {
     enabled: true,
     formatter: (val, opts) => {
-      console.log(opts.seriesIndex);
       return categories.value[opts.seriesIndex];
     },
   },
@@ -45,15 +43,15 @@ const chartOptions = ref({
   },
   responsive: [
     {
-      breakpoint: 480,
-      options: {
-        chart: {
-          width: 200,
-        },
-        legend: {
-          position: "bottom",
-        },
-      },
+      // breakpoint: 480,
+      // options: {
+      //   chart: {
+      //     width: 200,
+      //   },
+      //   legend: {
+      //     position: "bottom",
+      //   },
+      // },
     },
   ],
 });

@@ -75,7 +75,6 @@ const handleSubmit = () => {
     transactionServiceTransfer
       .addTransfer(transfer)
       .then((data) => {
-        console.log(data);
         showNotif("Transfer added successfully.", "positive");
         onDialogOK(data);
       })

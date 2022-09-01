@@ -5,7 +5,9 @@ import authService from "./auth.service";
 import tokenService from "./token.service";
 
 const instance = axios.create({
-  baseURL: "http://hello.world/api/v1",
+  baseURL: "/api/v1",
+  // baseURL: "https://tracker.simonislam.com"+"/api/v1",
+  // baseURL: "http://hello.world" + "/api/v1",
   headers: {
     "Content-Type": "application/json",
   },
@@ -13,7 +15,6 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
   (config) => {
-    console.log(config.url);
     const store = useAuthStore();
     if (store.access_token) {
       config.headers["Authorization"] = "Bearer " + store.access_token;
@@ -30,7 +31,6 @@ instance.interceptors.response.use(
     return response;
   },
   (err) => {
-    console.log("In response error");
     const originalConfig = err.config;
     if (
       err.response &&
@@ -50,13 +50,15 @@ instance.interceptors.response.use(
             return instance(originalConfig);
           })
           .catch((err) => {
-            console.log("Error fetching refresh token");
             console.log(err);
             router.push({ name: "Login" });
           });
       } catch (_error) {
         console.log(_error);
       }
+    }
+    else {
+      router.push({ name: "Login" })
     }
   }
 );

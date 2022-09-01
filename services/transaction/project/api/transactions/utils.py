@@ -86,9 +86,9 @@ def update_transaction_handler(
                 else:
                     raise ValidationError
             else:
+                old_account.account_balance += transaction.transaction_amount
                 if account.account_balance >= transaction_amount:
                     account.account_balance -= transaction_amount
-                    old_account.account_balance += transaction.transaction_amount
                 else:
                     raise ValidationError
         else:

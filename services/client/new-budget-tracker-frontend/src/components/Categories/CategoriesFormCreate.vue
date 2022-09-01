@@ -49,7 +49,6 @@ const handleSubmit = () => {
     transactionServiceCategory
       .addCategory(category)
       .then((data) => {
-        console.log(data);
         showNotif("Category added successfully.", "positive");
         onDialogOK(data);
       })

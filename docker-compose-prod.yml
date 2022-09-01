@@ -2,70 +2,43 @@ version: "3.8"
 
 services:
   auth:
-    build:
-      context: ./services/auth
-      dockerfile: Dockerfile
+    image: simon7426/budget-tracker-auth-prod:0.1
     container_name: budget-tracker-auth
-    entrypoint: ["/usr/src/budget-tracker/entrypoint.sh"]
-    volumes:
-      - "./services/auth:/usr/src/budget-tracker"
-    ports:
-      - 8001:8000
     environment:
-      - APP_SETTINGS=project.config.DevelopmentConfig
+      - APP_SETTINGS=project.config.ProductionConfig
+      - SECRET_KEY=my_precious_tracker
       - DATABASE_URL=postgresql://postgres:7426@db:5432/budget_tracker_auth
       - DATABASE_TEST_URL=postgresql://postgres:7426@db:5432/budget_tracker_auth_test
       - REDIS_URL=redis://redis:6379/0
-      - RECAPTCHA_SERVER_KEY=${RECAPTCHA_SERVER_KEY}
     depends_on:
       - db
       - redis
 
   transaction:
-    build:
-      context: ./services/transaction
-      dockerfile: Dockerfile
+    image: simon7426/budget-tracker-transaction-prod:0.1
     container_name: budget-tracker-transaction
-    entrypoint: ["/usr/src/budget-tracker/entrypoint.sh"]
-    volumes:
-      - "./services/transaction:/usr/src/budget-tracker"
-    ports:
-      - 8002:8000
     environment:
-      - APP_SETTINGS=project.config.DevelopmentConfig
-      - SECRET_KEY=my_precious
+      - APP_SETTINGS=project.config.ProductionConfig
+      - SECRET_KEY=my_precious_tracker
       - DATABASE_URL=postgresql://postgres:7426@db:5432/budget_tracker_transaction
       - DATABASE_TEST_URL=postgresql://postgres:7426@db:5432/budget_tracker_transaction_test
     depends_on:
       - db
 
   profile:
-    build:
-      context: ./services/profile
-      dockerfile: Dockerfile
+    image: simon7426/budget-tracker-profile-prod:0.1
     container_name: budget-tracker-profile
-    entrypoint: ["/usr/src/budget-tracker/entrypoint.sh"]
-    volumes:
-      - "./services/profile:/usr/src/budget-tracker"
-    ports:
-      - 8003:8000
     environment:
       - APP_SETTINGS=project.config.DevelopmentConfig
-      - SECRET_KEY=my_precious
+      - SECRET_KEY=my_precious_tracker
       - DATABASE_URL=postgresql://postgres:7426@db:5432/budget_tracker_profile
       - DATABASE_TEST_URL=postgresql://postgres:7426@db:5432/budget_tracker_profile_test
     depends_on:
       - db
 
   client:
-    build:
-      context: ./services/client/new-budget-tracker-frontend
-      dockerfile: Dockerfile
+    image: simon7426/budget-tracker-client-prod:0.1
     container_name: budget-tracker-client
-    ports:
-      - 8080:8080
-    environment:
-      - VITE_BASE_URL=http://hello.world
     depends_on:
       - auth
       - transaction
@@ -95,8 +68,12 @@ services:
       context: ./services/nginx
       dockerfile: Dockerfile
     container_name: budget-tracker-nginx
+    volumes:
+      - /home/ubuntu/certs/fullchain.pem:/usr/share/nginx/tracker.simonislam.com.crt
+      - /home/ubuntu/certs/privkey.pem:/usr/share/nginx/tracker.simonislam.com.key
     ports:
       - 80:80
+      - 443:443
     depends_on:
       - auth
       - transaction

@@ -3,6 +3,7 @@ import { ref } from "vue";
 import authService from "../services/auth.service";
 import { useRouter } from "vue-router";
 import { useQuasar } from "quasar";
+import { VueReCaptcha, useReCaptcha } from "vue-recaptcha-v3";
 
 const username = ref("");
 const usernameRef = ref(null);
@@ -16,6 +17,7 @@ const router = useRouter();
 const checkInput = [(val) => !!val || "Field is required"];
 
 const q = useQuasar();
+const { executeRecaptcha, recaptchaLoaded } = useReCaptcha();
 
 function showNotif() {
   q.notify({
@@ -25,19 +27,22 @@ function showNotif() {
   });
 }
 
-function handleLogin() {
+async function handleLogin() {
   const inp_username = username.value.trim();
   const inp_password = password.value.trim();
   if (inp_username.length !== 0 && inp_password.length !== 0) {
     isLoading.value = true;
+    await recaptchaLoaded();
+
+    const token = await executeRecaptcha("login");
     const user = {
       username: inp_username,
       password: inp_password,
+      token: token,
     };
 
-    authService.login(user).then(
+    await authService.login(user).then(
       (data) => {
-        console.log(data);
         router.push({ name: "Dashboard" });
       },
       (error) => {
@@ -105,7 +110,7 @@ function handleLogin() {
     <q-card-actions class="q-px-md">
       <q-btn
         unelevated
-        color="light-green"
+        color="secondary"
         size="lg"
         class="full-width"
         label="Login"

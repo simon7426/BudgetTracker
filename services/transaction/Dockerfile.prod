@@ -3,7 +3,7 @@
 ###########
 
 # Pull ofiicial base image
-FROM python:3.8.12-slim-buster as builder
+FROM python:3.8.12-alpine as builder
 
 # set working directory
 WORKDIR /usr/src/app
@@ -12,11 +12,6 @@ WORKDIR /usr/src/app
 ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 
-# install system dependencies
-RUN apt-get update \
-  && apt-get -y install gcc postgresql \
-  && apt-get clean
-
 # install dependencies
 RUN pip install --upgrade pip
 COPY ./requirements.txt .
@@ -24,8 +19,8 @@ RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/app/wheels -r requir
 
 
 # lint
+RUN pip install black==22.3.0 flake8===4.0.1 isort==5.10.1
 COPY . .
-RUN pip install black==21.11b1 flake8===4.0.1 isort==5.10.1
 RUN flake8 project
 RUN black project --check
 RUN isort project --profile black --check-only
@@ -35,7 +30,7 @@ RUN isort project --profile black --check-only
 ###############
 
 # official base image
-FROM python:3.8.12-slim-buster
+FROM python:3.8.12-alpine
 
 # set working directory
 WORKDIR /usr/src/app
@@ -45,11 +40,6 @@ ENV PYTHONDONTWRITEBYTECODE 1
 ENV PYTHONUNBUFFERED 1
 ENV FLASK_ENV production
 ENV APP_SETTINGS project.config.ProductionConfig
-
-# install system dependencies
-RUN apt-get update \
-  && apt-get -y install gcc postgresql \
-  && apt-get clean
 
 # install dependencies
 COPY --from=builder /usr/src/app/wheels /wheels

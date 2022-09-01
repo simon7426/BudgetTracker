@@ -51,7 +51,6 @@ function onCancelClick() {
 const handleSubmit = () => {
   const inp_name = categoryName.value;
   const inp_type = categoryType.value.toLowerCase();
-  console.log(inp_name, inp_type);
   if (
     inp_name.length !== 0 &&
     (inp_type === "income" || inp_type === "expense")

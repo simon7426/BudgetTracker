@@ -109,6 +109,7 @@ function filterCategory(val, update) {
       });
     } else {
       update(() => {
+        const needle = val.toLowerCase();
         optionsCategory.value = categoryOptions.value.filter(
           (v) =>
             v.category_type.toLowerCase() ===

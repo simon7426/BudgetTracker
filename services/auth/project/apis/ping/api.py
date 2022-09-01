@@ -13,4 +13,5 @@ class Ping(Resource):
             "server": os.environ.get("SERVER_NO", "default"),
         }, 200
 
+
 ping_namespace.add_resource(Ping, "/ping")

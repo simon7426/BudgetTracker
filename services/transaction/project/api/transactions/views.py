@@ -19,6 +19,10 @@ transactions_namespace = Namespace("Transactions")
 parser = transactions_namespace.parser()
 parser.add_argument("Authorization", location="headers")
 
+query_parser = transactions_namespace.parser()
+query_parser.add_argument("keyset", type=int)
+query_parser.add_argument("limit", type=int)
+
 transactions = transactions_namespace.model(
     "Transactions",
     {
@@ -52,14 +56,21 @@ class TransactionsList(Resource):
     def get(self):
         """Get all transactions for an user"""
         try:
+            args = query_parser.parse_args()
+            keyset = args["keyset"] if args["keyset"] else 10**9 + 7
+            limit = args["limit"] if args["limit"] else 5
+
             user_id = TransactionsList.get.owner_id
             transactions_list = get_all_transactions_by_transaction_owner(
-                transaction_owner=user_id
+                transaction_owner=user_id,
+                keyset=keyset,
+                limit=limit,
             )
             return transactions_list, 200
 
         except Exception as e:
             current_app.logger.info(e)
+            print(e)
             transactions_namespace.abort(400, "Operation Error")
 
     @token_required
