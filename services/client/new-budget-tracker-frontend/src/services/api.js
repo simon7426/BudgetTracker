@@ -56,9 +56,8 @@ instance.interceptors.response.use(
       } catch (_error) {
         console.log(_error);
       }
-    }
-    else {
-      router.push({ name: "Login" })
+    } else {
+      router.push({ name: "Login" });
     }
   }
 );

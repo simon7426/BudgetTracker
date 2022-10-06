@@ -1,7 +1,12 @@
 import api from "./api";
 
 class TransactionsServiceTransfers {
-  addTransfer({ from_account_id, to_account_id, transfer_amount, transfer_description }) {
+  addTransfer({
+    from_account_id,
+    to_account_id,
+    transfer_amount,
+    transfer_description,
+  }) {
     return api
       .post("/transactions-service/accounts/transfer", {
         from_account_id,

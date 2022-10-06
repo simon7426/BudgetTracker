@@ -390,7 +390,9 @@ function deleteTransaction(transaction) {
                         : 'arrow_downward'
                     "
                     :color="
-                      isIncome(props.row.transaction_type) ? 'positive' : 'negative'
+                      isIncome(props.row.transaction_type)
+                        ? 'positive'
+                        : 'negative'
                     "
                 /></q-item-label>
                 <q-item-label class="text-grey-9"

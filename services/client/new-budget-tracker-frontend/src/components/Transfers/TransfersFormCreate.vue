@@ -67,7 +67,12 @@ const handleSubmit = () => {
   const to_account_id = toAccount.value.id;
   const transfer_amount = parseFloat(transferAmount.value);
   const transfer_description = transferDescription.value;
-  if (from_account_id && to_account_id && transferAmount && transfer_description) {
+  if (
+    from_account_id &&
+    to_account_id &&
+    transferAmount &&
+    transfer_description
+  ) {
     isLoading.value = true;
     const transfer = {
       from_account_id,

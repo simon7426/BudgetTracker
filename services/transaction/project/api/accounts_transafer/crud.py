@@ -3,7 +3,11 @@ from project.api.models import AccountTransfer
 
 
 def get_account_transfer_by_user_id(user_id):
-    return AccountTransfer.query.filter_by(account_owner=user_id).all()
+    return (
+        AccountTransfer.query.filter_by(account_owner=user_id)
+        .order_by(AccountTransfer.id.desc())
+        .all()
+    )
 
 
 def get_account_transfer_by_id(id, user_id):

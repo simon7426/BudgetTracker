@@ -16,7 +16,9 @@ const options = ["Debit", "Credit", "Savings", "Loan"];
 const accountID = ref(props.row.id);
 const accountName = ref(props.row.account_name);
 const accountNameRef = ref(null);
-const accountType = ref(props.row.account_type);
+const accountType = ref(
+  props.row.account_type.replace(/^./, props.row.account_type[0].toUpperCase())
+);
 const accountTypeRef = ref(null);
 const accountBalance = ref(props.row.account_balance);
 const accountBalanceRef = ref(null);

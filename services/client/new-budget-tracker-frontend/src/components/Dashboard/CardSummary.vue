@@ -66,7 +66,6 @@ const expenseChartMonthTitle = ref("This month's expense by category");
 const expenseCategoryMonth = ref([]);
 const expenseCategoryMonthValues = ref([]);
 
-
 async function getBasicSummary() {
   await summaryService
     .basicSummary()

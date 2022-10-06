@@ -7,7 +7,7 @@ import TransfersFormCreate from "./TransfersFormCreate.vue";
 import TransfersFormEdit from "./TransfersFormEdit.vue";
 import TransfersFormDelete from "./TransfersFormDelete.vue";
 
-const pagination = { sortBy: "transfer_id", rowsPerPage: 0 };
+const pagination = { sortBy: "transfer_id", descending: true, rowsPerPage: 0 };
 
 const columns = [
   {
@@ -41,7 +41,7 @@ const columns = [
     align: "center",
     sortable: true,
     field: (row) => row.transfer_description,
-    format: (val) => `${!val? "": val}`,
+    format: (val) => `${!val ? "" : val}`,
   },
   {
     name: "transfer_amount",
@@ -124,7 +124,7 @@ function addTransferDialog() {
       accountTable: getAccountTable(),
     },
   }).onOk((payload) => {
-    rows.value.push({
+    rows.value.unshift({
       id: payload["id"],
       from_account: accountDict.value[payload["from_account_id"]],
       to_account: accountDict.value[payload["to_account_id"]],
