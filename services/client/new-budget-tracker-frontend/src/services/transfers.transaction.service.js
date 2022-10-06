@@ -1,12 +1,13 @@
 import api from "./api";
 
 class TransactionsServiceTransfers {
-  addTransfer({ from_account_id, to_account_id, transfer_amount }) {
+  addTransfer({ from_account_id, to_account_id, transfer_amount, transfer_description }) {
     return api
       .post("/transactions-service/accounts/transfer", {
         from_account_id,
         to_account_id,
         transfer_amount,
+        transfer_description,
       })
       .then((response) => {
         return response.data;
@@ -26,12 +27,14 @@ class TransactionsServiceTransfers {
     from_account_id,
     to_account_id,
     transfer_amount,
+    transfer_description,
   }) {
     return api
       .put(`/transactions-service/accounts/transfer/${transfer_id}`, {
         from_account_id,
         to_account_id,
         transfer_amount,
+        transfer_description,
       })
       .then((response) => {
         return response.data;

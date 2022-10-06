@@ -12,7 +12,7 @@ const props = defineProps({
 
 const { dialogRef, onDialogHide, onDialogOK, onDialogCancel } =
   useDialogPluginComponent();
-
+const options = ["Debit", "Credit", "Savings", "Loan"];
 const accountID = ref(props.row.id);
 const accountName = ref(props.row.account_name);
 const accountNameRef = ref(null);
@@ -25,6 +25,14 @@ const isLoading = ref(false);
 
 const checkInput = [(val) => !!val || "Field is required"];
 const checkAmount = [(val) => val >= 0 || "Amount must be positive"];
+const checkAccountType = [
+  (val) =>
+    val.toLowerCase() == "debit" ||
+    val.toLowerCase() === "credit" ||
+    val.toLowerCase() === "loan" ||
+    val.toLowerCase() === "savings" ||
+    "Please select a value from the dropdown.",
+];
 
 const q = useQuasar();
 
@@ -44,7 +52,14 @@ const handleSubmit = () => {
   const inp_name = accountName.value;
   const inp_type = accountType.value.toLowerCase();
   const inp_balance = parseFloat(accountBalance.value);
-  if (inp_name.length !== 0 && inp_type.length !== 0) {
+  if (
+    inp_name.length !== 0 &&
+    inp_type.length !== 0 &&
+    (inp_type === "debit" ||
+      inp_type === "credit" ||
+      inp_type === "loan" ||
+      inp_type === "savings")
+  ) {
     isLoading.value = true;
     const account = {
       account_id: accountID.value,
@@ -90,14 +105,15 @@ const handleSubmit = () => {
             :rules="checkInput"
           />
 
-          <q-input
+          <q-select
             ref="accountTypeRef"
             v-model="accountType"
-            outlined
             standout="bg-white text-black"
-            type="text"
+            outlined
+            options-selected-class="bg-light-green-3 text-grey-9"
+            :options="options"
             label="Type"
-            :rules="checkInput"
+            :rules="checkAccountType"
           />
           <q-input
             ref="accountBalanceRef"

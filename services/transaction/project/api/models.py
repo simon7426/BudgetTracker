@@ -9,6 +9,13 @@ class ChoiceType(enum.Enum):
     expense = "expense"
 
 
+class AccountType(enum.Enum):
+    debit = "debit"
+    credit = "credit"
+    loan = "loan"
+    savings = "savings"
+
+
 class TransactionCategory(db.Model):
     __tablename__ = "transaction_category"
 
@@ -80,7 +87,7 @@ class Account(db.Model):
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     account_name = db.Column(db.String(128), nullable=False)
-    account_type = db.Column(db.String(128), nullable=False)
+    account_type = db.Column(db.Enum(AccountType), nullable=False)
     account_balance = db.Column(db.Numeric(10, 2), nullable=False)
     account_owner = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=get_bd_time, nullable=False)
@@ -111,6 +118,7 @@ class AccountTransfer(db.Model):
         db.Integer, db.ForeignKey("transaction_account.id"), nullable=False
     )
     transfer_amount = db.Column(db.Numeric(10, 2), default=0, nullable=False)
+    transfer_description = db.Column(db.String(128), nullable=True)
     account_owner = db.Column(db.Integer, nullable=False)
     created_at = db.Column(db.DateTime, default=get_bd_time, nullable=False)
     updated_at = db.Column(db.DateTime, onupdate=get_bd_time)
@@ -118,11 +126,19 @@ class AccountTransfer(db.Model):
     from_account = db.relationship("Account", foreign_keys=[from_account_id])
     to_account = db.relationship("Account", foreign_keys=[to_account_id])
 
-    def __init__(self, from_account_id, to_account_id, transfer_amount, account_owner):
+    def __init__(
+        self,
+        from_account_id,
+        to_account_id,
+        transfer_amount,
+        account_owner,
+        transfer_description,
+    ):
         self.from_account_id = from_account_id
         self.to_account_id = to_account_id
         self.transfer_amount = transfer_amount
         self.account_owner = account_owner
+        self.transfer_description = transfer_description
 
     def __repr__(self):
         return (

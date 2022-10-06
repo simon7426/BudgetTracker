@@ -12,6 +12,7 @@ from project.api.accounts.crud import (
     update_account,
 )
 from project.api.decorator import token_required
+from project.api.models import AccountType
 
 account_namespace = Namespace("Accounts")
 
@@ -24,7 +25,12 @@ account_model = account_namespace.model(
     {
         "id": fields.Integer(readOnly=True),
         "account_name": fields.String(required=True),
-        "account_type": fields.String(required=True),
+        "account_type": fields.String(
+            enum=AccountType._member_names_,
+            attribute="account_type.value",
+            required=True,
+            description="Account Type",
+        ),
         "account_balance": fields.Fixed(decimals=2, required=True),
         "created_at": fields.DateTime(readOnly=True),
         "updated_at": fields.DateTime(readOnly=True),

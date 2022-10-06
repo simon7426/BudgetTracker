@@ -15,7 +15,7 @@ class BaseConfig:
 
 class DevelopmentConfig(BaseConfig):
     SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_URL", "postgresql://postgres:7426@localhost:5432/flask_auth"
+        "DATABASE_URL", "postgresql://postgres:7426@localhost:5433/budget_tracker_transaction"
     )
     BCRYPT_LOG_ROUNDS = 4
 
@@ -23,7 +23,7 @@ class DevelopmentConfig(BaseConfig):
 class TestingConfig(BaseConfig):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = os.environ.get(
-        "DATABASE_TEST_URL", "postgresql://postgres:7426@localhost:5432/flask_auth_test"
+        "DATABASE_TEST_URL", "postgresql://postgres:7426@localhost:5433/budget_tracker_transaction_test"
     )
     BCRYPT_LOG_ROUNDS = 4
     ACCESS_TOKEN_EXPIRATION = 3

@@ -11,13 +11,14 @@ def get_account_transfer_by_id(id, user_id):
 
 
 def add_account_transfer(
-    from_account_id, to_account_id, transfer_amount, account_owner
+    from_account_id, to_account_id, transfer_amount, account_owner, transfer_description
 ):
     transfer = AccountTransfer(
         from_account_id=from_account_id,
         to_account_id=to_account_id,
         transfer_amount=transfer_amount,
         account_owner=account_owner,
+        transfer_description=transfer_description,
     )
     db.session.add(transfer)
     db.session.commit()
@@ -25,12 +26,18 @@ def add_account_transfer(
 
 
 def update_account_transfer(
-    transfer, from_account_id, to_account_id, transfer_amount, account_owner
+    transfer,
+    from_account_id,
+    to_account_id,
+    transfer_amount,
+    account_owner,
+    transfer_description,
 ):
     transfer.from_account_id = from_account_id
     transfer.to_account_id = to_account_id
     transfer.transfer_amount = transfer_amount
     transfer.account_owner = account_owner
+    transfer.transfer_description = transfer_description
     db.session.commit()
     return transfer
 

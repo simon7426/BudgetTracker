@@ -35,6 +35,15 @@ const columns = [
     format: (val) => `${val}`,
   },
   {
+    name: "transfer_description",
+    required: true,
+    label: "Description",
+    align: "center",
+    sortable: true,
+    field: (row) => row.transfer_description,
+    format: (val) => `${!val? "": val}`,
+  },
+  {
     name: "transfer_amount",
     required: true,
     label: "Amount",
@@ -86,6 +95,7 @@ async function getTransactionAccountsTransfers() {
             from_account: accountDict.value[data[i]["from_account_id"]],
             to_account: accountDict.value[data[i]["to_account_id"]],
             transfer_amount: data[i]["transfer_amount"],
+            transfer_description: data[i]["transfer_description"],
           });
         }
       }
@@ -119,6 +129,7 @@ function addTransferDialog() {
       from_account: accountDict.value[payload["from_account_id"]],
       to_account: accountDict.value[payload["to_account_id"]],
       transfer_amount: payload["transfer_amount"],
+      transfer_description: payload["transfer_description"],
     });
   });
 }
@@ -136,6 +147,7 @@ function editTransfer(transfer) {
       from_account: accountDict.value[payload["from_account_id"]],
       to_account: accountDict.value[payload["to_account_id"]],
       transfer_amount: payload["transfer_amount"],
+      transfer_description: payload["transfer_description"],
     };
   });
 }
@@ -183,6 +195,7 @@ function deleteTransfer(transfer) {
           'from_account',
           'to_account',
           'transfer_amount',
+          'transfer_description',
           'action',
         ]"
         binary-state-sort

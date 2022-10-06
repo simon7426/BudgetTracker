@@ -48,7 +48,7 @@ def get_transaction_sum_by_month(user_id, category, date=get_today()):
 
 def get_current_balance(user_id):
     return (
-        Account.query.filter_by(account_owner=user_id)
+        Account.query.filter_by(account_owner=user_id, account_type="debit")
         .with_entities(func.sum(Account.account_balance).label("total"))
         .first()
         .total

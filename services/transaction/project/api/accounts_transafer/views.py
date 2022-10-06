@@ -24,6 +24,7 @@ account_transfer = account_transfer_namespace.model(
         "from_account_id": fields.Integer(required=True),
         "to_account_id": fields.Integer(required=True),
         "transfer_amount": fields.Fixed(decimals=2),
+        "transfer_description": fields.String(required=False),
         "created_at": fields.DateTime(readOnly=True),
         "updated_at": fields.DateTime(readOnly=True),
     },
@@ -67,12 +68,14 @@ class AccountTransferList(Resource):
             from_account_id = post_data.get("from_account_id")
             to_account_id = post_data.get("to_account_id")
             transfer_amount = Decimal(post_data.get("transfer_amount"))
+            transfer_description = post_data.get("transfer_description")
             account_owner = AccountTransferList.post.owner_id
             transfer = add_account_transfer_handler(
                 from_account_id=from_account_id,
                 to_account_id=to_account_id,
                 transfer_amount=transfer_amount,
                 account_owner=account_owner,
+                transfer_description=transfer_description,
             )
             return transfer, 200
         except ValidationError:
@@ -123,6 +126,7 @@ class AccountTransfer(Resource):
             from_account_id = put_data.get("from_account_id")
             to_account_id = put_data.get("to_account_id")
             transfer_amount = Decimal(put_data.get("transfer_amount"))
+            transfer_description = put_data.get("transfer_description")
             account_owner = AccountTransfer.put.owner_id
             transfer = get_account_transfer_by_id(id=id, user_id=account_owner)
             if transfer:
@@ -132,6 +136,7 @@ class AccountTransfer(Resource):
                     to_account_id=to_account_id,
                     transfer_amount=transfer_amount,
                     account_owner=account_owner,
+                    transfer_description=transfer_description,
                 )
                 return transfer, 200
             else:

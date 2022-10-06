@@ -10,7 +10,7 @@ from project.api.accounts_transafer.crud import (
 
 
 def add_account_transfer_handler(
-    from_account_id, to_account_id, transfer_amount, account_owner
+    from_account_id, to_account_id, transfer_amount, account_owner, transfer_description
 ):
     from_account = get_account_by_id(id=from_account_id, account_owner=account_owner)
     to_account = get_account_by_id(id=to_account_id, account_owner=account_owner)
@@ -23,7 +23,11 @@ def add_account_transfer_handler(
         from_account.account_balance -= transfer_amount
         to_account.account_balance += transfer_amount
         transfer = add_account_transfer(
-            from_account_id, to_account_id, transfer_amount, account_owner
+            from_account_id,
+            to_account_id,
+            transfer_amount,
+            account_owner,
+            transfer_description,
         )
         return transfer
     else:
@@ -31,7 +35,12 @@ def add_account_transfer_handler(
 
 
 def update_account_transfer_handler(
-    transfer, from_account_id, to_account_id, transfer_amount, account_owner
+    transfer,
+    from_account_id,
+    to_account_id,
+    transfer_amount,
+    account_owner,
+    transfer_description,
 ):
     old_from_account = get_account_by_id(
         id=transfer.from_account_id, account_owner=account_owner
@@ -55,7 +64,12 @@ def update_account_transfer_handler(
             from_account.account_balance -= transfer_amount
             to_account.account_balance += transfer_amount
             updated_transfer = update_account_transfer(
-                transfer, from_account_id, to_account_id, transfer_amount, account_owner
+                transfer,
+                from_account_id,
+                to_account_id,
+                transfer_amount,
+                account_owner,
+                transfer_description,
             )
             return updated_transfer
         else:

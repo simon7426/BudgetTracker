@@ -27,6 +27,8 @@ const toAccount = ref(props.row.to_account);
 const toAccountRef = ref(null);
 const transferAmount = ref(props.row.transfer_amount);
 const transferAmountRef = ref(null);
+const transferDescription = ref(props.row.transfer_description);
+const transferDescriptionRef = ref(null);
 
 const isLoading = ref(false);
 
@@ -71,6 +73,7 @@ const handleSubmit = () => {
   const from_account_id = fromAccount.value.id;
   const to_account_id = toAccount.value.id;
   const transfer_amount = parseFloat(transferAmount.value);
+  const transfer_description = transferDescription.value;
   if (from_account_id && to_account_id && transferAmount) {
     isLoading.value = true;
     const transfer = {
@@ -78,6 +81,7 @@ const handleSubmit = () => {
       from_account_id,
       to_account_id,
       transfer_amount,
+      transfer_description,
     };
 
     transactionServiceTransfer
@@ -96,6 +100,7 @@ const handleSubmit = () => {
     fromAccountRef.value.validate();
     toAccountRef.value.validate();
     transferAmountRef.value.validate();
+    transferDescriptionRef.value.validate();
   }
 };
 </script>
@@ -167,6 +172,16 @@ const handleSubmit = () => {
             label="Balance"
             prefix="$"
             :rules="checkAmount"
+          />
+
+          <q-input
+            ref="transferDescriptionRef"
+            v-model="transferDescription"
+            outlined
+            standout="bg-white text-black"
+            type="text"
+            label="Description"
+            :rules="checkInput"
           />
         </q-form>
       </q-card-section>
