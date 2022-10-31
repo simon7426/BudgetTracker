@@ -50,7 +50,7 @@ def delete_transaction_handler(transaction):
         id=transaction.transaction_account_id,
         account_owner=transaction.transaction_owner,
     )
-    if transaction.transaction_type == "income":
+    if transaction.transaction_type.value == "income":
         if account.account_balance >= transaction.transaction_amount:
             account.account_balance -= transaction.transaction_amount
         else:
@@ -71,28 +71,42 @@ def update_transaction_handler(
     transaction_account_id,
 ):
     try:
-        old_account = get_account_by_id(
-            id=transaction.transaction_account_id,
-            account_owner=transaction.transaction_owner,
-        )
-        account = get_account_by_id(
-            id=transaction_account_id, account_owner=transaction.transaction_owner
-        )
-        if old_account and account:
-            if transaction.transaction_type == "income":
-                if old_account.account_balance >= transaction.transaction_amount:
-                    old_account.account_balance -= transaction.transaction_amount
-                    account.account_balance += transaction_amount
+        if transaction.transaction_account_id != transaction_account_id:
+            old_account = get_account_by_id(
+                id=transaction.transaction_account_id,
+                account_owner=transaction.transaction_owner,
+            )
+            account = get_account_by_id(
+                id=transaction_account_id, account_owner=transaction.transaction_owner
+            )
+            if old_account and account:
+                if transaction.transaction_type.value == "income":
+                    if old_account.account_balance >= transaction.transaction_amount:
+                        old_account.account_balance -= transaction.transaction_amount
+                        account.account_balance += transaction_amount
+                    else:
+                        raise ValidationError
                 else:
+                    old_account.account_balance += transaction.transaction_amount
+                    if account.account_balance >= transaction_amount:
+                        account.account_balance -= transaction_amount
+                    else:
+                        raise ValidationError
+            else:
+                raise ValidationError
+        else:
+            account = get_account_by_id(
+                id=transaction_account_id, account_owner=transaction.transaction_owner
+            )
+            if account:
+                if transaction.transaction_type.value == "income":
+                    account.account_balance = account.account_balance + transaction_amount - transaction.transaction_amount
+                else:
+                    account.account_balance = account.account_balance - transaction_amount + transaction.transaction_amount
+                if account.account_balance < 0:
                     raise ValidationError
             else:
-                old_account.account_balance += transaction.transaction_amount
-                if account.account_balance >= transaction_amount:
-                    account.account_balance -= transaction_amount
-                else:
-                    raise ValidationError
-        else:
-            raise ValidationError
+                raise ValidationError
         transaction = update_transaction(
             transaction=transaction,
             transaction_date=datetime.strptime(transaction_date, "%Y-%m-%d").date(),
