@@ -100,9 +100,17 @@ def update_transaction_handler(
             )
             if account:
                 if transaction.transaction_type.value == "income":
-                    account.account_balance = account.account_balance + transaction_amount - transaction.transaction_amount
+                    account.account_balance = (
+                        account.account_balance
+                        + transaction_amount
+                        - transaction.transaction_amount
+                    )
                 else:
-                    account.account_balance = account.account_balance - transaction_amount + transaction.transaction_amount
+                    account.account_balance = (
+                        account.account_balance
+                        - transaction_amount
+                        + transaction.transaction_amount
+                    )
                 if account.account_balance < 0:
                     raise ValidationError
             else:
